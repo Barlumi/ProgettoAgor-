@@ -1524,10 +1524,10 @@
         mask.appendChild(img);
         mediaWrap.appendChild(mask);
 
-        // SVG cerchio d'onda ampio 240x240 con filamenti armonici identico alla Home
+        // SVG cerchio d'onda ampio 270x270 con filamenti armonici identico alla Home
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('class', 'gallery-circle-wave-svg');
-        svg.setAttribute('viewBox', '0 0 240 240');
+        svg.setAttribute('viewBox', '0 0 270 270');
 
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1547,9 +1547,9 @@
         mediaWrap.appendChild(svg);
 
         const circleEntry = {
-          cx: 120,
-          cy: 120,
-          radius: 108,
+          cx: 135,
+          cy: 135,
+          radius: 122,
           pathVis: pathVis,
           strandA: strandA,
           strandB: strandB,
@@ -1588,15 +1588,15 @@
 
       bodyElem.appendChild(stage);
 
-      // Navigazione: Trio Precedente / Successivo (senza box, con ondina circolare animata)
+      // Navigazione: Indietro / Avanti (senza box, con ondina circolare animata)
       const navDiv = document.createElement('div');
       navDiv.className = 'gallery-trio-nav';
 
       const btnPrev = document.createElement('button');
       btnPrev.type = 'button';
       btnPrev.className = 'btn-phase-wave';
-      btnPrev.title = 'Trio precedente';
-      btnPrev.setAttribute('aria-label', 'Trio precedente');
+      btnPrev.title = 'Indietro';
+      btnPrev.setAttribute('aria-label', 'Indietro');
       btnPrev.innerHTML = `
         <span class="wave-circle-icon" aria-hidden="true">
           <span class="wave-ripple wr-1"></span>
@@ -1604,7 +1604,7 @@
           <span class="wave-ripple wr-3"></span>
           <span class="wave-dot"></span>
         </span>
-        <span class="btn-wave-label">Trio Precedente</span>
+        <span class="btn-wave-label">Indietro</span>
       `;
       btnPrev.addEventListener('click', function () {
         ensureAudioUnlocked();
@@ -1620,10 +1620,10 @@
       const btnNext = document.createElement('button');
       btnNext.type = 'button';
       btnNext.className = 'btn-phase-wave';
-      btnNext.title = 'Trio successivo';
-      btnNext.setAttribute('aria-label', 'Trio successivo');
+      btnNext.title = 'Avanti';
+      btnNext.setAttribute('aria-label', 'Avanti');
       btnNext.innerHTML = `
-        <span class="btn-wave-label">Trio Successivo</span>
+        <span class="btn-wave-label">Avanti</span>
         <span class="wave-circle-icon" aria-hidden="true">
           <span class="wave-ripple wr-1"></span>
           <span class="wave-ripple wr-2"></span>

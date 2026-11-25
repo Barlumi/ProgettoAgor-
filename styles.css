@@ -510,12 +510,13 @@ html, body {
   margin-top: auto;
   margin-bottom: auto;
   box-sizing: border-box;
-  padding-left: clamp(0px, calc(100vw - 1380px), 140px);
+  padding-left: clamp(170px, 14vw, 210px);
+  padding-right: 2.5rem;
 }
 
 .portal-text-column {
   flex: 1;
-  max-width: 620px;
+  max-width: 530px; /* Box testuale più raccolto: massima leggibilità e zero sovrapposizione col widget home */
 }
 
 .portal-meta-category {
@@ -631,11 +632,13 @@ html, body {
 
 /* Vista a Piena Pagina (Gallery Generale, Partner, Credits, Timeline) */
 .portal-full-view {
-  max-width: 1240px;
+  max-width: 1320px;
   width: 100%;
   margin-top: auto;
   margin-bottom: auto;
   box-sizing: border-box;
+  padding-left: clamp(170px, 14vw, 210px);
+  padding-right: clamp(170px, 14vw, 210px);
   text-align: center;
 }
 
@@ -650,7 +653,7 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 2.75rem;
+  gap: 3rem;
   margin: 1.75rem 0 2rem 0;
   width: 100%;
   flex-wrap: wrap;
@@ -661,8 +664,8 @@ html, body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: 250px;
-  max-width: 270px;
+  width: 280px;
+  max-width: 300px;
   transition: transform 0.3s ease;
 }
 
@@ -672,9 +675,9 @@ html, body {
 
 .gallery-trio-media-wrap {
   position: relative;
-  width: 240px;
-  height: 240px;
-  margin-bottom: 1.1rem;
+  width: 270px;
+  height: 270px;
+  margin-bottom: 1.15rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -682,12 +685,12 @@ html, body {
 
 .gallery-trio-img-mask {
   position: absolute;
-  inset: 16px; /* Spazio per cornice d'onda luminosa e risonante */
+  inset: 18px; /* Spazio per cornice d'onda luminosa e risonante */
   border-radius: 50%;
   overflow: hidden;
   background: #030712;
   border: 1px solid rgba(56, 189, 248, 0.3);
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
 }
 
 .gallery-trio-img {
@@ -713,20 +716,20 @@ html, body {
 
 .gallery-trio-title {
   font-family: var(--font-title);
-  font-size: 0.98rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: #ffffff;
   line-height: 1.35;
-  margin-bottom: 0.35rem;
-  max-width: 240px;
+  margin-bottom: 0.4rem;
+  max-width: 265px;
 }
 
 .gallery-trio-caption {
   font-family: var(--font-body);
-  font-size: 0.8rem;
-  line-height: 1.48;
-  color: var(--text-muted);
-  max-width: 240px;
+  font-size: 0.84rem;
+  line-height: 1.5;
+  color: #cbd5e1;
+  max-width: 265px;
 }
 
 .gallery-trio-nav {
@@ -734,7 +737,7 @@ html, body {
   align-items: center;
   justify-content: center;
   gap: 2.75rem;
-  margin-top: 1.5rem;
+  margin-top: 1.75rem;
 }
 
 .gallery-trio-counter {
@@ -868,8 +871,11 @@ html, body {
 
 /* Blocchi di Sezione Generici all'interno del Portale (Timeline, Crediti, Pubblicazioni) */
 .portal-section-block {
-  margin-bottom: 1.75rem;
+  margin-bottom: 2.25rem;
   text-align: left;
+  max-width: 860px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .portal-section-block:last-child {
@@ -878,24 +884,25 @@ html, body {
 
 .portal-block-title {
   font-family: var(--font-title);
-  font-size: 1.05rem;
+  font-size: 1.25rem;
   font-weight: 600;
-  color: var(--text-bright);
-  margin-bottom: 0.45rem;
+  color: #ffffff;
+  margin-bottom: 0.65rem;
   text-align: left;
+  line-height: 1.35;
 }
 
 .portal-block-text {
   font-family: var(--font-body);
-  font-size: 0.85rem;
-  line-height: 1.6;
-  color: var(--text-main);
+  font-size: 1.02rem;
+  line-height: 1.75;
+  color: #cbd5e1;
   text-align: left;
 }
 
 .portal-block-text p {
   text-align: left;
-  margin-bottom: 0.65rem;
+  margin-bottom: 0.85rem;
 }
 
 .portal-block-text p:last-child {
@@ -1182,6 +1189,12 @@ html, body {
     gap: 2.5rem;
     align-items: center;
     padding-left: 0;
+    padding-right: 0;
+  }
+
+  .portal-full-view {
+    padding-left: 1rem;
+    padding-right: 1rem;
   }
 
   .portal-text-column {
