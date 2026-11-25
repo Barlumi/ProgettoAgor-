@@ -104,9 +104,9 @@ html, body {
 }
 
 .header-logo-img {
-  height: 42px;
+  height: 54px;
   width: auto;
-  max-width: 175px;
+  max-width: 220px;
   object-fit: contain;
   display: block;
   filter: drop-shadow(0 0 16px rgba(56, 189, 248, 0.45));
