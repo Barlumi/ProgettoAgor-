@@ -1524,10 +1524,10 @@
         mask.appendChild(img);
         mediaWrap.appendChild(mask);
 
-        // SVG cerchio d'onda ampio 270x270 con filamenti armonici identico alla Home
+        // SVG cerchio d'onda proporzionato 215x215 con filamenti armonici identico alla Home
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('class', 'gallery-circle-wave-svg');
-        svg.setAttribute('viewBox', '0 0 270 270');
+        svg.setAttribute('viewBox', '0 0 215 215');
 
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1547,9 +1547,9 @@
         mediaWrap.appendChild(svg);
 
         const circleEntry = {
-          cx: 135,
-          cy: 135,
-          radius: 122,
+          cx: 107.5,
+          cy: 107.5,
+          radius: 98,
           pathVis: pathVis,
           strandA: strandA,
           strandB: strandB,

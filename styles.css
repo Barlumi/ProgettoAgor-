@@ -448,15 +448,15 @@ html, body {
   visibility: visible;
 }
 
-/* Cerchio Interattivo "Torna alla Home" (Allineato al margine di menu e testi) */
+/* Cerchio Interattivo "Torna alla Home" (Allineato al margine di menu e testi, posizionato verso il titolo) */
 .portal-back-home-widget {
   position: fixed;
-  top: 50%;
+  top: 35%;
   left: max(2.5rem, calc((100vw - 1440px) / 2 + 2.5rem));
   transform: translateY(-50%);
   z-index: 60;
-  width: 130px;
-  height: 130px;
+  width: 125px;
+  height: 125px;
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -632,13 +632,13 @@ html, body {
 
 /* Vista a Piena Pagina (Gallery Generale, Partner, Credits, Timeline) */
 .portal-full-view {
-  max-width: 1320px;
+  max-width: 1280px;
   width: 100%;
   margin-top: auto;
   margin-bottom: auto;
   box-sizing: border-box;
-  padding-left: clamp(170px, 14vw, 210px);
-  padding-right: clamp(170px, 14vw, 210px);
+  padding-left: clamp(140px, 11vw, 180px);
+  padding-right: clamp(140px, 11vw, 180px);
   text-align: center;
 }
 
@@ -653,10 +653,10 @@ html, body {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 3rem;
-  margin: 1.75rem 0 2rem 0;
+  gap: 2.25rem;
+  margin: 1.5rem 0 1.75rem 0;
   width: 100%;
-  flex-wrap: wrap;
+  flex-wrap: nowrap; /* Sempre sulla stessa linea */
 }
 
 .gallery-trio-card {
@@ -664,8 +664,9 @@ html, body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  width: 280px;
-  max-width: 300px;
+  width: 225px;
+  max-width: 240px;
+  flex-shrink: 0;
   transition: transform 0.3s ease;
 }
 
@@ -675,9 +676,9 @@ html, body {
 
 .gallery-trio-media-wrap {
   position: relative;
-  width: 270px;
-  height: 270px;
-  margin-bottom: 1.15rem;
+  width: 215px;
+  height: 215px;
+  margin-bottom: 0.85rem;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -685,12 +686,12 @@ html, body {
 
 .gallery-trio-img-mask {
   position: absolute;
-  inset: 18px; /* Spazio per cornice d'onda luminosa e risonante */
+  inset: 15px; /* Spazio per cornice d'onda luminosa e risonante */
   border-radius: 50%;
   overflow: hidden;
   background: #030712;
   border: 1px solid rgba(56, 189, 248, 0.3);
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.75);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.75);
 }
 
 .gallery-trio-img {
@@ -716,20 +717,20 @@ html, body {
 
 .gallery-trio-title {
   font-family: var(--font-title);
-  font-size: 1.05rem;
+  font-size: 0.95rem;
   font-weight: 600;
   color: #ffffff;
-  line-height: 1.35;
-  margin-bottom: 0.4rem;
-  max-width: 265px;
+  line-height: 1.32;
+  margin-bottom: 0.3rem;
+  max-width: 225px;
 }
 
 .gallery-trio-caption {
   font-family: var(--font-body);
-  font-size: 0.84rem;
-  line-height: 1.5;
+  font-size: 0.78rem;
+  line-height: 1.45;
   color: #cbd5e1;
-  max-width: 265px;
+  max-width: 225px;
 }
 
 .gallery-trio-nav {
