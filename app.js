@@ -70,8 +70,8 @@
         'Il risultato finale del laboratorio apre la cultura a tutti: persone con disabilità motorie o fragilità che non possono viaggiare possono rivivere la magia e il paesaggio sonoro delle piazze storiche da casa o da musei dedicati.',
         'A Tresigallo, nell\'edificio storico "Sogni", è stata inoltre allestita una sala speciale con 32 altoparlanti che ricrea fisicamente il campo sonoro delle piazze, unendo ricerca scientifica, memoria civica e inclusione sociale.'
       ],
-      image: 'assets/gallery/image33.jpg',
-      imageCaption: 'La sala d\'ascolto immersiva di Tresigallo con impianto a 32 altoparlanti, progettata per far rivivere l\'acustica dei luoghi storici.'
+      image: 'assets/gallery/tresigallo_wfs_room.jpg',
+      imageCaption: 'La sala d\'ascolto immersiva di Tresigallo con array circolare WFS di altoparlanti e videoproiezione panoramica all\'edificio "Sogni".'
     }
   ];
 
@@ -280,6 +280,11 @@
           title: 'Comacchio, Piazza Trepponti',
           caption: 'Prima caratterizzazione acustica dei ponti monumentali: sweep ESS su 9 posizioni con T30 tra 1,4 s e 1,9 s.',
           image: 'assets/gallery/image32.jpg'
+        },
+        {
+          title: 'Sala Immersiva WFS di Tresigallo (Edificio Sogni)',
+          caption: 'Allestimento della sala d\'ascolto con array circolare di diffusori Wave Field Synthesis e sistema di videoproiezione a 360°.',
+          image: 'assets/gallery/tresigallo_wfs_room.jpg'
         },
         {
           title: 'Mappa delle Prime Riflessioni (Trepponti)',
