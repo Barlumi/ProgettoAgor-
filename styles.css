@@ -448,10 +448,10 @@ html, body {
   visibility: visible;
 }
 
-/* Cerchio Interattivo "Torna alla Home" (Allineato al margine di menu e testi, posizionato verso il titolo) */
+/* Cerchio Interattivo "Torna alla Home" (Centrato in altezza, allineato al margine di menu e testi) */
 .portal-back-home-widget {
   position: fixed;
-  top: 35%;
+  top: 50%;
   left: max(2.5rem, calc((100vw - 1440px) / 2 + 2.5rem));
   transform: translateY(-50%);
   z-index: 60;

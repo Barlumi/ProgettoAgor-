@@ -2026,4 +2026,8 @@
     requestAnimationFrame(mainAnimationLoop);
   });
 
+  // Esposizione per navigazione e test
+  window.openCircularPortal = openCircularPortal;
+  window.closeCircularPortal = closeCircularPortal;
+
 })();
