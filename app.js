@@ -490,7 +490,7 @@
   const state = {
     activeSection: 'laboratorio',
     currentPhaseIndex: 0,
-    drawerOpen: false,
+    portalOpen: false,
     audioMuted: false,
 
     circles: {}
@@ -566,6 +566,92 @@
     if (!audioCtx) initAudioContext();
     if (audioCtx && audioCtx.state === 'suspended') {
       audioCtx.resume();
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // SINTESI EFFETTI SONORI TRANSIZIONI (ZOOM IN, RITORNO MELODICO, FASI)
+  // -------------------------------------------------------------------------
+  function playZoomInChime(baseFreq) {
+    if (!audioCtx || state.audioMuted) return;
+    try {
+      const freq = baseFreq || 220;
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      const filter = audioCtx.createBiquadFilter();
+
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+      osc.frequency.exponentialRampToValueAtTime(freq * 2.8, now + 0.6);
+
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(freq * 1.5, now);
+      filter.frequency.exponentialRampToValueAtTime(freq * 3.2, now + 0.6);
+      filter.Q.setValueAtTime(3.2, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.12);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
+
+      osc.connect(filter);
+      filter.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.8);
+    } catch (e) {
+      // Ignora errori di contesto non inizializzato
+    }
+  }
+
+  function playReturnChime() {
+    if (!audioCtx || state.audioMuted) return;
+    try {
+      const now = audioCtx.currentTime;
+      const chord = [523.25, 392.00, 261.63]; // Do5, Sol4, Do4 (Accordo discendente etereo)
+      chord.forEach(function (freq, i) {
+        const osc = audioCtx.createOscillator();
+        const gain = audioCtx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, now + i * 0.11);
+
+        gain.gain.setValueAtTime(0.0001, now + i * 0.11);
+        gain.gain.exponentialRampToValueAtTime(0.12, now + i * 0.11 + 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.11 + 0.7);
+
+        osc.connect(gain);
+        gain.connect(audioCtx.destination);
+
+        osc.start(now + i * 0.11);
+        osc.stop(now + i * 0.11 + 0.75);
+      });
+    } catch (e) {
+      // Ignora errori
+    }
+  }
+
+  function playPhaseStepSound() {
+    if (!audioCtx || state.audioMuted) return;
+    try {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(440, now);
+      osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.14, now + 0.03);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.32);
+    } catch (e) {
+      // Ignora errori
     }
   }
 
@@ -891,20 +977,102 @@
   }
 
   // -------------------------------------------------------------------------
-  // GESTIONE DELLE FASI (PANNELLO SINISTRA)
+  // GESTIONE DEL PORTALE CIRCOLARE (ZOOM IN/OUT & NAVIGAZIONE AD ONDE)
   // -------------------------------------------------------------------------
-  function setLabPhase(index) {
+  function openCircularPortal(sectionKey, phaseIndex, clickOrigin) {
+    ensureAudioUnlocked();
+
+    // 1. Calcolo del centro del cerchio/hub per la transizione di zoom
+    let originX = '33.75%';
+    let originY = '50%';
+    let baseFreq = 220;
+
+    if (clickOrigin && typeof clickOrigin.x === 'number' && typeof clickOrigin.y === 'number') {
+      originX = ((clickOrigin.x / 1600) * 100).toFixed(2) + '%';
+      originY = ((clickOrigin.y / 950) * 100).toFixed(2) + '%';
+      if (clickOrigin.id && activeStyle.audio.frequencies[clickOrigin.id]) {
+        baseFreq = activeStyle.audio.frequencies[clickOrigin.id];
+      }
+    } else if (sectionKey === 'laboratorio') {
+      originX = '33.75%';
+      originY = '50%';
+      baseFreq = 220;
+    } else if (sectionKey === 'partnership' || sectionKey === 'credits' || sectionKey === 'pubblicazioni') {
+      originX = '77.5%';
+      originY = '30%';
+      baseFreq = 293.7;
+    } else if (sectionKey === 'timeline' || sectionKey === 'gallery') {
+      originX = '77.5%';
+      originY = '72.63%';
+      baseFreq = 349.2;
+    }
+
+    const soundscapeContainer = document.getElementById('soundscapeContainer');
+    if (soundscapeContainer) {
+      soundscapeContainer.style.transformOrigin = originX + ' ' + originY;
+      soundscapeContainer.classList.add('zoomed-in');
+    }
+
+    playZoomInChime(baseFreq);
+
+    // 2. Popolamento dei contenuti nel cerchio centrale
+    const phaseNav = document.getElementById('portalPhaseNav');
+
+    if (sectionKey === 'laboratorio') {
+      if (typeof phaseIndex === 'number') {
+        state.currentPhaseIndex = phaseIndex;
+      }
+      renderPortalLabPhase(state.currentPhaseIndex);
+      if (phaseNav) phaseNav.style.display = 'flex';
+    } else {
+      renderPortalSection(sectionKey);
+      if (phaseNav) phaseNav.style.display = 'none';
+    }
+
+    // 3. Mostra il portale circolare
+    const portal = document.getElementById('circularPortal');
+    if (portal) {
+      portal.classList.add('visible');
+      portal.setAttribute('aria-hidden', 'false');
+    }
+
+    state.portalOpen = true;
+    state.activeSection = sectionKey;
+    updateHeaderActiveStates();
+  }
+
+  function closeCircularPortal() {
+    if (!state.portalOpen) return;
+    playReturnChime();
+
+    const portal = document.getElementById('circularPortal');
+    const soundscapeContainer = document.getElementById('soundscapeContainer');
+
+    if (portal) {
+      portal.classList.remove('visible');
+      portal.setAttribute('aria-hidden', 'true');
+    }
+
+    if (soundscapeContainer) {
+      soundscapeContainer.classList.remove('zoomed-in');
+    }
+
+    state.portalOpen = false;
+    updateHeaderActiveStates();
+  }
+
+  function renderPortalLabPhase(index) {
     if (index < 0) index = LAB_PHASES.length - 1;
     if (index >= LAB_PHASES.length) index = 0;
 
     state.currentPhaseIndex = index;
     const phaseData = LAB_PHASES[index];
 
-    const tagElem = document.getElementById('phaseCurrentTag');
-    const titleElem = document.getElementById('phaseCurrentTitle');
-    const bodyElem = document.getElementById('phaseCurrentBody');
+    const catElem = document.getElementById('portalCategory');
+    const titleElem = document.getElementById('portalTitle');
+    const bodyElem = document.getElementById('portalBody');
 
-    if (tagElem) tagElem.textContent = phaseData.tag;
+    if (catElem) catElem.textContent = 'Laboratorio Virtuale — ' + phaseData.tag;
     if (titleElem) titleElem.textContent = phaseData.title;
 
     if (bodyElem) {
@@ -917,13 +1085,13 @@
 
       if (phaseData.image) {
         const figure = document.createElement('figure');
-        figure.className = 'phase-figure';
+        figure.className = 'portal-figure';
 
         const imgWrap = document.createElement('div');
-        imgWrap.className = 'phase-img-wrap';
+        imgWrap.className = 'portal-img-wrap';
 
         const img = document.createElement('img');
-        img.className = 'phase-img';
+        img.className = 'portal-img';
         img.src = phaseData.image;
         img.alt = phaseData.title;
         img.loading = 'lazy';
@@ -932,7 +1100,7 @@
 
         if (phaseData.imageCaption) {
           const caption = document.createElement('figcaption');
-          caption.className = 'phase-img-caption';
+          caption.className = 'portal-img-caption';
           caption.textContent = phaseData.imageCaption;
           figure.appendChild(caption);
         }
@@ -941,6 +1109,13 @@
       }
     }
 
+    // Aggiorna gli indicatori sferici di avanzamento fase
+    const phaseNodes = document.querySelectorAll('.phase-node');
+    phaseNodes.forEach(function (node, idx) {
+      node.classList.toggle('active', idx === index);
+    });
+
+    // Aggiorna i cerchi concentrici nell'SVG per la fase attiva
     CIRCLES_REGISTRY.forEach(function (c) {
       if (!c.isPhase) return;
       const dom = circleDOM[c.id];
@@ -954,40 +1129,21 @@
     });
   }
 
-  function showLabPhasesOverlay() {
-    const overlay = document.getElementById('labPhasesOverlay');
-    if (overlay) overlay.classList.add('visible');
-    closeSideDrawer();
-    state.activeSection = 'laboratorio';
-    updateHeaderActiveStates();
-  }
-
-  function hideLabPhasesOverlay() {
-    const overlay = document.getElementById('labPhasesOverlay');
-    if (overlay) overlay.classList.remove('visible');
-    if (state.activeSection === 'laboratorio') {
-      state.activeSection = null;
-    }
-    updateHeaderActiveStates();
-  }
-
-  // -------------------------------------------------------------------------
-  // GESTIONE DRAWER LATERALE (PARTNER & CREDITS)
-  // -------------------------------------------------------------------------
-  function openSideDrawer(sectionKey) {
+  function renderPortalSection(sectionKey) {
     const data = DRAWER_DATA[sectionKey];
     if (!data) return;
 
-    state.activeSection = sectionKey;
-    state.drawerOpen = true;
+    const catElem = document.getElementById('portalCategory');
+    const titleElem = document.getElementById('portalTitle');
+    const bodyElem = document.getElementById('portalBody');
 
-    document.getElementById('drawerCategory').textContent = data.category;
-    document.getElementById('drawerHeading').textContent = data.title;
+    if (catElem) catElem.textContent = data.category;
+    if (titleElem) titleElem.textContent = data.title;
 
-    const bodyContainer = document.getElementById('drawerContentBody');
-    bodyContainer.innerHTML = '';
+    if (!bodyElem) return;
+    bodyElem.innerHTML = '';
 
-    // Blocco bianco dedicato ai Loghi Ufficiali dei Partner (Slide 4 della presentazione)
+    // Blocco loghi partner se presenti
     if (data.logos && Array.isArray(data.logos)) {
       const whiteBlock = document.createElement('div');
       whiteBlock.className = 'partner-logos-white-block';
@@ -1019,7 +1175,7 @@
       });
 
       whiteBlock.appendChild(logosGrid);
-      bodyContainer.appendChild(whiteBlock);
+      bodyElem.appendChild(whiteBlock);
     }
 
     if (data.isGallery && Array.isArray(data.items)) {
@@ -1060,18 +1216,18 @@
         grid.appendChild(card);
       });
 
-      bodyContainer.appendChild(grid);
+      bodyElem.appendChild(grid);
     } else if (Array.isArray(data.sections)) {
       data.sections.forEach(function (sec) {
         const block = document.createElement('div');
-        block.className = 'drawer-section-block';
+        block.className = 'portal-section-block';
 
         const h3 = document.createElement('h3');
-        h3.className = 'drawer-block-title';
+        h3.className = 'portal-block-title';
         h3.textContent = sec.heading;
 
         const divText = document.createElement('div');
-        divText.className = 'drawer-block-text';
+        divText.className = 'portal-block-text';
         if (Array.isArray(sec.text)) {
           sec.text.forEach(function (t) {
             const p = document.createElement('p');
@@ -1086,34 +1242,15 @@
 
         block.appendChild(h3);
         block.appendChild(divText);
-        bodyContainer.appendChild(block);
+        bodyElem.appendChild(block);
       });
     }
-
-    const drawer = document.getElementById('sideDrawer');
-    const backdrop = document.getElementById('drawerBackdrop');
-    if (drawer) drawer.classList.add('open');
-    if (backdrop) backdrop.classList.add('visible');
-
-    hideLabPhasesOverlay();
-    updateHeaderActiveStates();
-  }
-
-  function closeSideDrawer() {
-    state.drawerOpen = false;
-    const drawer = document.getElementById('sideDrawer');
-    const backdrop = document.getElementById('drawerBackdrop');
-    if (drawer) drawer.classList.remove('open');
-    if (backdrop) backdrop.classList.remove('visible');
-    updateHeaderActiveStates();
   }
 
   function updateHeaderActiveStates() {
     const labBtn = document.getElementById('navBtnLab');
-    const overlay = document.getElementById('labPhasesOverlay');
-    const isLabOverlayOpen = overlay && overlay.classList.contains('visible');
-
-    if (labBtn) labBtn.classList.toggle('active', isLabOverlayOpen && !state.drawerOpen);
+    const isLabActive = state.portalOpen && state.activeSection === 'laboratorio';
+    if (labBtn) labBtn.classList.toggle('active', isLabActive);
 
     const navMap = {
       timeline: document.getElementById('navBtnTimeline'),
@@ -1125,18 +1262,19 @@
 
     Object.keys(navMap).forEach(function (key) {
       if (navMap[key]) {
-        navMap[key].classList.toggle('active', state.activeSection === key && state.drawerOpen);
+        navMap[key].classList.toggle('active', state.portalOpen && state.activeSection === key);
       }
     });
   }
 
   // -------------------------------------------------------------------------
-  // GESTIONE EVENTI (HIT PROXY 34PX)
+  // GESTIONE EVENTI (HIT PROXY 34PX & CONTROLLI PORTALE)
   // -------------------------------------------------------------------------
   function initEventHandlers() {
     window.addEventListener('pointerdown', ensureAudioUnlocked, { once: true });
     window.addEventListener('keydown', ensureAudioUnlocked, { once: true });
 
+    // Clic sui cerchi concentrici dell'SVG
     CIRCLES_REGISTRY.forEach(function (c) {
       const dom = circleDOM[c.id];
       if (!dom) return;
@@ -1162,33 +1300,29 @@
         ensureAudioUnlocked();
 
         if (c.system === 'laboratorio') {
-          showLabPhasesOverlay();
-          if (c.isPhase) {
-            setLabPhase(c.phaseIndex);
-          }
+          openCircularPortal('laboratorio', c.phaseIndex, { x: c.cx, y: c.cy, id: c.id });
         } else if (DRAWER_DATA[c.system]) {
-          openSideDrawer(c.system);
+          openCircularPortal(c.system, null, { x: c.cx, y: c.cy, id: c.id });
         }
       });
     });
 
-    // Navigazione Header
+    // Navigazione Header Centrale
     document.getElementById('navBtnLab').addEventListener('click', function () {
       ensureAudioUnlocked();
-      const overlay = document.getElementById('labPhasesOverlay');
-      if (overlay && overlay.classList.contains('visible')) {
-        hideLabPhasesOverlay();
+      if (state.portalOpen && state.activeSection === 'laboratorio') {
+        closeCircularPortal();
       } else {
-        showLabPhasesOverlay();
+        openCircularPortal('laboratorio', state.currentPhaseIndex, { x: 540, y: 475 });
       }
     });
 
     const navButtons = [
-      { id: 'navBtnTimeline', section: 'timeline' },
-      { id: 'navBtnPubblicazioni', section: 'pubblicazioni' },
-      { id: 'navBtnPartnership', section: 'partnership' },
-      { id: 'navBtnGallery', section: 'gallery' },
-      { id: 'navBtnCredits', section: 'credits' }
+      { id: 'navBtnTimeline', section: 'timeline', x: 1240, y: 690 },
+      { id: 'navBtnPubblicazioni', section: 'pubblicazioni', x: 1240, y: 285 },
+      { id: 'navBtnPartnership', section: 'partnership', x: 1240, y: 285 },
+      { id: 'navBtnGallery', section: 'gallery', x: 1240, y: 690 },
+      { id: 'navBtnCredits', section: 'credits', x: 1240, y: 285 }
     ];
 
     navButtons.forEach(function (item) {
@@ -1196,43 +1330,92 @@
       if (btn) {
         btn.addEventListener('click', function () {
           ensureAudioUnlocked();
-          openSideDrawer(item.section);
+          if (state.portalOpen && state.activeSection === item.section) {
+            closeCircularPortal();
+          } else {
+            openCircularPortal(item.section, null, { x: item.x, y: item.y });
+          }
         });
       }
     });
 
+    // Click sul Logo AGORA: apre la Fase 1 del Laboratorio
     document.getElementById('navBtnLogo').addEventListener('click', function () {
       ensureAudioUnlocked();
-      closeSideDrawer();
-      showLabPhasesOverlay();
-      setLabPhase(0);
-    });
-
-    // Fasi Precedente / Successiva e Chiudi Scheda
-    document.getElementById('btnPrevPhase').addEventListener('click', function () {
-      setLabPhase(state.currentPhaseIndex - 1);
-    });
-
-    document.getElementById('btnNextPhase').addEventListener('click', function () {
-      setLabPhase(state.currentPhaseIndex + 1);
-    });
-
-    document.getElementById('btnClosePhaseCard').addEventListener('click', function () {
-      hideLabPhasesOverlay();
-    });
-
-    // Chiusura Drawer
-    document.getElementById('btnDismissDrawer').addEventListener('click', closeSideDrawer);
-    document.getElementById('drawerBackdrop').addEventListener('click', closeSideDrawer);
-
-    window.addEventListener('keydown', function (e) {
-      if (e.key === 'Escape') {
-        if (state.drawerOpen) closeSideDrawer();
-        else hideLabPhasesOverlay();
+      if (state.portalOpen && state.activeSection === 'laboratorio' && state.currentPhaseIndex === 0) {
+        closeCircularPortal();
+      } else {
+        openCircularPortal('laboratorio', 0, { x: 540, y: 475 });
       }
     });
 
-    // Audio Mute Toggle
+    // Cerchietto laterale con effetto melodia per tornare indietro
+    const backBtn = document.getElementById('btnPortalBack');
+    if (backBtn) {
+      backBtn.addEventListener('pointerenter', function () {
+        if (!audioCtx || state.audioMuted) return;
+        try {
+          const now = audioCtx.currentTime;
+          const osc = audioCtx.createOscillator();
+          const gain = audioCtx.createGain();
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(523.25, now);
+          gain.gain.setValueAtTime(0.0001, now);
+          gain.gain.exponentialRampToValueAtTime(0.06, now + 0.04);
+          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
+          osc.connect(gain);
+          gain.connect(audioCtx.destination);
+          osc.start(now);
+          osc.stop(now + 0.36);
+        } catch (e) {}
+      });
+
+      backBtn.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        closeCircularPortal();
+      });
+    }
+
+    // Fasi Precedente / Successiva con icone ad onda sonora circolare (Zero frecce)
+    const btnPrev = document.getElementById('btnPhasePrev');
+    if (btnPrev) {
+      btnPrev.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        playPhaseStepSound();
+        renderPortalLabPhase(state.currentPhaseIndex - 1);
+      });
+    }
+
+    const btnNext = document.getElementById('btnPhaseNext');
+    if (btnNext) {
+      btnNext.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        playPhaseStepSound();
+        renderPortalLabPhase(state.currentPhaseIndex + 1);
+      });
+    }
+
+    // Indicatori sferici di avanzamento fase
+    const phaseNodes = document.querySelectorAll('.phase-node');
+    phaseNodes.forEach(function (node) {
+      node.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        const idx = parseInt(node.getAttribute('data-index'), 10);
+        if (!isNaN(idx)) {
+          playPhaseStepSound();
+          renderPortalLabPhase(idx);
+        }
+      });
+    });
+
+    // Tasto Escape per chiudere il portale
+    window.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape') {
+        if (state.portalOpen) closeCircularPortal();
+      }
+    });
+
+    // Controllo Audio Spento / Attivo ("sound on") - rimane invariato e indipendente
     const muteToggle = document.getElementById('btnAudioMute');
     const muteLabel = document.getElementById('audioMuteLabel');
     if (muteToggle) {
@@ -1252,13 +1435,12 @@
   }
 
   // -------------------------------------------------------------------------
-  // AVVIO ALL'ONLOAD
+  // AVVIO ALL'ONLOAD (PANORAMICA ONDE CONCENTRICHE INTERATTIVA)
   // -------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', function () {
     renderSvgScene();
     initEventHandlers();
-    setLabPhase(0);
-    showLabPhasesOverlay();
+    renderPortalLabPhase(0);
 
     requestAnimationFrame(mainAnimationLoop);
   });

@@ -327,6 +327,16 @@ html, body {
   display: flex;
   align-items: center;
   justify-content: center;
+  transform-origin: 33.75% 50%;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.75s ease, filter 0.85s ease;
+  will-change: transform, opacity, filter;
+}
+
+.soundscape-canvas-container.zoomed-in {
+  transform: scale(4.8);
+  opacity: 0;
+  filter: blur(10px);
+  pointer-events: none;
 }
 
 #soundWavesSvg {
@@ -417,284 +427,439 @@ html, body {
 }
 
 /* --------------------------------------------------------------------------
-   Pannello Dettaglio Fasi del Laboratorio (Dark Glass a Sinistra)
+   Portale Circolare Interattivo (Pulsante Melodia Laterale & Cerchio Centrale)
    -------------------------------------------------------------------------- */
-.lab-phases-overlay {
-  position: absolute;
-  left: 4.5vw;
-  top: 50%;
-  transform: translateY(-50%);
-  width: 480px;
-  max-width: 92vw;
-  z-index: 25;
-  pointer-events: none;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.35s ease, visibility 0.35s ease, transform 0.35s ease;
-}
-
-.lab-phases-overlay.visible {
-  opacity: 1;
-  visibility: visible;
-  pointer-events: auto;
-  transform: translateY(-50%) translateX(0);
-}
-
-.phase-detail-card {
-  background: var(--bg-card);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid var(--line-border-card);
-  padding: 1.85rem 2rem;
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(6, 182, 212, 0.08);
-  border-radius: 4px;
-  max-height: 86vh;
-  display: flex;
-  flex-direction: column;
-}
-
-.phase-card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 0.85rem;
-}
-
-.phase-meta {
-  display: flex;
-  align-items: center;
-  gap: 0.35rem;
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.08em;
-  color: var(--color-cyan);
-}
-
-.phase-tag {
-  font-family: var(--font-body);
-  color: var(--color-cyan);
-  background: none;
-  border: none;
-  padding: 0;
-  box-shadow: none;
-  text-shadow: none;
-}
-
-.phase-count {
-  font-family: var(--font-body);
-  color: var(--color-cyan);
-  opacity: 0.75;
-  background: none;
-  border: none;
-  padding: 0;
-}
-
-.btn-close-phase {
-  background: none;
-  border: none;
-  font-size: 1.45rem;
-  line-height: 1;
-  color: var(--text-muted);
-  cursor: pointer;
-  transition: color 0.15s ease;
-}
-
-.btn-close-phase:hover {
-  color: #ffffff;
-}
-
-.phase-title {
-  font-family: var(--font-title);
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: var(--text-bright);
-  line-height: 1.35;
-  margin-bottom: 1rem;
-}
-
-.phase-body-text {
-  font-family: var(--font-body);
-  font-size: 0.86rem;
-  line-height: 1.6;
-  color: var(--text-main);
-  margin-bottom: 1.25rem;
-  overflow-y: auto;
-  padding-right: 0.45rem;
-}
-
-.phase-body-text::-webkit-scrollbar {
-  width: 4px;
-}
-
-.phase-body-text::-webkit-scrollbar-thumb {
-  background: rgba(56, 189, 248, 0.25);
-  border-radius: 2px;
-}
-
-.phase-body-text p {
-  margin-bottom: 0.75rem;
-}
-
-.phase-body-text p:last-child {
-  margin-bottom: 0;
-}
-
-.phase-figure {
-  margin: 1rem 0 0 0;
-}
-
-.phase-img-wrap {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #030712;
-  border-radius: 4px;
-  overflow: hidden;
-  border: 1px solid rgba(56, 189, 248, 0.22);
-  position: relative;
-}
-
-.phase-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.3s ease;
-}
-
-.phase-img-wrap:hover .phase-img {
-  transform: scale(1.03);
-}
-
-.phase-img-caption {
-  font-family: var(--font-body);
-  font-size: 0.75rem;
-  line-height: 1.45;
-  color: var(--text-muted);
-  margin-top: 0.45rem;
-  font-style: italic;
-}
-
-.phase-actions {
-  display: flex;
-  justify-content: space-between;
-  gap: 0.75rem;
-  border-top: 1px solid var(--line-subtle);
-  padding-top: 1.1rem;
-}
-
-.btn-phase-step {
-  background: none;
-  border: none;
-  font-family: var(--font-body);
-  font-size: 0.78rem;
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0.35rem 0.2rem;
-  transition: color 0.15s ease;
-}
-
-.btn-phase-step:hover {
-  color: var(--color-cyan);
-}
-
-/* --------------------------------------------------------------------------
-   Pannello Laterale a Scorrimento (Drawer per Partnership e Credits)
-   -------------------------------------------------------------------------- */
-.side-drawer {
+.circular-portal-overlay {
   position: fixed;
-  top: 0;
-  right: 0;
-  width: 560px;
-  max-width: 92vw;
-  height: 100vh;
-  background-color: var(--bg-drawer);
-  border-left: 1px solid var(--line-border-card);
-  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.85);
-  z-index: 100;
+  inset: 0;
+  z-index: 40;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  visibility: hidden;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.65s ease;
+  background: radial-gradient(circle at center, rgba(3, 7, 18, 0.4) 0%, rgba(3, 7, 18, 0.88) 100%);
+}
+
+.circular-portal-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+  visibility: visible;
+}
+
+/* Cerchietto Laterale con Effetto Melodia (Per tornare indietro) */
+.btn-portal-back {
+  position: fixed;
+  top: 6.2rem;
+  left: 3rem;
+  z-index: 55;
   display: flex;
   flex-direction: column;
-  transform: translateX(100%);
-  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+  align-items: center;
+  gap: 0.55rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.5rem;
+  transition: transform 0.25s ease;
+  outline: none;
 }
 
-.side-drawer.open {
-  transform: translateX(0);
+.btn-portal-back:hover {
+  transform: scale(1.08);
 }
 
-.drawer-header {
-  padding: 2.25rem 2.25rem 1.5rem 2.25rem;
-  border-bottom: 1px solid var(--line-subtle);
+.melody-wave-rings {
+  position: absolute;
+  top: 22px;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 68px;
+  height: 68px;
+  pointer-events: none;
+}
+
+.wave-ring {
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  border: 1.5px solid rgba(56, 189, 248, 0.45);
+  opacity: 0;
+  animation: melodyPulseRipple 3.2s cubic-bezier(0.1, 0.8, 0.3, 1) infinite;
+}
+
+.wave-ring.ring-2 {
+  animation-delay: 1.05s;
+  border-color: rgba(6, 182, 212, 0.45);
+}
+
+.wave-ring.ring-3 {
+  animation-delay: 2.1s;
+  border-color: rgba(245, 158, 11, 0.4);
+}
+
+@keyframes melodyPulseRipple {
+  0% {
+    transform: scale(0.6);
+    opacity: 0.9;
+  }
+  60% {
+    opacity: 0.35;
+  }
+  100% {
+    transform: scale(1.85);
+    opacity: 0;
+  }
+}
+
+.melody-center-node {
+  position: relative;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: rgba(6, 14, 28, 0.92);
+  border: 1.5px solid rgba(56, 189, 248, 0.5);
+  box-shadow: 0 0 18px rgba(56, 189, 248, 0.45), inset 0 0 10px rgba(56, 189, 248, 0.25);
   display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+  align-items: center;
+  justify-content: center;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background-color 0.25s ease;
 }
 
-.drawer-pre-title {
-  display: block;
+.btn-portal-back:hover .melody-center-node {
+  border-color: #38bdf8;
+  background: rgba(14, 28, 54, 0.95);
+  box-shadow: 0 0 26px rgba(56, 189, 248, 0.75), inset 0 0 14px rgba(245, 158, 11, 0.4);
+}
+
+.melody-svg-icon {
+  width: 26px;
+  height: 26px;
+  transition: transform 0.35s ease;
+}
+
+.btn-portal-back:hover .melody-svg-icon {
+  transform: rotate(45deg);
+}
+
+.portal-back-caption {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--text-muted);
+  transition: color 0.25s ease, text-shadow 0.25s ease;
+}
+
+.btn-portal-back:hover .portal-back-caption {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.7);
+}
+
+/* Cornice Circolare Centrale */
+.portal-circle-frame {
+  position: relative;
+  width: min(85vh, 760px);
+  height: min(85vh, 760px);
+  border-radius: 50%;
+  background: radial-gradient(circle at center, rgba(6, 14, 28, 0.95) 0%, rgba(3, 7, 18, 0.98) 72%, rgba(1, 3, 8, 1) 100%);
+  border: 1.5px solid rgba(56, 189, 248, 0.4);
+  box-shadow: 0 0 50px rgba(56, 189, 248, 0.16),
+              inset 0 0 65px rgba(6, 182, 212, 0.08),
+              0 0 0 8px rgba(245, 158, 11, 0.09);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portal-circle-ambient-ring {
+  position: absolute;
+  inset: 14px;
+  border-radius: 50%;
+  border: 1px dashed rgba(56, 189, 248, 0.18);
+  pointer-events: none;
+  animation: ambientRingSpin 160s linear infinite;
+}
+
+@keyframes ambientRingSpin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
+/* Contenuto Ben Distanziato dai Bordi del Cerchio */
+.portal-circle-content {
+  position: relative;
+  z-index: 2;
+  width: 78%;
+  max-width: 530px;
+  max-height: 66vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  padding: 0.5rem 0;
+}
+
+.portal-header {
+  margin-bottom: 0.75rem;
+  flex-shrink: 0;
+}
+
+.portal-category {
   font-family: var(--font-body);
   font-size: 0.72rem;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
+  letter-spacing: 0.12em;
   color: var(--color-cyan);
   margin-bottom: 0.35rem;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.3);
 }
 
-.drawer-main-title {
+.portal-title {
   font-family: var(--font-title);
-  font-size: 1.85rem;
+  font-size: 1.3rem;
   font-weight: 600;
   color: var(--text-bright);
-  line-height: 1.2;
+  line-height: 1.3;
 }
 
-.btn-drawer-dismiss {
-  background: none;
-  border: none;
-  font-size: 1.75rem;
-  line-height: 1;
-  color: var(--text-muted);
-  cursor: pointer;
-  padding: 0.2rem 0.4rem;
-  transition: color 0.15s ease;
-}
-
-.btn-drawer-dismiss:hover {
-  color: #ffffff;
-}
-
-.drawer-scrollable-body {
-  padding: 2.25rem;
-  overflow-y: auto;
+.portal-body {
   flex: 1;
+  overflow-y: auto;
+  padding: 0.25rem 0.65rem 0.75rem;
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  margin-bottom: 0.75rem;
+  max-height: 44vh;
+  width: 100%;
 }
 
-.drawer-section-block {
-  margin-bottom: 2.25rem;
+.portal-body::-webkit-scrollbar {
+  width: 4px;
 }
 
-.drawer-section-block:last-child {
+.portal-body::-webkit-scrollbar-thumb {
+  background: rgba(56, 189, 248, 0.3);
+  border-radius: 2px;
+}
+
+.portal-body p {
+  margin-bottom: 0.75rem;
+  text-align: center;
+}
+
+.portal-body p:last-child {
   margin-bottom: 0;
 }
 
-.drawer-block-title {
+/* Figure & Immagine all'interno del Portale */
+.portal-figure {
+  margin: 0.85rem 0 0.35rem 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+}
+
+.portal-img-wrap {
+  width: 100%;
+  max-width: 440px;
+  aspect-ratio: 16 / 9;
+  background: #030712;
+  border-radius: 6px;
+  overflow: hidden;
+  border: 1px solid rgba(56, 189, 248, 0.25);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.55);
+}
+
+.portal-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.35s ease;
+}
+
+.portal-img-wrap:hover .portal-img {
+  transform: scale(1.03);
+}
+
+.portal-img-caption {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  line-height: 1.45;
+  color: var(--text-muted);
+  margin-top: 0.45rem;
+  font-style: italic;
+  max-width: 420px;
+  text-align: center;
+}
+
+/* Navigazione tra le fasi con onde sonore circolari (Zero frecce) */
+.portal-phase-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  border-top: 1px solid var(--line-subtle);
+  padding-top: 0.75rem;
+  margin-top: auto;
+  flex-shrink: 0;
+}
+
+.btn-phase-wave {
+  background: none;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  cursor: pointer;
+  padding: 0.4rem 0.6rem;
+  border-radius: 20px;
+  transition: color 0.25s ease, background-color 0.25s ease;
+}
+
+.btn-phase-wave:hover {
+  color: #ffffff;
+  background: rgba(56, 189, 248, 0.08);
+}
+
+.wave-circle-icon {
+  position: relative;
+  width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.wave-dot {
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--color-cyan);
+  box-shadow: 0 0 6px var(--color-cyan);
+  z-index: 2;
+}
+
+.wave-ripple {
+  position: absolute;
+  border-radius: 50%;
+  border: 1px solid var(--color-cyan);
+  pointer-events: none;
+}
+
+.wave-ripple.wr-1 {
+  inset: 5px;
+  opacity: 0.85;
+}
+
+.wave-ripple.wr-2 {
+  inset: 2px;
+  opacity: 0.55;
+}
+
+.wave-ripple.wr-3 {
+  inset: -1px;
+  opacity: 0.35;
+}
+
+.btn-phase-wave:hover .wave-ripple.wr-1 {
+  animation: rippleWavePulse 1.2s ease-out infinite;
+}
+
+.btn-phase-wave:hover .wave-ripple.wr-2 {
+  animation: rippleWavePulse 1.2s ease-out infinite 0.25s;
+}
+
+.btn-phase-wave:hover .wave-ripple.wr-3 {
+  animation: rippleWavePulse 1.2s ease-out infinite 0.5s;
+}
+
+@keyframes rippleWavePulse {
+  0% { transform: scale(0.8); opacity: 0.95; }
+  100% { transform: scale(1.45); opacity: 0; }
+}
+
+.phase-nodes-bar {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.phase-node {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  cursor: pointer;
+  padding: 0;
+  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.phase-node:hover {
+  transform: scale(1.3);
+  background: var(--color-cyan);
+  box-shadow: 0 0 8px var(--color-cyan);
+}
+
+.phase-node.active {
+  background: var(--color-cyan);
+  box-shadow: 0 0 10px var(--color-cyan), 0 0 18px rgba(245, 158, 11, 0.5);
+  transform: scale(1.35);
+  border-color: #ffffff;
+}
+
+/* Blocchi di Sezione Generici all'interno del Portale (Timeline, Crediti, Pubblicazioni) */
+.portal-section-block {
+  margin-bottom: 1.75rem;
+  text-align: left;
+}
+
+.portal-section-block:last-child {
+  margin-bottom: 0;
+}
+
+.portal-block-title {
   font-family: var(--font-title);
-  font-size: 1.15rem;
+  font-size: 1.05rem;
   font-weight: 600;
   color: var(--text-bright);
+  margin-bottom: 0.45rem;
+  text-align: left;
+}
+
+.portal-block-text {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  text-align: left;
+}
+
+.portal-block-text p {
+  text-align: left;
   margin-bottom: 0.65rem;
 }
 
-.drawer-block-text {
-  font-family: var(--font-body);
-  font-size: 0.88rem;
-  line-height: 1.65;
-  color: var(--text-main);
+.portal-block-text p:last-child {
+  margin-bottom: 0;
 }
 
 .drawer-block-text p {
@@ -872,25 +1037,27 @@ html, body {
     width: auto;
   }
 
-  .lab-phases-overlay {
-    left: 1rem;
-    right: 1rem;
-    width: auto;
-    top: auto;
-    bottom: 4rem;
-    transform: none;
+  .btn-portal-back {
+    top: 5.4rem;
+    left: 1.2rem;
   }
 
-  .lab-phases-overlay.visible {
-    transform: none;
+  .portal-circle-frame {
+    width: min(92vw, 560px);
+    height: min(92vw, 560px);
   }
 
-  .phase-detail-card {
-    padding: 1.5rem;
+  .portal-circle-content {
+    width: 82%;
+    max-width: 440px;
   }
 
-  .side-drawer {
-    width: 100vw;
-    max-width: 100vw;
+  .portal-title {
+    font-size: 1.15rem;
+  }
+
+  .portal-body {
+    max-height: 40vh;
+    font-size: 0.82rem;
   }
 }
