@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AGORÀ — Laboratorio Virtuale Acustico</title>
+  
+  <!-- Caratteri Tipografici Stile Easy (Esattamente 2 font):
+       - Space Grotesk (Titoli/Loghi)
+       - Plus Jakarta Sans (Testi/Pulsanti) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+  
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="site-body" data-theme="easy">
+
+  <!-- Velo atmosferico di sfondo (sfumatura notturna e particelle sottili) -->
+  <div class="ambient-glow-bg"></div>
+
+  <!-- ================================================================= -->
+  <!-- HEADER CENTRALE STATICO (Navigazione minimale coordinata)         -->
+  <!-- ================================================================= -->
+  <header class="main-header">
+    <div class="header-inner">
+      <nav class="nav-side nav-left">
+        <button type="button" class="nav-link" id="navBtnLab">Laboratorio Virtuale</button>
+      </nav>
+
+      <div class="header-logo" id="navBtnLogo">
+        <span class="logo-mark">AGORÀ</span>
+      </div>
+
+      <nav class="nav-side nav-right">
+        <button type="button" class="nav-link" id="navBtnPartnership">Partner</button>
+        <button type="button" class="nav-link" id="navBtnCredits">Crediti</button>
+        <button type="button" class="nav-link" id="navBtnPubblicazioni">Pubblicazioni</button>
+        <button type="button" class="nav-link" id="navBtnTimeline">Timeline</button>
+        <button type="button" class="nav-link" id="navBtnGallery">Gallery</button>
+        
+        <!-- Voce Audio con testo coordinato e onda SVG a 3 gobbe colorate / piatta grigia -->
+        <button type="button" class="nav-link nav-audio-btn" id="btnAudioMute" title="Silenzia o attiva l'audio interattivo" aria-label="Controllo audio interattivo">
+          <span class="audio-nav-text" id="audioMuteLabel">Audio Attivo</span>
+          <svg class="audio-wave-icon" viewBox="0 0 42 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="iconWaveGrad" x1="0" y1="0" x2="42" y2="0" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#38bdf8" />
+                <stop offset="30%" stop-color="#22d3ee" />
+                <stop offset="65%" stop-color="#fbbf24" />
+                <stop offset="100%" stop-color="#f59e0b" />
+              </linearGradient>
+            </defs>
+            <!-- Linea piatta e grigia (visibile quando spento) -->
+            <line class="wave-flat-line" x1="1" y1="9" x2="41" y2="9" stroke="#64748b" stroke-width="1.3" stroke-linecap="round" />
+            <!-- Gruppo 3 gobbe colorate (visibile quando attivo) -->
+            <g class="wave-active-group">
+              <line class="wave-axis-line" x1="1" y1="9" x2="41" y2="9" stroke="rgba(255,255,255,0.2)" stroke-width="0.75" />
+              <!-- Cresta 1 (su), Gobba 2 (giù), Cresta 3 (su) come nella foto di riferimento -->
+              <path class="wave-hump-strand strand-main" d="M 1 9 C 6 9, 8 2, 13 2 C 17 2, 19 16, 25 16 C 30 16, 33 5, 41 9" stroke="url(#iconWaveGrad)" stroke-width="1.4" stroke-linecap="round" />
+              <path class="wave-hump-strand strand-sub1" d="M 1 9 C 6 9, 9 3.5, 14 3.5 C 18 3.5, 20 14.5, 26 14.5 C 31 14.5, 34 6.5, 41 9" stroke="url(#iconWaveGrad)" stroke-width="0.85" stroke-opacity="0.65" />
+              <path class="wave-hump-strand strand-sub2" d="M 1 9 C 7 9, 10 5, 15 5 C 19 5, 21 13, 27 13 C 32 13, 35 8, 41 9" stroke="url(#iconWaveGrad)" stroke-width="0.7" stroke-opacity="0.4" />
+            </g>
+          </svg>
+        </button>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ================================================================= -->
+  <!-- PIANO UNICO INTERATTIVO: ONDE SPETTRALI CIANO / AMBRA             -->
+  <!-- ================================================================= -->
+  <main class="interactive-stage">
+    
+    <!-- Canvas SVG interattivo -->
+    <div class="soundscape-canvas-container" id="soundscapeContainer">
+      <svg id="soundWavesSvg" viewBox="0 0 1600 950" preserveAspectRatio="xMidYMid meet" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <!-- Gradienti spettrali acustici dello STILE EASY (Ciano -> Teal -> Ambra oro) -->
+          <linearGradient id="gradWaveCyan" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#38bdf8" />
+            <stop offset="50%" stop-color="#06b6d4" />
+            <stop offset="100%" stop-color="#f59e0b" />
+          </linearGradient>
+
+          <linearGradient id="gradWaveActive" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#0284c7" />
+            <stop offset="35%" stop-color="#38bdf8" />
+            <stop offset="70%" stop-color="#22d3ee" />
+            <stop offset="100%" stop-color="#fbbf24" />
+          </linearGradient>
+
+          <filter id="spectralGlow" x="-20%" y="-20%" width="140%" height="140%">
+            <feGaussianBlur stdDeviation="3.5" result="blur" />
+            <feMerge>
+              <feMergeNode in="blur" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+
+        <g id="wavesSceneGroup"></g>
+      </svg>
+    </div>
+
+    <!-- Pannello Dettaglio Fasi del Laboratorio (Design Glassmorphic Dark) -->
+    <div class="lab-phases-overlay" id="labPhasesOverlay">
+      <div class="phase-detail-card" id="phaseCard">
+        <div class="phase-card-header">
+          <div class="phase-meta">
+            <span class="phase-tag" id="phaseCurrentTag">Fase 1</span>
+            <span class="phase-count">/ 5</span>
+          </div>
+          <button type="button" class="btn-close-phase" id="btnClosePhaseCard" title="Chiudi scheda">&times;</button>
+        </div>
+        <h2 class="phase-title" id="phaseCurrentTitle">Fase 1: Acquisizione sul Campo in 11 Piazze</h2>
+        <div class="phase-body-text" id="phaseCurrentBody">
+          <p>
+            La campagna sperimentale ha interessato 11 scene urbane registrate in 5 città dell'Emilia-Romagna: Parma (Piazza Duomo, Piazza Garibaldi, Piazzale San Francesco, Parco Ducale e Lungo Parma), Rimini (Piazza Cavour e Piazza Tre Martiri), Faenza (Piazza del Popolo), Comacchio (Piazza Trepponti) e Tresigallo (Piazza della Repubblica).
+          </p>
+          <p>
+            Il protocollo di ripresa sincronizza un array sferico rigido a 64 capsule (Eigenmike em64) a 1,7 m di quota con una videocamera equirettangolare 8K (Kandao QooCam 3 Ultra). Il segnale audio è veicolato su protocollo Dante a 48 kHz con alimentazione PoE+ su singolo cavo CAT5e.
+          </p>
+        </div>
+        <div class="phase-actions">
+          <button type="button" class="btn-phase-step" id="btnPrevPhase">&larr; Fase precedente</button>
+          <button type="button" class="btn-phase-step" id="btnNextPhase">Fase successiva &rarr;</button>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ================================================================= -->
+  <!-- PANNELLO LATERALE SCORREVOLE (Partnership e Credits Dark Glass)   -->
+  <!-- ================================================================= -->
+  <aside class="side-drawer" id="sideDrawer" aria-hidden="true">
+    <div class="drawer-header">
+      <div class="drawer-title-wrap">
+        <span class="drawer-pre-title" id="drawerCategory">Sezione</span>
+        <h2 class="drawer-main-title" id="drawerHeading">Titolo Sezione</h2>
+      </div>
+      <button type="button" class="btn-drawer-dismiss" id="btnDismissDrawer" aria-label="Chiudi pannello">&times;</button>
+    </div>
+
+    <div class="drawer-scrollable-body" id="drawerContentBody">
+      <!-- Contenuti iniettati dinamicamente da app.js -->
+    </div>
+  </aside>
+
+  <!-- Sfondo oscurante per il drawer -->
+  <div class="drawer-backdrop" id="drawerBackdrop"></div>
+
+  <script src="app.js"></script>
+</body>
+</html>

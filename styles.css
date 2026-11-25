@@ -1,0 +1,831 @@
+/* ==========================================================================
+   AGORÀ — ARCHITETTURA MODULARE A STILI MULTIPLI (STRUTTURA FISSA)
+   ========================================================================== */
+
+/* ==========================================================================
+   BLOCCO TEMA: "STILE EASY"
+   (Ispirato alla forma d'onda acustica multifilamento ciano/ambra su fondo scuro)
+   ========================================================================== */
+:root, [data-theme="easy"] {
+  /* 1. I 2 SOLI CARATTERI TIPOGRAFICI DELLO STILE EASY */
+  --font-title: "Space Grotesk", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-body: "Plus Jakarta Sans", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+
+  /* Aliasing per coerenza globale */
+  --font-display: var(--font-title);
+  --font-serif: var(--font-title);
+  --font-sans: var(--font-body);
+  --font-mono: var(--font-body);
+
+  /* 2. PALETTE CROMATICA & GLOW DELLO STILE EASY */
+  --bg-deep: #030712;
+  --bg-gradient: radial-gradient(circle at 45% 50%, #07152b 0%, #030712 70%);
+  --bg-card: rgba(6, 12, 24, 0.82);
+  --bg-drawer: #040813;
+  --bg-subtle: rgba(56, 189, 248, 0.08);
+
+  --text-bright: #ffffff;
+  --text-main: #cbd5e1;
+  --text-muted: #64748b;
+  
+  --color-cyan: #38bdf8;
+  --color-teal: #06b6d4;
+  --color-amber: #f59e0b;
+  --color-amber-glow: rgba(245, 158, 11, 0.4);
+  --color-cyan-glow: rgba(56, 189, 248, 0.45);
+
+  --line-subtle: rgba(255, 255, 255, 0.12);
+  --line-cyan-subtle: rgba(56, 189, 248, 0.35);
+  --line-border-card: rgba(56, 189, 248, 0.22);
+
+  --transition-smooth: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html, body {
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  background-color: var(--bg-deep);
+  background: var(--bg-gradient);
+  color: var(--text-main);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* --------------------------------------------------------------------------
+   Velo Atmosferico Luminoso di Fondo
+   -------------------------------------------------------------------------- */
+.ambient-glow-bg {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 1;
+  background: radial-gradient(circle at 35% 50%, rgba(6, 182, 212, 0.07) 0%, transparent 50%),
+              radial-gradient(circle at 80% 30%, rgba(245, 158, 11, 0.05) 0%, transparent 45%);
+}
+
+/* --------------------------------------------------------------------------
+   Header Centrale Minimale
+   -------------------------------------------------------------------------- */
+.main-header {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1.75rem 2.5rem;
+  z-index: 50;
+  pointer-events: none;
+}
+
+.header-inner {
+  max-width: 1380px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  pointer-events: auto;
+}
+
+.nav-side {
+  display: flex;
+  align-items: center;
+  gap: 1.6rem;
+  width: auto;
+}
+
+.nav-left {
+  justify-content: flex-start;
+}
+
+.nav-right {
+  justify-content: flex-end;
+}
+
+.header-logo {
+  text-align: center;
+  cursor: pointer;
+}
+
+.logo-mark {
+  font-family: var(--font-title);
+  font-size: 1.65rem;
+  font-weight: 700;
+  letter-spacing: 0.22em;
+  color: var(--text-bright);
+  text-transform: uppercase;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
+  transition: var(--transition-smooth);
+}
+
+.logo-mark:hover {
+  color: var(--color-cyan);
+  text-shadow: 0 0 28px rgba(56, 189, 248, 0.6);
+}
+
+.nav-link {
+  background: none;
+  border: none;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  position: relative;
+  transition: color 0.25s ease;
+}
+
+.nav-link::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 0%;
+  height: 1px;
+  background: linear-gradient(90deg, var(--color-cyan), var(--color-amber));
+  box-shadow: 0 0 8px var(--color-cyan);
+  transition: width 0.25s ease;
+}
+
+.nav-link:hover {
+  color: var(--text-bright);
+}
+
+.nav-link:hover::after, .nav-link.active::after {
+  width: 100%;
+}
+
+.nav-link.active {
+  color: var(--text-bright);
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   Voce Navigazione Audio con Icona a 3 Gobbe (Coordinata con le altre voci)
+   ========================================================================== */
+.nav-audio-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 0.3rem 0;
+  vertical-align: middle;
+}
+
+.nav-audio-btn .audio-nav-text {
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: #ffffff; /* Testo bianco quando attivo */
+  transition: color 0.25s ease;
+  white-space: nowrap;
+}
+
+.nav-audio-btn:hover .audio-nav-text {
+  color: #ffffff;
+  text-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.audio-wave-icon {
+  width: 40px;
+  height: 18px;
+  overflow: visible;
+  display: inline-block;
+  vertical-align: middle;
+  flex-shrink: 0;
+}
+
+/* Stato Attivo: 3 gobbe colorate con ondulazione e bagliore spettrale */
+.wave-active-group {
+  opacity: 1;
+  transition: opacity 0.3s ease;
+}
+
+.wave-flat-line {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.wave-hump-strand {
+  transition: transform 0.35s ease, opacity 0.35s ease;
+  transform-origin: 21px 9px;
+}
+
+.strand-main {
+  filter: drop-shadow(0 0 3px rgba(56, 189, 248, 0.75));
+  animation: wavePulseMain 2.4s ease-in-out infinite alternate;
+}
+
+.strand-sub1 {
+  animation: wavePulseSub1 2.8s ease-in-out infinite alternate 0.2s;
+}
+
+.strand-sub2 {
+  animation: wavePulseSub2 3.2s ease-in-out infinite alternate 0.4s;
+}
+
+@keyframes wavePulseMain {
+  0% { transform: scaleY(0.9); opacity: 0.85; }
+  100% { transform: scaleY(1.15); opacity: 1; }
+}
+
+@keyframes wavePulseSub1 {
+  0% { transform: scaleY(0.85) translateY(-0.4px); opacity: 0.55; }
+  100% { transform: scaleY(1.2) translateY(0.4px); opacity: 0.85; }
+}
+
+@keyframes wavePulseSub2 {
+  0% { transform: scaleY(1.1) translateY(0.4px); opacity: 0.35; }
+  100% { transform: scaleY(0.8) translateY(-0.4px); opacity: 0.6; }
+}
+
+.nav-audio-btn:hover .strand-main {
+  filter: drop-shadow(0 0 6px rgba(56, 189, 248, 0.95)) drop-shadow(0 0 12px rgba(245, 158, 11, 0.5));
+}
+
+/* Stato Spento (Muted): onda completamente piatta e grigia */
+.nav-audio-btn.muted .wave-active-group {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.nav-audio-btn.muted .wave-flat-line {
+  opacity: 1;
+  stroke: #64748b;
+}
+
+.nav-audio-btn.muted .audio-nav-text {
+  color: #64748b; /* Grigio quando disattivato */
+  opacity: 0.85;
+  text-shadow: none;
+}
+
+.nav-audio-btn.muted:hover .wave-flat-line {
+  stroke: #94a3b8;
+}
+
+.nav-audio-btn.muted:hover .audio-nav-text {
+  color: #94a3b8;
+  opacity: 1;
+  text-shadow: none;
+}
+
+.nav-sep {
+  color: var(--line-subtle);
+  font-size: 0.7rem;
+}
+
+/* --------------------------------------------------------------------------
+   Stage Interattivo Unico: Onde Acustiche Spettrali
+   -------------------------------------------------------------------------- */
+.interactive-stage {
+  position: relative;
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+  z-index: 2;
+}
+
+.soundscape-canvas-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#soundWavesSvg {
+  width: 100%;
+  height: 100%;
+  overflow: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Stili Tracciati: Multifilamento Armonico e Cerchi Aperti
+   -------------------------------------------------------------------------- */
+.circle-item {
+  cursor: pointer;
+}
+
+/* Hit Area Ingrandita Trasparente da 34px */
+.circle-hit-proxy {
+  fill: none;
+  stroke: transparent;
+  stroke-width: 34px;
+  cursor: pointer;
+  pointer-events: stroke;
+}
+
+/* Tracciato Visivo Principale (Gradiente Spettrale) */
+.wave-single-circle {
+  fill: none;
+  stroke: url(#gradWaveCyan);
+  stroke-width: 1.25;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px rgba(6, 182, 212, 0.3));
+  transition: stroke 0.3s ease, stroke-width 0.3s ease, filter 0.3s ease;
+}
+
+/* Filamenti secondari armonici (strati sottili risonanti bicolore come da foto) */
+.wave-harmonic-strand {
+  fill: none;
+  stroke-width: 0.75;
+  pointer-events: none;
+  transition: stroke 0.3s ease, opacity 0.3s ease;
+}
+
+.wave-harmonic-strand.strand-inner {
+  stroke: rgba(245, 158, 11, 0.28); /* Tonalità ambra calda interna */
+}
+
+.wave-harmonic-strand.strand-outer {
+  stroke: rgba(56, 189, 248, 0.35); /* Tonalità ciano elettrico esterna */
+}
+
+.circle-item:hover .wave-single-circle, .wave-single-circle.active {
+  stroke: url(#gradWaveActive);
+  stroke-width: 2.3;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 16px rgba(245, 158, 11, 0.35));
+}
+
+.circle-item:hover .wave-harmonic-strand.strand-inner {
+  stroke: rgba(251, 191, 36, 0.75);
+}
+
+.circle-item:hover .wave-harmonic-strand.strand-outer {
+  stroke: rgba(56, 189, 248, 0.85);
+}
+
+/* Testo Incastonato nel Varco del Cerchio Aperto (Titolazione di Sezione/Fase) */
+.wave-path-text {
+  font-family: var(--font-title);
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  fill: var(--text-bright);
+  pointer-events: none;
+  dominant-baseline: central;
+  alignment-baseline: central;
+  transition: fill 0.25s ease, filter 0.25s ease;
+}
+
+.wave-path-text textPath {
+  dominant-baseline: central;
+  alignment-baseline: central;
+}
+
+.circle-item:hover .wave-path-text {
+  fill: #ffffff;
+  font-weight: 700;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.8));
+}
+
+/* --------------------------------------------------------------------------
+   Pannello Dettaglio Fasi del Laboratorio (Dark Glass a Sinistra)
+   -------------------------------------------------------------------------- */
+.lab-phases-overlay {
+  position: absolute;
+  left: 4.5vw;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 440px;
+  max-width: 90vw;
+  z-index: 25;
+  pointer-events: none;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease, transform 0.35s ease;
+}
+
+.lab-phases-overlay.visible {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(-50%) translateX(0);
+}
+
+.phase-detail-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid var(--line-border-card);
+  padding: 2.25rem 2.25rem;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), 0 0 35px rgba(6, 182, 212, 0.08);
+  border-radius: 2px;
+}
+
+.phase-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.85rem;
+}
+
+.phase-meta {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--color-cyan);
+}
+
+.phase-tag {
+  font-family: var(--font-body);
+  color: var(--color-cyan);
+  background: none;
+  border: none;
+  padding: 0;
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.phase-count {
+  font-family: var(--font-body);
+  color: var(--color-cyan);
+  opacity: 0.75;
+  background: none;
+  border: none;
+  padding: 0;
+}
+
+.btn-close-phase {
+  background: none;
+  border: none;
+  font-size: 1.45rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition: color 0.15s ease;
+}
+
+.btn-close-phase:hover {
+  color: #ffffff;
+}
+
+.phase-title {
+  font-family: var(--font-title);
+  font-size: 1.4rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  line-height: 1.3;
+  margin-bottom: 1.15rem;
+}
+
+.phase-body-text {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
+}
+
+.phase-body-text p {
+  margin-bottom: 0.85rem;
+}
+
+.phase-body-text p:last-child {
+  margin-bottom: 0;
+}
+
+.phase-actions {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  border-top: 1px solid var(--line-subtle);
+  padding-top: 1.1rem;
+}
+
+.btn-phase-step {
+  background: none;
+  border: none;
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.35rem 0.2rem;
+  transition: color 0.15s ease;
+}
+
+.btn-phase-step:hover {
+  color: var(--color-cyan);
+}
+
+/* --------------------------------------------------------------------------
+   Pannello Laterale a Scorrimento (Drawer per Partnership e Credits)
+   -------------------------------------------------------------------------- */
+.side-drawer {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: 560px;
+  max-width: 92vw;
+  height: 100vh;
+  background-color: var(--bg-drawer);
+  border-left: 1px solid var(--line-border-card);
+  box-shadow: -20px 0 60px rgba(0, 0, 0, 0.85);
+  z-index: 100;
+  display: flex;
+  flex-direction: column;
+  transform: translateX(100%);
+  transition: transform 0.45s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.side-drawer.open {
+  transform: translateX(0);
+}
+
+.drawer-header {
+  padding: 2.25rem 2.25rem 1.5rem 2.25rem;
+  border-bottom: 1px solid var(--line-subtle);
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.drawer-pre-title {
+  display: block;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-cyan);
+  margin-bottom: 0.35rem;
+}
+
+.drawer-main-title {
+  font-family: var(--font-title);
+  font-size: 1.85rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  line-height: 1.2;
+}
+
+.btn-drawer-dismiss {
+  background: none;
+  border: none;
+  font-size: 1.75rem;
+  line-height: 1;
+  color: var(--text-muted);
+  cursor: pointer;
+  padding: 0.2rem 0.4rem;
+  transition: color 0.15s ease;
+}
+
+.btn-drawer-dismiss:hover {
+  color: #ffffff;
+}
+
+.drawer-scrollable-body {
+  padding: 2.25rem;
+  overflow-y: auto;
+  flex: 1;
+}
+
+.drawer-section-block {
+  margin-bottom: 2.25rem;
+}
+
+.drawer-section-block:last-child {
+  margin-bottom: 0;
+}
+
+.drawer-block-title {
+  font-family: var(--font-title);
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  margin-bottom: 0.65rem;
+}
+
+.drawer-block-text {
+  font-family: var(--font-body);
+  font-size: 0.88rem;
+  line-height: 1.65;
+  color: var(--text-main);
+}
+
+.drawer-block-text p {
+  margin-bottom: 0.8rem;
+}
+
+.drawer-block-text p:last-child {
+  margin-bottom: 0;
+}
+
+/* --------------------------------------------------------------------------
+   Blocco Bianco Loghi Partner (Slide Presentazione AGORÀ)
+   -------------------------------------------------------------------------- */
+.partner-logos-white-block {
+  background: #ffffff;
+  border-radius: 6px;
+  padding: 1.25rem 1.4rem 1.4rem;
+  margin-bottom: 2.25rem;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.4);
+}
+
+.partner-logos-label {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: #64748b;
+  margin-bottom: 1rem;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid #e2e8f0;
+  text-align: center;
+}
+
+.partner-logos-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.25rem 1.5rem;
+  align-items: stretch;
+}
+
+.partner-logo-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 0.75rem 0.65rem;
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 4px;
+  min-height: 110px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.partner-logo-item:hover {
+  transform: translateY(-2px);
+  border-color: #cbd5e1;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.partner-logo-img {
+  max-width: 100%;
+  max-height: 52px;
+  width: auto;
+  height: auto;
+  object-fit: contain;
+  display: block;
+}
+
+.partner-logo-name {
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-top: 0.65rem;
+  line-height: 1.3;
+}
+
+/* --------------------------------------------------------------------------
+   Galleria Fotografica con Didascalie (Stile Easy Glassmorphic)
+   -------------------------------------------------------------------------- */
+.gallery-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 1.75rem;
+  margin-top: 0.5rem;
+}
+
+.gallery-card {
+  background: rgba(15, 23, 42, 0.65);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  border-radius: 4px;
+  overflow: hidden;
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.gallery-card:hover {
+  transform: translateY(-2px);
+  border-color: rgba(56, 189, 248, 0.45);
+  box-shadow: 0 10px 28px rgba(6, 182, 212, 0.16);
+}
+
+.gallery-card-img-wrap {
+  width: 100%;
+  aspect-ratio: 16 / 9;
+  background: #030712;
+  overflow: hidden;
+  position: relative;
+}
+
+.gallery-card-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.4s ease;
+}
+
+.gallery-card:hover .gallery-card-img {
+  transform: scale(1.03);
+}
+
+.gallery-card-info {
+  padding: 1.15rem 1.25rem 1.35rem;
+}
+
+.gallery-card-title {
+  font-family: var(--font-heading);
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f1f5f9;
+  margin-bottom: 0.45rem;
+  letter-spacing: -0.01em;
+  line-height: 1.35;
+}
+
+.gallery-card-caption {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--text-muted);
+  margin: 0;
+}
+
+/* Backdrop */
+.drawer-backdrop {
+  position: fixed;
+  inset: 0;
+  background: rgba(3, 7, 18, 0.7);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  z-index: 90;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
+}
+
+.drawer-backdrop.visible {
+  opacity: 1;
+  visibility: visible;
+}
+
+/* --------------------------------------------------------------------------
+   Adattamento Responsivo
+   -------------------------------------------------------------------------- */
+@media (max-width: 900px) {
+  .main-header {
+    padding: 1.25rem 1.5rem;
+  }
+
+  .nav-side {
+    width: auto;
+  }
+
+  .lab-phases-overlay {
+    left: 1rem;
+    right: 1rem;
+    width: auto;
+    top: auto;
+    bottom: 4rem;
+    transform: none;
+  }
+
+  .lab-phases-overlay.visible {
+    transform: none;
+  }
+
+  .phase-detail-card {
+    padding: 1.5rem;
+  }
+
+  .side-drawer {
+    width: 100vw;
+    max-width: 100vw;
+  }
+}
