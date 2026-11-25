@@ -103,74 +103,89 @@
     </div>
 
     <!-- ================================================================= -->
-    <!-- PORTALE CIRCOLARE INTERATTIVO (ZOOM IN & OUT CON ONDE SONORE)     -->
+    <!-- VISTA PAGINA STANDARD CON IMMAGINI IN CERCHI D'ONDA               -->
     <!-- ================================================================= -->
     <div class="circular-portal-overlay" id="circularPortal" aria-hidden="true">
       
-      <!-- Cerchietto laterale con effetto melodia per tornare indietro -->
-      <button type="button" class="btn-portal-back" id="btnPortalBack" title="Torna alla mappa delle onde (Esc)" aria-label="Torna alla mappa delle onde">
-        <div class="melody-wave-rings" aria-hidden="true">
-          <span class="wave-ring ring-1"></span>
-          <span class="wave-ring ring-2"></span>
-          <span class="wave-ring ring-3"></span>
-        </div>
-        <div class="melody-center-node">
-          <svg class="melody-svg-icon" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <circle cx="16" cy="16" r="3.5" fill="#38bdf8" />
-            <circle cx="16" cy="16" r="7.5" stroke="#38bdf8" stroke-width="1.3" stroke-dasharray="3 3" />
-            <circle cx="16" cy="16" r="12" stroke="#fbbf24" stroke-width="1.1" stroke-opacity="0.85" />
-          </svg>
-        </div>
-        <span class="portal-back-caption">Mappa Onde</span>
-      </button>
+      <!-- Cerchio "Torna alla Home" identico a quelli della Home (gira, ha filamenti armonici e testo curvo) -->
+      <div class="portal-back-home-widget" id="btnBackHomeWidget" role="button" tabindex="0" title="Torna alla Home (Esc)" aria-label="Torna alla Home">
+        <svg id="backHomeSvg" class="back-home-svg" viewBox="0 0 160 160">
+          <g id="backHomeWaveGroup"></g>
+        </svg>
+      </div>
 
-      <!-- Cornice Circolare Centrale (Contenuti ben distanziati dai bordi del cerchio) -->
-      <div class="portal-circle-frame" id="portalCircleFrame">
-        <div class="portal-circle-ambient-ring"></div>
-        <div class="portal-circle-content" id="portalCircleContent">
+      <!-- Layout Standard da Sito Normale -->
+      <div class="portal-standard-layout" id="portalStandardLayout">
+        
+        <!-- Vista a Due Colonne (Laboratorio Fasi & Dettagli) -->
+        <div class="portal-split-view" id="portalSplitView">
           
-          <div class="portal-header">
-            <div class="portal-category" id="portalCategory">Laboratorio Virtuale</div>
-            <h2 class="portal-title" id="portalTitle">Fase 1: Registrazione del Suono e delle Piazze</h2>
-          </div>
-
-          <div class="portal-body" id="portalBody">
-            <!-- Testo, Immagine / Griglia iniettati dinamicamente -->
-          </div>
-
-          <!-- Navigazione tra le fasi del laboratorio con icone di onde sonore circolari (Zero frecce) -->
-          <div class="portal-phase-nav" id="portalPhaseNav">
-            <button type="button" class="btn-phase-wave" id="btnPhasePrev" title="Fase precedente" aria-label="Fase precedente">
-              <span class="wave-circle-icon" aria-hidden="true">
-                <span class="wave-ripple wr-1"></span>
-                <span class="wave-ripple wr-2"></span>
-                <span class="wave-ripple wr-3"></span>
-                <span class="wave-dot"></span>
-              </span>
-              <span class="btn-wave-label">Fase Prec.</span>
-            </button>
-
-            <!-- Indicatori armonici di avanzamento fase -->
-            <div class="phase-nodes-bar" id="phaseNodesBar">
-              <button type="button" class="phase-node active" data-index="0" title="Fase 1: Acquisizione 3D"></button>
-              <button type="button" class="phase-node" data-index="1" title="Fase 2: Risposte ad Impulso"></button>
-              <button type="button" class="phase-node" data-index="2" title="Fase 3: Armoniche Sferiche"></button>
-              <button type="button" class="phase-node" data-index="3" title="Fase 4: Realtà Virtuale 6DoF"></button>
-              <button type="button" class="phase-node" data-index="4" title="Fase 5: Restituzione Immersiva"></button>
+          <!-- Colonna Sinistra: Testi Editoriali e Navigazione Onde -->
+          <div class="portal-text-column">
+            <div class="portal-meta-category" id="portalCategory">Laboratorio Virtuale</div>
+            <h1 class="portal-heading" id="portalTitle">Fase 1: Registrazione del Suono e delle Piazze</h1>
+            <div class="portal-text-body" id="portalBodyText">
+              <!-- Paragrafi inseriti dinamicamente -->
             </div>
 
-            <button type="button" class="btn-phase-wave" id="btnPhaseNext" title="Fase successiva" aria-label="Fase successiva">
-              <span class="btn-wave-label">Fase Succ.</span>
-              <span class="wave-circle-icon" aria-hidden="true">
-                <span class="wave-ripple wr-1"></span>
-                <span class="wave-ripple wr-2"></span>
-                <span class="wave-ripple wr-3"></span>
-                <span class="wave-dot"></span>
-              </span>
-            </button>
+            <!-- Navigazione tra le fasi con onde sonore circolari (Zero frecce) -->
+            <div class="portal-phase-nav" id="portalPhaseNav">
+              <button type="button" class="btn-phase-wave" id="btnPhasePrev" title="Fase precedente" aria-label="Fase precedente">
+                <span class="wave-circle-icon" aria-hidden="true">
+                  <span class="wave-ripple wr-1"></span>
+                  <span class="wave-ripple wr-2"></span>
+                  <span class="wave-ripple wr-3"></span>
+                  <span class="wave-dot"></span>
+                </span>
+                <span class="btn-wave-label">Fase Prec.</span>
+              </button>
+
+              <!-- Indicatori armonici di avanzamento fase -->
+              <div class="phase-nodes-bar" id="phaseNodesBar">
+                <button type="button" class="phase-node active" data-index="0" title="Fase 1: Acquisizione 3D"></button>
+                <button type="button" class="phase-node" data-index="1" title="Fase 2: Risposte ad Impulso"></button>
+                <button type="button" class="phase-node" data-index="2" title="Fase 3: Armoniche Sferiche"></button>
+                <button type="button" class="phase-node" data-index="3" title="Fase 4: Realtà Virtuale 6DoF"></button>
+                <button type="button" class="phase-node" data-index="4" title="Fase 5: Restituzione Immersiva"></button>
+              </div>
+
+              <button type="button" class="btn-phase-wave" id="btnPhaseNext" title="Fase successiva" aria-label="Fase successiva">
+                <span class="btn-wave-label">Fase Succ.</span>
+                <span class="wave-circle-icon" aria-hidden="true">
+                  <span class="wave-ripple wr-1"></span>
+                  <span class="wave-ripple wr-2"></span>
+                  <span class="wave-ripple wr-3"></span>
+                  <span class="wave-dot"></span>
+                </span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Colonna Destra: Immagine Inscritta in Cerchio con Bordo Ondulato Interattivo -->
+          <div class="portal-media-column" id="portalMediaColumn">
+            <div class="portal-circle-media-wrapper" id="portalCircleMediaWrapper">
+              <div class="portal-circle-img-mask">
+                <img src="assets/gallery/image27.jpg" alt="Dettaglio fase" class="portal-circle-img" id="portalCircleImg">
+              </div>
+              <!-- SVG sovrapposto con i filamenti d'onda armonici della Home -->
+              <svg class="portal-circle-wave-overlay" id="portalCircleWaveSvg" viewBox="0 0 380 380">
+                <g id="portalMediaWaveGroup"></g>
+              </svg>
+            </div>
+            <p class="portal-media-caption" id="portalMediaCaption"></p>
           </div>
 
         </div>
+
+        <!-- Vista a Piena Pagina (Gallery Generale, Partner, Crediti, Pubblicazioni, Timeline) -->
+        <div class="portal-full-view" id="portalFullView" style="display: none;">
+          <div class="portal-meta-category" id="portalFullCategory">Gallery</div>
+          <h1 class="portal-heading" id="portalFullTitle">Gallery del Progetto</h1>
+          <div class="portal-full-body" id="portalFullBody">
+            <!-- Contenuti iniettati dinamicamente -->
+          </div>
+        </div>
+
       </div>
 
     </div>

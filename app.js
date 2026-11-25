@@ -525,40 +525,56 @@
       CIRCLES_REGISTRY.forEach(function (c) {
         // Timbro e accordatura dal blocco di stile attivo ("Stile Easy")
         const freq = activeStyle.audio.frequencies[c.id] || 220;
-        const osc1 = audioCtx.createOscillator();
-        osc1.type = activeStyle.audio.osc1Type;
-        osc1.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-        const osc2 = audioCtx.createOscillator();
-        osc2.type = activeStyle.audio.osc2Type;
-        osc2.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
-
-        const filter = audioCtx.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.setValueAtTime(activeStyle.audio.baseFilterCutoff, audioCtx.currentTime);
-        filter.Q.setValueAtTime(activeStyle.audio.filterQ, audioCtx.currentTime);
-
-        const gainNode = audioCtx.createGain();
-        gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
-
-        osc1.connect(filter);
-        osc2.connect(filter);
-        filter.connect(gainNode);
-        gainNode.connect(masterGain);
-
-        osc1.start();
-        osc2.start();
-
-        audioNodes[c.id] = {
-          osc1: osc1,
-          osc2: osc2,
-          filter: filter,
-          gain: gainNode,
-          baseFreq: freq
-        };
+        createAudioVoice(c.id, freq);
       });
+
+      // Voci audio dedicate per il pulsante rotante "Torna alla Home" e l'immagine circolare
+      createAudioVoice('back-home', 440);
+      createAudioVoice('portal-media', 330);
     } catch (err) {
       console.warn('Audio non supportato:', err);
+    }
+  }
+
+  function createAudioVoice(id, freq) {
+    if (!audioCtx) return null;
+    try {
+      const osc1 = audioCtx.createOscillator();
+      osc1.type = activeStyle.audio.osc1Type;
+      osc1.frequency.setValueAtTime(freq, audioCtx.currentTime);
+
+      const osc2 = audioCtx.createOscillator();
+      osc2.type = activeStyle.audio.osc2Type;
+      osc2.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
+
+      const filter = audioCtx.createBiquadFilter();
+      filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(activeStyle.audio.baseFilterCutoff, audioCtx.currentTime);
+      filter.Q.setValueAtTime(activeStyle.audio.filterQ, audioCtx.currentTime);
+
+      const gainNode = audioCtx.createGain();
+      gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+
+      osc1.connect(filter);
+      osc2.connect(filter);
+      filter.connect(gainNode);
+      gainNode.connect(audioCtx.destination);
+
+      osc1.start();
+      osc2.start();
+
+      const voiceObj = {
+        osc1: osc1,
+        osc2: osc2,
+        filter: filter,
+        gain: gainNode,
+        baseFreq: freq
+      };
+
+      audioNodes[id] = voiceObj;
+      return voiceObj;
+    } catch (e) {
+      return null;
     }
   }
 
@@ -973,11 +989,319 @@
       }
     });
 
+    // 5. Animazione del cerchio rotante "Torna alla Home"
+    if (state.portalOpen) {
+      animateBackHomeCircle();
+      animatePortalMediaCircle();
+      if (state.activeSection === 'gallery') {
+        animateGalleryCircles();
+      }
+    }
+
     requestAnimationFrame(mainAnimationLoop);
   }
 
   // -------------------------------------------------------------------------
-  // GESTIONE DEL PORTALE CIRCOLARE (ZOOM IN/OUT & NAVIGAZIONE AD ONDE)
+  // CERCHIO "TORNA ALLA HOME" (ROTANTE, AD ONDA, INTERATTIVO CON AUDIO)
+  // -------------------------------------------------------------------------
+  const backHomeState = {
+    isHovered: false,
+    motionEnergy: 0,
+    rotAngle: 0
+  };
+
+  const backHomeDOM = {};
+
+  function initBackHomeCircle() {
+    const group = document.getElementById('backHomeWaveGroup');
+    if (!group) return;
+    group.innerHTML = '';
+
+    const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
+    group.appendChild(strandA);
+
+    const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
+    group.appendChild(strandB);
+
+    const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    pathVis.setAttribute('class', 'wave-single-circle');
+    group.appendChild(pathVis);
+
+    const guidePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    guidePath.setAttribute('id', 'guide-back-home');
+    guidePath.setAttribute('fill', 'none');
+    guidePath.setAttribute('stroke', 'none');
+    group.appendChild(guidePath);
+
+    const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+    textElem.setAttribute('class', 'wave-path-text');
+    textElem.setAttribute('dominant-baseline', 'central');
+
+    const textPathElem = document.createElementNS('http://www.w3.org/2000/svg', 'textPath');
+    textPathElem.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#guide-back-home');
+    textPathElem.setAttribute('href', '#guide-back-home');
+    textPathElem.setAttribute('startOffset', '50%');
+    textPathElem.setAttribute('text-anchor', 'middle');
+    textPathElem.setAttribute('dominant-baseline', 'central');
+    textPathElem.setAttribute('alignment-baseline', 'central');
+    textPathElem.textContent = 'TORNA ALLA HOME';
+
+    textElem.appendChild(textPathElem);
+    group.appendChild(textElem);
+
+    const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    hitProxy.setAttribute('class', 'circle-hit-proxy');
+    group.appendChild(hitProxy);
+
+    hitProxy.addEventListener('pointerenter', function () {
+      ensureAudioUnlocked();
+      backHomeState.isHovered = true;
+      backHomeState.motionEnergy = 1.0;
+    });
+
+    hitProxy.addEventListener('pointermove', function () {
+      backHomeState.motionEnergy = Math.min(1.0, backHomeState.motionEnergy + 0.15);
+    });
+
+    hitProxy.addEventListener('pointerleave', function () {
+      backHomeState.isHovered = false;
+    });
+
+    hitProxy.addEventListener('click', function (e) {
+      e.stopPropagation();
+      ensureAudioUnlocked();
+      closeCircularPortal();
+    });
+
+    backHomeDOM.group = group;
+    backHomeDOM.strandA = strandA;
+    backHomeDOM.strandB = strandB;
+    backHomeDOM.pathVis = pathVis;
+    backHomeDOM.guidePath = guidePath;
+    backHomeDOM.hitProxy = hitProxy;
+  }
+
+  function animateBackHomeCircle() {
+    const dom = backHomeDOM;
+    if (!dom.pathVis) return;
+
+    const cx = 80;
+    const cy = 80;
+    const baseRadius = 54;
+    const labelText = 'TORNA ALLA HOME';
+
+    // Rotazione continua del cerchio
+    backHomeState.rotAngle += 0.007;
+    const centerAngle = backHomeState.rotAngle % (Math.PI * 2);
+
+    backHomeState.motionEnergy = Math.max(0, backHomeState.motionEnergy - activeStyle.dynamics.energyDecay);
+    const waveAmp = backHomeState.motionEnergy * activeStyle.dynamics.maxWaveAmp;
+
+    let radiusOffset = 0;
+    if (backHomeState.isHovered) {
+      radiusOffset = Math.sin(animTime * activeStyle.dynamics.hoverPulseSpeed) * activeStyle.dynamics.hoverPulseRadius;
+    }
+    const currentRadius = baseRadius + radiusOffset;
+
+    const gapData = computeCircleGapArcDynamic(baseRadius, labelText, centerAngle);
+
+    const dVisible = generateArcPathString(cx, cy, currentRadius, gapData.arcStartAngle, gapData.arcEndAngle, waveAmp, 12, animTime * 2.0);
+    const dStrandInner = generateArcPathString(cx, cy, currentRadius - 2.5, gapData.arcStartAngle, gapData.arcEndAngle, waveAmp * 0.7, 12, animTime * 2.0 + 0.6);
+    const dStrandOuter = generateArcPathString(cx, cy, currentRadius + 2.5, gapData.arcStartAngle, gapData.arcEndAngle, waveAmp * 0.7, 12, animTime * 2.0 - 0.6);
+    const dGuide = generateTextGuideArc(cx, cy, currentRadius, centerAngle, labelText);
+    const dHit = generateArcPathString(cx, cy, baseRadius, 0, Math.PI * 2, 0, 1, 0);
+
+    dom.pathVis.setAttribute('d', dVisible);
+    dom.strandA.setAttribute('d', dStrandInner);
+    dom.strandB.setAttribute('d', dStrandOuter);
+    dom.guidePath.setAttribute('d', dGuide);
+    dom.hitProxy.setAttribute('d', dHit);
+
+    if (backHomeState.isHovered) {
+      dom.pathVis.style.strokeWidth = (1.6 + Math.sin(animTime * activeStyle.dynamics.hoverPulseSpeed) * 0.8).toFixed(2);
+      dom.strandA.style.opacity = '0.65';
+      dom.strandB.style.opacity = '0.65';
+    } else {
+      dom.pathVis.style.strokeWidth = '';
+      dom.strandA.style.opacity = '';
+      dom.strandB.style.opacity = '';
+    }
+
+    // Modulazione sonora armonica
+    if (audioCtx && !state.audioMuted && audioNodes['back-home']) {
+      const voice = audioNodes['back-home'];
+      const combinedIntensity = Math.min(1.0, backHomeState.motionEnergy * 1.2 + (backHomeState.isHovered ? 0.45 : 0));
+      const targetVol = Math.max(0.0001, Math.pow(combinedIntensity, 1.3) * activeStyle.audio.maxVoiceGain);
+      const targetCutoff = activeStyle.audio.baseFilterCutoff + combinedIntensity * activeStyle.audio.filterModulationRange;
+
+      voice.gain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
+      voice.filter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
+    }
+  }
+
+  function computeCircleGapArcDynamic(radius, labelText, centerAngle) {
+    const textPxWidth = labelText.length * 9.5;
+    const paddingPx = 18;
+    const totalGapPx = textPxWidth + paddingPx * 2;
+    const gapHalfAngle = (totalGapPx / 2) / radius;
+
+    return {
+      hasGap: true,
+      centerAngle: centerAngle,
+      gapHalfAngle: gapHalfAngle,
+      arcStartAngle: centerAngle + gapHalfAngle,
+      arcEndAngle: centerAngle - gapHalfAngle
+    };
+  }
+
+  // -------------------------------------------------------------------------
+  // BORDO CIRCOLARE D'ONDA PER L'IMMAGINE A LATO (STESSE INTERAZIONI DELLA HOME)
+  // -------------------------------------------------------------------------
+  const mediaWaveState = {
+    isHovered: false,
+    motionEnergy: 0
+  };
+
+  const portalMediaDOM = {};
+
+  function initPortalMediaCircle() {
+    const group = document.getElementById('portalMediaWaveGroup');
+    if (!group) return;
+    group.innerHTML = '';
+
+    const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
+    group.appendChild(strandA);
+
+    const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
+    group.appendChild(strandB);
+
+    const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    pathVis.setAttribute('class', 'wave-single-circle');
+    group.appendChild(pathVis);
+
+    const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+    hitProxy.setAttribute('class', 'circle-hit-proxy');
+    group.appendChild(hitProxy);
+
+    hitProxy.addEventListener('pointerenter', function () {
+      ensureAudioUnlocked();
+      mediaWaveState.isHovered = true;
+      mediaWaveState.motionEnergy = 1.0;
+    });
+
+    hitProxy.addEventListener('pointermove', function () {
+      mediaWaveState.motionEnergy = Math.min(1.0, mediaWaveState.motionEnergy + 0.15);
+    });
+
+    hitProxy.addEventListener('pointerleave', function () {
+      mediaWaveState.isHovered = false;
+    });
+
+    portalMediaDOM.group = group;
+    portalMediaDOM.strandA = strandA;
+    portalMediaDOM.strandB = strandB;
+    portalMediaDOM.pathVis = pathVis;
+    portalMediaDOM.hitProxy = hitProxy;
+  }
+
+  function animatePortalMediaCircle() {
+    const dom = portalMediaDOM;
+    if (!dom.pathVis) return;
+
+    const cx = 190;
+    const cy = 190;
+    const baseRadius = 168;
+
+    mediaWaveState.motionEnergy = Math.max(0, mediaWaveState.motionEnergy - activeStyle.dynamics.energyDecay);
+    const waveAmp = mediaWaveState.motionEnergy * activeStyle.dynamics.maxWaveAmp;
+
+    let radiusOffset = 0;
+    if (mediaWaveState.isHovered) {
+      radiusOffset = Math.sin(animTime * activeStyle.dynamics.hoverPulseSpeed) * activeStyle.dynamics.hoverPulseRadius;
+    }
+    const currentRadius = baseRadius + radiusOffset;
+
+    const cycles = 16;
+    const speed = 1.8;
+
+    const dVisible = generateArcPathString(cx, cy, currentRadius, 0, Math.PI * 2, waveAmp, cycles, animTime * speed);
+    const dStrandInner = generateArcPathString(cx, cy, currentRadius - 2.5, 0, Math.PI * 2, waveAmp * 0.7, cycles, animTime * speed + 0.6);
+    const dStrandOuter = generateArcPathString(cx, cy, currentRadius + 2.5, 0, Math.PI * 2, waveAmp * 0.7, cycles, animTime * speed - 0.6);
+    const dHit = dVisible;
+
+    dom.pathVis.setAttribute('d', dVisible);
+    dom.strandA.setAttribute('d', dStrandInner);
+    dom.strandB.setAttribute('d', dStrandOuter);
+    dom.hitProxy.setAttribute('d', dHit);
+
+    if (mediaWaveState.isHovered) {
+      dom.pathVis.style.strokeWidth = (1.6 + Math.sin(animTime * activeStyle.dynamics.hoverPulseSpeed) * 0.8).toFixed(2);
+      dom.strandA.style.opacity = '0.65';
+      dom.strandB.style.opacity = '0.65';
+    } else {
+      dom.pathVis.style.strokeWidth = '';
+      dom.strandA.style.opacity = '';
+      dom.strandB.style.opacity = '';
+    }
+
+    // Modulazione sonora armonica
+    if (audioCtx && !state.audioMuted && audioNodes['portal-media']) {
+      const voice = audioNodes['portal-media'];
+      const combinedIntensity = Math.min(1.0, mediaWaveState.motionEnergy * 1.2 + (mediaWaveState.isHovered ? 0.45 : 0));
+      const targetVol = Math.max(0.0001, Math.pow(combinedIntensity, 1.3) * activeStyle.audio.maxVoiceGain);
+      const targetCutoff = activeStyle.audio.baseFilterCutoff + combinedIntensity * activeStyle.audio.filterModulationRange;
+
+      voice.gain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
+      voice.filter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
+    }
+  }
+
+  // -------------------------------------------------------------------------
+  // GALLERY GENERALE: REGISTRO DEI CERCHI D'ONDA INTERATTIVI SULLE FOTO
+  // -------------------------------------------------------------------------
+  const galleryCirclesRegistry = [];
+
+  function animateGalleryCircles() {
+    galleryCirclesRegistry.forEach(function (gc, idx) {
+      if (!gc.pathVis) return;
+      gc.motionEnergy = Math.max(0, gc.motionEnergy - activeStyle.dynamics.energyDecay);
+      const waveAmp = gc.motionEnergy * activeStyle.dynamics.maxWaveAmp;
+
+      let radiusOffset = 0;
+      if (gc.isHovered) {
+        radiusOffset = Math.sin(animTime * activeStyle.dynamics.hoverPulseSpeed) * 3.5;
+      }
+      const currentRadius = gc.radius + radiusOffset;
+      const cycles = 14;
+      const speed = 1.9;
+
+      const dVisible = generateArcPathString(gc.cx, gc.cy, currentRadius, 0, Math.PI * 2, waveAmp, cycles, animTime * speed + idx * 0.2);
+      const dStrandInner = generateArcPathString(gc.cx, gc.cy, currentRadius - 2.5, 0, Math.PI * 2, waveAmp * 0.7, cycles, animTime * speed + idx * 0.2 + 0.6);
+      const dStrandOuter = generateArcPathString(gc.cx, gc.cy, currentRadius + 2.5, 0, Math.PI * 2, waveAmp * 0.7, cycles, animTime * speed + idx * 0.2 - 0.6);
+
+      gc.pathVis.setAttribute('d', dVisible);
+      gc.strandA.setAttribute('d', dStrandInner);
+      gc.strandB.setAttribute('d', dStrandOuter);
+      gc.hitProxy.setAttribute('d', dVisible);
+
+      if (gc.isHovered) {
+        gc.pathVis.style.strokeWidth = '2.2';
+        gc.strandA.style.opacity = '0.65';
+        gc.strandB.style.opacity = '0.65';
+      } else {
+        gc.pathVis.style.strokeWidth = '';
+        gc.strandA.style.opacity = '';
+        gc.strandB.style.opacity = '';
+      }
+    });
+  }
+
+  // -------------------------------------------------------------------------
+  // GESTIONE DELLA PAGINA (ZOOM IN/OUT & NAVIGAZIONE AD ONDE)
   // -------------------------------------------------------------------------
   function openCircularPortal(sectionKey, phaseIndex, clickOrigin) {
     ensureAudioUnlocked();
@@ -1015,21 +1339,17 @@
 
     playZoomInChime(baseFreq);
 
-    // 2. Popolamento dei contenuti nel cerchio centrale
-    const phaseNav = document.getElementById('portalPhaseNav');
-
+    // 2. Popolamento dei contenuti nella pagina
     if (sectionKey === 'laboratorio') {
       if (typeof phaseIndex === 'number') {
         state.currentPhaseIndex = phaseIndex;
       }
       renderPortalLabPhase(state.currentPhaseIndex);
-      if (phaseNav) phaseNav.style.display = 'flex';
     } else {
       renderPortalSection(sectionKey);
-      if (phaseNav) phaseNav.style.display = 'none';
     }
 
-    // 3. Mostra il portale circolare
+    // 3. Mostra la schermata pagina
     const portal = document.getElementById('circularPortal');
     if (portal) {
       portal.classList.add('visible');
@@ -1068,9 +1388,16 @@
     state.currentPhaseIndex = index;
     const phaseData = LAB_PHASES[index];
 
+    const splitView = document.getElementById('portalSplitView');
+    const fullView = document.getElementById('portalFullView');
+    if (splitView) splitView.style.display = 'flex';
+    if (fullView) fullView.style.display = 'none';
+
     const catElem = document.getElementById('portalCategory');
     const titleElem = document.getElementById('portalTitle');
-    const bodyElem = document.getElementById('portalBody');
+    const bodyElem = document.getElementById('portalBodyText');
+    const imgElem = document.getElementById('portalCircleImg');
+    const capElem = document.getElementById('portalMediaCaption');
 
     if (catElem) catElem.textContent = 'Laboratorio Virtuale — ' + phaseData.tag;
     if (titleElem) titleElem.textContent = phaseData.title;
@@ -1082,31 +1409,15 @@
         p.textContent = pText;
         bodyElem.appendChild(p);
       });
+    }
 
-      if (phaseData.image) {
-        const figure = document.createElement('figure');
-        figure.className = 'portal-figure';
+    if (imgElem) {
+      imgElem.src = phaseData.image;
+      imgElem.alt = phaseData.title;
+    }
 
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'portal-img-wrap';
-
-        const img = document.createElement('img');
-        img.className = 'portal-img';
-        img.src = phaseData.image;
-        img.alt = phaseData.title;
-        img.loading = 'lazy';
-        imgWrap.appendChild(img);
-        figure.appendChild(imgWrap);
-
-        if (phaseData.imageCaption) {
-          const caption = document.createElement('figcaption');
-          caption.className = 'portal-img-caption';
-          caption.textContent = phaseData.imageCaption;
-          figure.appendChild(caption);
-        }
-
-        bodyElem.appendChild(figure);
-      }
+    if (capElem) {
+      capElem.textContent = phaseData.imageCaption || '';
     }
 
     // Aggiorna gli indicatori sferici di avanzamento fase
@@ -1133,9 +1444,14 @@
     const data = DRAWER_DATA[sectionKey];
     if (!data) return;
 
-    const catElem = document.getElementById('portalCategory');
-    const titleElem = document.getElementById('portalTitle');
-    const bodyElem = document.getElementById('portalBody');
+    const splitView = document.getElementById('portalSplitView');
+    const fullView = document.getElementById('portalFullView');
+    if (splitView) splitView.style.display = 'none';
+    if (fullView) fullView.style.display = 'block';
+
+    const catElem = document.getElementById('portalFullCategory');
+    const titleElem = document.getElementById('portalFullTitle');
+    const bodyElem = document.getElementById('portalFullBody');
 
     if (catElem) catElem.textContent = data.category;
     if (titleElem) titleElem.textContent = data.title;
@@ -1143,107 +1459,158 @@
     if (!bodyElem) return;
     bodyElem.innerHTML = '';
 
-    // Blocco loghi partner se presenti
-    if (data.logos && Array.isArray(data.logos)) {
-      const whiteBlock = document.createElement('div');
-      whiteBlock.className = 'partner-logos-white-block';
+    galleryCirclesRegistry.length = 0; // reset
 
-      const blockLabel = document.createElement('div');
-      blockLabel.className = 'partner-logos-label';
-      blockLabel.textContent = 'Istituzioni & Partner di Ricerca';
-      whiteBlock.appendChild(blockLabel);
-
-      const logosGrid = document.createElement('div');
-      logosGrid.className = 'partner-logos-grid';
-
-      data.logos.forEach(function (logo) {
-        const item = document.createElement('div');
-        item.className = 'partner-logo-item';
-
-        const img = document.createElement('img');
-        img.className = 'partner-logo-img';
-        img.src = logo.image;
-        img.alt = logo.name;
-
-        const caption = document.createElement('span');
-        caption.className = 'partner-logo-name';
-        caption.textContent = logo.name;
-
-        item.appendChild(img);
-        item.appendChild(caption);
-        logosGrid.appendChild(item);
-      });
-
-      whiteBlock.appendChild(logosGrid);
-      bodyElem.appendChild(whiteBlock);
-    }
-
+    // Gallery Generale: tutte le immagini inscritte in cerchi con bordo d'onda identico alla home
     if (data.isGallery && Array.isArray(data.items)) {
       const grid = document.createElement('div');
-      grid.className = 'gallery-grid';
+      grid.className = 'gallery-circular-grid';
 
-      data.items.forEach(function (item) {
+      data.items.forEach(function (item, idx) {
         const card = document.createElement('div');
-        card.className = 'gallery-card';
+        card.className = 'gallery-circular-card';
 
-        const imgWrap = document.createElement('div');
-        imgWrap.className = 'gallery-card-img-wrap';
+        const mediaWrap = document.createElement('div');
+        mediaWrap.className = 'gallery-circle-media-wrap';
+
+        const mask = document.createElement('div');
+        mask.className = 'gallery-circle-img-mask';
 
         const img = document.createElement('img');
-        img.className = 'gallery-card-img';
+        img.className = 'gallery-circle-img';
         img.src = item.image;
         img.alt = item.title;
         img.loading = 'lazy';
+        mask.appendChild(img);
+        mediaWrap.appendChild(mask);
 
-        imgWrap.appendChild(img);
-        card.appendChild(imgWrap);
+        // SVG cerchio d'onda con filamenti armonici identico alla Home
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'gallery-circle-wave-svg');
+        svg.setAttribute('viewBox', '0 0 210 210');
 
-        const info = document.createElement('div');
-        info.className = 'gallery-card-info';
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
+        const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
+        const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathVis.setAttribute('class', 'wave-single-circle');
+        const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        hitProxy.setAttribute('class', 'circle-hit-proxy');
 
-        const title = document.createElement('h4');
-        title.className = 'gallery-card-title';
+        g.appendChild(strandA);
+        g.appendChild(strandB);
+        g.appendChild(pathVis);
+        g.appendChild(hitProxy);
+        svg.appendChild(g);
+        mediaWrap.appendChild(svg);
+
+        const circleEntry = {
+          cx: 105,
+          cy: 105,
+          radius: 95,
+          pathVis: pathVis,
+          strandA: strandA,
+          strandB: strandB,
+          hitProxy: hitProxy,
+          isHovered: false,
+          motionEnergy: 0
+        };
+
+        hitProxy.addEventListener('pointerenter', function () {
+          ensureAudioUnlocked();
+          circleEntry.isHovered = true;
+          circleEntry.motionEnergy = 1.0;
+        });
+        hitProxy.addEventListener('pointermove', function () {
+          circleEntry.motionEnergy = Math.min(1.0, circleEntry.motionEnergy + 0.15);
+        });
+        hitProxy.addEventListener('pointerleave', function () {
+          circleEntry.isHovered = false;
+        });
+
+        galleryCirclesRegistry.push(circleEntry);
+
+        const title = document.createElement('h3');
+        title.className = 'gallery-circular-title';
         title.textContent = item.title;
 
-        const caption = document.createElement('p');
-        caption.className = 'gallery-card-caption';
-        caption.textContent = item.caption;
+        const cap = document.createElement('p');
+        cap.className = 'gallery-circular-caption';
+        cap.textContent = item.caption;
 
-        info.appendChild(title);
-        info.appendChild(caption);
-        card.appendChild(info);
-
+        card.appendChild(mediaWrap);
+        card.appendChild(title);
+        card.appendChild(cap);
         grid.appendChild(card);
       });
 
       bodyElem.appendChild(grid);
-    } else if (Array.isArray(data.sections)) {
-      data.sections.forEach(function (sec) {
-        const block = document.createElement('div');
-        block.className = 'portal-section-block';
+    } else {
+      // Loghi Partner
+      if (data.logos && Array.isArray(data.logos)) {
+        const whiteBlock = document.createElement('div');
+        whiteBlock.className = 'partner-logos-white-block';
 
-        const h3 = document.createElement('h3');
-        h3.className = 'portal-block-title';
-        h3.textContent = sec.heading;
+        const blockLabel = document.createElement('div');
+        blockLabel.className = 'partner-logos-label';
+        blockLabel.textContent = 'Istituzioni & Partner di Ricerca';
+        whiteBlock.appendChild(blockLabel);
 
-        const divText = document.createElement('div');
-        divText.className = 'portal-block-text';
-        if (Array.isArray(sec.text)) {
-          sec.text.forEach(function (t) {
+        const logosGrid = document.createElement('div');
+        logosGrid.className = 'partner-logos-grid';
+
+        data.logos.forEach(function (logo) {
+          const item = document.createElement('div');
+          item.className = 'partner-logo-item';
+
+          const img = document.createElement('img');
+          img.className = 'partner-logo-img';
+          img.src = logo.image;
+          img.alt = logo.name;
+
+          const caption = document.createElement('span');
+          caption.className = 'partner-logo-name';
+          caption.textContent = logo.name;
+
+          item.appendChild(img);
+          item.appendChild(caption);
+          logosGrid.appendChild(item);
+        });
+
+        whiteBlock.appendChild(logosGrid);
+        bodyElem.appendChild(whiteBlock);
+      }
+
+      if (Array.isArray(data.sections)) {
+        data.sections.forEach(function (sec) {
+          const block = document.createElement('div');
+          block.className = 'portal-section-block';
+
+          const h3 = document.createElement('h3');
+          h3.className = 'portal-block-title';
+          h3.textContent = sec.heading;
+
+          const divText = document.createElement('div');
+          divText.className = 'portal-block-text';
+          if (Array.isArray(sec.text)) {
+            sec.text.forEach(function (t) {
+              const p = document.createElement('p');
+              p.textContent = t;
+              divText.appendChild(p);
+            });
+          } else {
             const p = document.createElement('p');
-            p.textContent = t;
+            p.textContent = sec.text;
             divText.appendChild(p);
-          });
-        } else {
-          const p = document.createElement('p');
-          p.textContent = sec.text;
-          divText.appendChild(p);
-        }
+          }
 
-        block.appendChild(h3);
-        block.appendChild(divText);
-        bodyElem.appendChild(block);
-      });
+          block.appendChild(h3);
+          block.appendChild(divText);
+          bodyElem.appendChild(block);
+        });
+      }
     }
   }
 
@@ -1268,7 +1635,7 @@
   }
 
   // -------------------------------------------------------------------------
-  // GESTIONE EVENTI (HIT PROXY 34PX & CONTROLLI PORTALE)
+  // GESTIONE EVENTI (HIT PROXY 34PX & CONTROLLI)
   // -------------------------------------------------------------------------
   function initEventHandlers() {
     window.addEventListener('pointerdown', ensureAudioUnlocked, { once: true });
@@ -1349,28 +1716,10 @@
       }
     });
 
-    // Cerchietto laterale con effetto melodia per tornare indietro
-    const backBtn = document.getElementById('btnPortalBack');
-    if (backBtn) {
-      backBtn.addEventListener('pointerenter', function () {
-        if (!audioCtx || state.audioMuted) return;
-        try {
-          const now = audioCtx.currentTime;
-          const osc = audioCtx.createOscillator();
-          const gain = audioCtx.createGain();
-          osc.type = 'sine';
-          osc.frequency.setValueAtTime(523.25, now);
-          gain.gain.setValueAtTime(0.0001, now);
-          gain.gain.exponentialRampToValueAtTime(0.06, now + 0.04);
-          gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.35);
-          osc.connect(gain);
-          gain.connect(audioCtx.destination);
-          osc.start(now);
-          osc.stop(now + 0.36);
-        } catch (e) {}
-      });
-
-      backBtn.addEventListener('click', function () {
+    // Widget Cerchio "Torna alla Home"
+    const backWidget = document.getElementById('btnBackHomeWidget');
+    if (backWidget) {
+      backWidget.addEventListener('click', function () {
         ensureAudioUnlocked();
         closeCircularPortal();
       });
@@ -1408,7 +1757,7 @@
       });
     });
 
-    // Tasto Escape per chiudere il portale
+    // Tasto Escape per chiudere la schermata
     window.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         if (state.portalOpen) closeCircularPortal();
@@ -1429,6 +1778,8 @@
               audioNodes[c.id].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
             }
           });
+          if (audioNodes['back-home']) audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+          if (audioNodes['portal-media']) audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
         }
       });
     }
@@ -1439,6 +1790,8 @@
   // -------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', function () {
     renderSvgScene();
+    initBackHomeCircle();
+    initPortalMediaCircle();
     initEventHandlers();
     renderPortalLabPhase(0);
 
