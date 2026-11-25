@@ -21,52 +21,57 @@
     {
       num: 1,
       tag: 'Fase 1',
-      title: 'Fase 1: Acquisizione sul Campo in 11 Piazze & Teatri',
+      title: 'Fase 1: Registrazione del Suono e delle Piazze',
       body: [
-        'La campagna di misura documenta 11 scene acustiche complesse in 5 città dell\'Emilia-Romagna: a Parma (Piazza Duomo con 2 sessioni distinte, Piazza Garibaldi, Piazzale San Francesco, Parco Ducale e Lungo Parma – Piazza Ghiaia), Rimini (Piazza Cavour e Piazza Tre Martiri), Faenza (Piazza del Popolo), Comacchio (Piazza Trepponti) e Tresigallo (Piazza della Repubblica), oltre ai rilievi acustici 3D del Teatro Masini di Faenza e del Teatro del \'900 a Tresigallo.',
-        'Il protocollo coassiale sincronizza a 1,70 m di altezza una sonda sferica rigida a 64 capsule (Eigenmike em64) con una videocamera 360 equirettangolare a risoluzione 8K (Kandao QooCam 3 Ultra). Il flusso a 64 canali viaggia su rete digitale Dante a 48 kHz / 24-bit alimentato via PoE+ su cavo singolo CAT5e, con sessioni di 5 minuti calibrate tramite ciak per la sincronizzazione audio-video assoluta.',
-        'L\'indagine raccoglie il patrimonio immateriale unico del territorio: la rifrazione delle acque e le letture dialettiche comacchiesi lungo i canali monumentali dei Trepponti, le risonanze sotto i portici e il percorso sonoro ad anello tra Pomposa, Comacchio e il razionalismo metafisico di Tresigallo.'
-      ]
+        'I ricercatori hanno viaggiato in 5 città dell\'Emilia-Romagna per registrare il paesaggio sonoro di 11 piazze storiche e teatri: da Piazza Duomo a Parma e Piazza Cavour a Rimini, fino a Faenza, Comacchio e Tresigallo.',
+        'Al centro di ogni piazza è stata posizionata una speciale sfera con 64 microfoni insieme a una telecamera a 360°. Questo sistema permette di "fotografare" il suono da ogni direzione, catturando la vita autentica del luogo: il vociare sotto i portici, i passi sui ciottoli e il riverbero dei palazzi storici.'
+      ],
+      image: 'assets/gallery/image27.jpg',
+      imageCaption: 'La speciale sfera microfonica a 64 capsule (em64) utilizzata per catturare il suono a 360° nelle piazze storiche.'
     },
     {
       num: 2,
       tag: 'Fase 2',
-      title: 'Fase 2: Risposte ad Impulso 3D con Metodo ESS & MIMO',
+      title: 'Fase 2: L\'Impronta Sonora dei Monumenti',
       body: [
-        'La caratterizzazione acustica dei volumi aperti impiega il metodo ESS (Exponential Sine Sweep), che utilizza segnali sinusoidali a frequenza esponenziale crescente. La successiva deconvoluzione con filtro inverso tempo-variante fa decadere i contributi di distorsione armonica prima dell\'impulso lineare, garantendo un rapporto segnale/rumore e una linearità di fase di massimo rigore scientifico.',
-        'In ogni punto opera il sistema a quattro sonde CIRI-EC secondo la norma ISO 3382: 1) Microfono omnidirezionale di classe 1 per i parametri monoaurali standard (EDT, T20, T30, C80, D50); 2) Testa di manichino binaurale per la percezione auricolare; 3) Sonda B-format a 4 capsule per la codifica Ambisonics del 1° ordine; 4) Array sferico a 32/64 capsule per l\'estrazione delle IR spaziali ad ordine elevato (HOA).',
-        'Le sorgenti adottano un approccio MIMO (Multiple-Input Multiple-Output): dodecaedri acustici e il diffusore sferico Chiesi a 32 altoparlanti pilotati singolarmente consentono matrici di trasmissione 16×16 o 32×32, capaci di sintetizzare virtualmente qualsiasi sorgente direzionale orientabile nello spazio 3D.'
-      ]
+        'Ogni spazio architettonico possiede una voce unica, determinata dalle sue forme e dai suoi materiali. Per scoprirla, i ricercatori hanno emesso suoni calibrati nelle piazze e nei teatri, registrando come l\'ambiente risponde ed estinguendosi genera l\'eco.',
+        'Questa registrazione si chiama "risposta ad impulso": funziona come una vera e propria impronta digitale acustica, capace di descrivere esattamente come uno spazio fa risuonare la musica o la voce umana.'
+      ],
+      image: 'assets/gallery/image31.jpg',
+      imageCaption: 'Misura dell\'impronta acustica in Piazza Cavour a Rimini: la piazza si comporta con un tempo di riverbero simile a una sala da concerto.'
     },
     {
       num: 3,
       tag: 'Fase 3',
-      title: 'Fase 3: Codifica in Armoniche Sferiche (HOA 3° Ordine AmbiX)',
+      title: 'Fase 3: La Mappa del Suono Nello Spazio',
       body: [
-        'I dati grezzi dell\'array sferico vengono proiettati mediante scomposizione matematica sulle funzioni armoniche sferiche ortogonali (Higher-Order Ambisonics, HOA). La piattaforma fissa come standard di produzione il 3° ordine completo, composto da (N+1)² = 16 canali master AmbiX con numerazione ACN (Ambisonic Channel Number) e normalizzazione SN3D (da W di ordine 0 a P di ordine 3).',
-        'Il disaccoppiamento totale tra ripresa e riproduzione rappresenta il cuore dell\'architettura: la medesima traccia master a 16 canali può alimentare qualsiasi configurazione di altoparlanti di sala o cuffie senza dover ricorrere a re-mixaggi dedicati.',
-        'La decodifica su sistemi di diffusori sfrutta l\'algoritmo AllRAD (IEM AllRADecoder), che proietta la sfera ideale e la ri-mappa con VBAP (Vector Base Amplitude Panning) sugli altoparlanti effettivi della sala compensando asimmetrie geometriche; per l\'ascolto in cuffia opera una matrice HRTF 16×2 a convoluzione parallela con head-tracking dinamico a bassissima latenza (IEM SceneRotator via OSC).'
-      ]
+        'Tutti i suoni registrati vengono trasformati in un formato audio tridimensionale (chiamato Ambisonics). Invece di semplici canali stereo destro e sinistro, il suono viene scomposto in una vera e propria sfera sonora avvolgente.',
+        'Grazie a questa tecnologia, la registrazione non è legata a un singolo paio di cuffie o a un tipo di altoparlante: può essere ricreata con fedeltà assoluta in qualsiasi ambiente, facendo sentire l\'ascoltatore esattamente al centro della piazza.'
+      ],
+      image: 'assets/gallery/image28.jpg',
+      imageCaption: 'Rappresentazione della sfera acustica 3D: il suono viene catturato e orientato con precisione in tutte le direzioni dello spazio.'
     },
     {
       num: 4,
       tag: 'Fase 4',
-      title: 'Fase 4: Rilievo VR 6DoF, Fotogrammetria & Mappe Acustiche',
+      title: 'Fase 4: Camminare nel Suono in Realtà Virtuale',
       body: [
-        'Convergenza completa tra rilievo visivo e rilievo acustico: le campagne aerofotogrammetriche con drone e scansioni terrestri generano nuvole di punti dense, mesh poligonali e modelli 3D fotorealistici ad altissima fedeltà geometrica (come sviluppato per Piazzale San Francesco a Parma, Piazza Cavour a Rimini e il Teatro Masini di Faenza).',
-        'In ambiente Unreal Engine il modello 3D è integrato con il motore di convoluzione a bassa latenza (X-MCFX), alimentato con le IR reali misurate sul campo. L\'utente può esplorare lo spazio con 6 gradi di libertà (6DoF), ascoltando la trasformazione fluida del riverbero, delle riflessioni e delle occlusioni al variare della posizione durante l\'esecuzione di brani dal vivo (es. Il Trovatore di Verdi).',
-        'Il sistema genera inoltre mappe acustiche direzionali 3D sovrapposte alle immagini panoramiche a 360° (Plogue Bidule + plugin O3A Flare) che isolano l\'angolo di arrivo delle prime riflessioni (0–80 ms) e diagrammi di loudness psicoacustica (in sone), evidenziando il contrasto tra oasi silenziose protette (Piazza Duomo) e crocevia urbani aperti al traffico (Piazza Garibaldi).'
-      ]
+        'Attraverso foto aeree scattate con i droni e scansioni laser, le piazze sono state interamente ricostruite in 3D. A questo modello visivo è stato agganciato il motore sonoro interattivo.',
+        'L\'utente può indossare un visore o usare il computer per camminare liberamente nella piazza virtuale: avvicinandosi a un musicista il volume aumenta, allontanandosi o riparandosi sotto un portico l\'acustica cambia in tempo reale, proprio come nella realtà.'
+      ],
+      image: 'assets/gallery/image35.jpg',
+      imageCaption: 'Esplorazione in Realtà Virtuale di Piazzale San Francesco a Parma: l\'utente cammina liberamente ascoltando l\'esecuzione dal vivo de Il Trovatore.'
     },
     {
       num: 5,
       tag: 'Fase 5',
-      title: 'Fase 5: Restituzione Immersiva, Piazze come Sale & Inclusione',
+      title: 'Fase 5: Rivivere il Patrimonio per Tutti',
       body: [
-        'La ricerca dimostra che le piazze storiche si comportano acusticamente come imponenti sale da concerto a cielo aperto: Piazza Cavour a Rimini ha evidenziato un decadimento medio di 1,6 s (pari a un teatro d\'opera medio), mentre Piazza Trepponti a Comacchio registra tempi di riverberazione T30 tra 1,4 s e 1,9 s a medie frequenze.',
-        'La restituzione fisica avviene nella sala immersiva modulare di Tresigallo (edificio razionalista "Sogni"), allestita con diffusione Ambisonics di 3° ordine, sintesi di fronte d\'onda Wave Field Synthesis (WFS) con amplificazione Zotech a 32 canali e controller WFSMixer VST (S. Campanini), coadiuvata da videoproiezione a 360° su pianta ottagonale.',
-        'AGORÀ persegue una missione civile e inclusiva: restituire l\'esperienza multisensoriale viva della piazza a persone con disabilità motorie o fragilità che non possono raggiungerle fisicamente; sviluppare percorsi didattici sull\'identità storica e sonora per scuole e migranti; e dotare le amministrazioni pubbliche di indicatori oggettivi per la valorizzazione acustica urbana.'
-      ]
+        'Il risultato finale del laboratorio apre la cultura a tutti: persone con disabilità motorie o fragilità che non possono viaggiare possono rivivere la magia e il paesaggio sonoro delle piazze storiche da casa o da musei dedicati.',
+        'A Tresigallo, nell\'edificio storico "Sogni", è stata inoltre allestita una sala speciale con 32 altoparlanti che ricrea fisicamente il campo sonoro delle piazze, unendo ricerca scientifica, memoria civica e inclusione sociale.'
+      ],
+      image: 'assets/gallery/image33.jpg',
+      imageCaption: 'La sala d\'ascolto immersiva di Tresigallo con impianto a 32 altoparlanti, progettata per far rivivere l\'acustica dei luoghi storici.'
     }
   ];
 
@@ -904,6 +909,31 @@
         p.textContent = pText;
         bodyElem.appendChild(p);
       });
+
+      if (phaseData.image) {
+        const figure = document.createElement('figure');
+        figure.className = 'phase-figure';
+
+        const imgWrap = document.createElement('div');
+        imgWrap.className = 'phase-img-wrap';
+
+        const img = document.createElement('img');
+        img.className = 'phase-img';
+        img.src = phaseData.image;
+        img.alt = phaseData.title;
+        img.loading = 'lazy';
+        imgWrap.appendChild(img);
+        figure.appendChild(imgWrap);
+
+        if (phaseData.imageCaption) {
+          const caption = document.createElement('figcaption');
+          caption.className = 'phase-img-caption';
+          caption.textContent = phaseData.imageCaption;
+          figure.appendChild(caption);
+        }
+
+        bodyElem.appendChild(figure);
+      }
     }
 
     CIRCLES_REGISTRY.forEach(function (c) {
