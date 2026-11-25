@@ -107,17 +107,17 @@
     <!-- ================================================================= -->
     <div class="circular-portal-overlay" id="circularPortal" aria-hidden="true">
       
-      <!-- Cerchio "Torna alla Home" identico a quelli della Home (gira, ha filamenti armonici e testo curvo) -->
-      <div class="portal-back-home-widget" id="btnBackHomeWidget" role="button" tabindex="0" title="Torna alla Home (Esc)" aria-label="Torna alla Home">
-        <svg id="backHomeSvg" class="back-home-svg" viewBox="0 0 160 160">
-          <g id="backHomeWaveGroup"></g>
-        </svg>
-      </div>
-
-      <!-- Layout Standard da Sito Normale -->
+      <!-- Layout Standard da Sito Normale Centrato nello Schermo -->
       <div class="portal-standard-layout" id="portalStandardLayout">
         
-        <!-- Vista a Due Colonne (Laboratorio Fasi & Dettagli) -->
+        <!-- Cerchio "Torna alla Home" centrato in alto (rotante, filamenti armonici e testo curvo) -->
+        <div class="portal-back-home-widget" id="btnBackHomeWidget" role="button" tabindex="0" title="Torna alla Home (Esc)" aria-label="Torna alla Home">
+          <svg id="backHomeSvg" class="back-home-svg" viewBox="0 0 160 160">
+            <g id="backHomeWaveGroup"></g>
+          </svg>
+        </div>
+
+        <!-- Vista a Due Colonne Centrata (Laboratorio Fasi & Dettagli) -->
         <div class="portal-split-view" id="portalSplitView">
           
           <!-- Colonna Sinistra: Testi Editoriali e Navigazione Onde -->
@@ -128,7 +128,7 @@
               <!-- Paragrafi inseriti dinamicamente -->
             </div>
 
-            <!-- Navigazione tra le fasi con onde sonore circolari (Zero frecce) -->
+            <!-- Navigazione tra le fasi con onde sonore circolari (Senza pallini intermedi, centrata) -->
             <div class="portal-phase-nav" id="portalPhaseNav">
               <button type="button" class="btn-phase-wave" id="btnPhasePrev" title="Fase precedente" aria-label="Fase precedente">
                 <span class="wave-circle-icon" aria-hidden="true">
@@ -139,15 +139,6 @@
                 </span>
                 <span class="btn-wave-label">Fase Prec.</span>
               </button>
-
-              <!-- Indicatori armonici di avanzamento fase -->
-              <div class="phase-nodes-bar" id="phaseNodesBar">
-                <button type="button" class="phase-node active" data-index="0" title="Fase 1: Acquisizione 3D"></button>
-                <button type="button" class="phase-node" data-index="1" title="Fase 2: Risposte ad Impulso"></button>
-                <button type="button" class="phase-node" data-index="2" title="Fase 3: Armoniche Sferiche"></button>
-                <button type="button" class="phase-node" data-index="3" title="Fase 4: Realtà Virtuale 6DoF"></button>
-                <button type="button" class="phase-node" data-index="4" title="Fase 5: Restituzione Immersiva"></button>
-              </div>
 
               <button type="button" class="btn-phase-wave" id="btnPhaseNext" title="Fase successiva" aria-label="Fase successiva">
                 <span class="btn-wave-label">Fase Succ.</span>
@@ -161,14 +152,14 @@
             </div>
           </div>
 
-          <!-- Colonna Destra: Immagine Inscritta in Cerchio con Bordo Ondulato Interattivo -->
+          <!-- Colonna Destra: Immagine Inscritta in Cerchio Più Grande con Cornice d'Onda Distaccata -->
           <div class="portal-media-column" id="portalMediaColumn">
             <div class="portal-circle-media-wrapper" id="portalCircleMediaWrapper">
               <div class="portal-circle-img-mask">
                 <img src="assets/gallery/image27.jpg" alt="Dettaglio fase" class="portal-circle-img" id="portalCircleImg">
               </div>
-              <!-- SVG sovrapposto con i filamenti d'onda armonici della Home -->
-              <svg class="portal-circle-wave-overlay" id="portalCircleWaveSvg" viewBox="0 0 380 380">
+              <!-- SVG sovrapposto distaccato che fa da cornice d'onda luminosa -->
+              <svg class="portal-circle-wave-overlay" id="portalCircleWaveSvg" viewBox="0 0 440 440">
                 <g id="portalMediaWaveGroup"></g>
               </svg>
             </div>

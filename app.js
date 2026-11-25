@@ -1212,9 +1212,10 @@
     const dom = portalMediaDOM;
     if (!dom.pathVis) return;
 
-    const cx = 190;
-    const cy = 190;
-    const baseRadius = 168;
+    // Centro e raggio tarati sul viewBox 0 0 440 440 (Cornice più grande con padding di stacco)
+    const cx = 220;
+    const cy = 220;
+    const baseRadius = 210;
 
     mediaWaveState.motionEnergy = Math.max(0, mediaWaveState.motionEnergy - activeStyle.dynamics.energyDecay);
     const waveAmp = mediaWaveState.motionEnergy * activeStyle.dynamics.maxWaveAmp;
@@ -1225,7 +1226,7 @@
     }
     const currentRadius = baseRadius + radiusOffset;
 
-    const cycles = 16;
+    const cycles = 18;
     const speed = 1.8;
 
     const dVisible = generateArcPathString(cx, cy, currentRadius, 0, Math.PI * 2, waveAmp, cycles, animTime * speed);
@@ -1420,12 +1421,6 @@
       capElem.textContent = phaseData.imageCaption || '';
     }
 
-    // Aggiorna gli indicatori sferici di avanzamento fase
-    const phaseNodes = document.querySelectorAll('.phase-node');
-    phaseNodes.forEach(function (node, idx) {
-      node.classList.toggle('active', idx === index);
-    });
-
     // Aggiorna i cerchi concentrici nell'SVG per la fase attiva
     CIRCLES_REGISTRY.forEach(function (c) {
       if (!c.isPhase) return;
@@ -1487,7 +1482,7 @@
         // SVG cerchio d'onda con filamenti armonici identico alla Home
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('class', 'gallery-circle-wave-svg');
-        svg.setAttribute('viewBox', '0 0 210 210');
+        svg.setAttribute('viewBox', '0 0 230 230');
 
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1507,9 +1502,9 @@
         mediaWrap.appendChild(svg);
 
         const circleEntry = {
-          cx: 105,
-          cy: 105,
-          radius: 95,
+          cx: 115,
+          cy: 115,
+          radius: 105,
           pathVis: pathVis,
           strandA: strandA,
           strandB: strandB,
@@ -1743,19 +1738,6 @@
         renderPortalLabPhase(state.currentPhaseIndex + 1);
       });
     }
-
-    // Indicatori sferici di avanzamento fase
-    const phaseNodes = document.querySelectorAll('.phase-node');
-    phaseNodes.forEach(function (node) {
-      node.addEventListener('click', function () {
-        ensureAudioUnlocked();
-        const idx = parseInt(node.getAttribute('data-index'), 10);
-        if (!isNaN(idx)) {
-          playPhaseStepSound();
-          renderPortalLabPhase(idx);
-        }
-      });
-    });
 
     // Tasto Escape per chiudere la schermata
     window.addEventListener('keydown', function (e) {

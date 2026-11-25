@@ -448,23 +448,21 @@ html, body {
   visibility: visible;
 }
 
-/* Cerchio Interattivo "Torna alla Home" (Identico a quelli della Home) */
+/* Cerchio Interattivo "Torna alla Home" (Centrato in alto, Identico a quelli della Home) */
 .portal-back-home-widget {
-  position: fixed;
-  top: 5.6rem;
-  left: 2.5rem;
-  z-index: 60;
-  width: 145px;
-  height: 145px;
+  margin: 0 auto 1.5rem auto;
+  width: 140px;
+  height: 140px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
   transition: transform 0.25s ease;
+  flex-shrink: 0;
 }
 
 .portal-back-home-widget:hover {
-  transform: scale(1.05);
+  transform: scale(1.06);
 }
 
 .back-home-svg {
@@ -473,13 +471,16 @@ html, body {
   overflow: visible;
 }
 
-/* Layout Standard Tipo Sito Normale (Scrollabile e Pulito) */
+/* Layout Standard Tipo Sito Normale (Completamente Centrato nello Schermo) */
 .portal-standard-layout {
   width: 100%;
   height: 100vh;
   overflow-y: auto;
-  padding: 6.5rem 3.5rem 4rem 13.5rem;
+  padding: 5.5rem 2.5rem 3.5rem 2.5rem;
   box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
 .portal-standard-layout::-webkit-scrollbar {
@@ -491,19 +492,20 @@ html, body {
   border-radius: 3px;
 }
 
-/* Vista a Due Colonne: Testo a Sinistra, Immagine Circolare a Destra */
+/* Vista a Due Colonne Centrata: Testo a Sinistra, Immagine Circolare a Destra */
 .portal-split-view {
   display: flex;
-  gap: 4.5rem;
-  align-items: flex-start;
-  justify-content: space-between;
-  max-width: 1240px;
+  gap: 5rem;
+  align-items: center;
+  justify-content: center;
+  max-width: 1280px;
+  width: 100%;
   margin: 0 auto;
 }
 
 .portal-text-column {
   flex: 1;
-  max-width: 680px;
+  max-width: 620px;
 }
 
 .portal-meta-category {
@@ -531,7 +533,7 @@ html, body {
   font-size: 1.02rem;
   line-height: 1.75;
   color: #cbd5e1;
-  margin-bottom: 2rem;
+  margin-bottom: 1.75rem;
 }
 
 .portal-text-body p {
@@ -542,29 +544,35 @@ html, body {
   margin-bottom: 0;
 }
 
-/* Colonna Destra: Immagine inscritta in un cerchio con bordo d'onda identico alla Home */
+/* Colonna Destra: Immagine Più Grande con Cornice d'Onda Distaccata (Padding) */
 .portal-media-column {
-  width: 380px;
+  width: 460px;
   flex-shrink: 0;
   display: flex;
   flex-direction: column;
   align-items: center;
+  justify-content: center;
 }
 
 .portal-circle-media-wrapper {
   position: relative;
-  width: 340px;
-  height: 340px;
+  width: 440px;
+  height: 440px;
   margin: 0 auto;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
+/* Immagine inscritta distaccata dal bordo d'onda con padding evidente */
 .portal-circle-img-mask {
   position: absolute;
-  inset: 12px;
+  inset: 28px; /* 28px di stacco: risalta visivamente come una cornice */
   border-radius: 50%;
   overflow: hidden;
   background: #030712;
-  box-shadow: 0 12px 35px rgba(0, 0, 0, 0.65);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.75), inset 0 0 20px rgba(6, 182, 212, 0.15);
 }
 
 .portal-circle-img {
@@ -576,7 +584,7 @@ html, body {
 }
 
 .portal-circle-media-wrapper:hover .portal-circle-img {
-  transform: scale(1.04);
+  transform: scale(1.05);
 }
 
 .portal-circle-wave-overlay {
@@ -595,16 +603,17 @@ html, body {
   color: var(--text-muted);
   font-style: italic;
   text-align: center;
-  margin-top: 1.25rem;
-  max-width: 340px;
+  margin-top: 1.35rem;
+  max-width: 420px;
 }
 
-/* Navigazione tra le fasi con onde sonore circolari (Zero frecce) */
+/* Navigazione tra le fasi con onde sonore circolari (Centrata e senza pallini) */
 .portal-phase-nav {
   display: flex;
   align-items: center;
-  justify-content: space-between;
-  max-width: 540px;
+  justify-content: center;
+  gap: 2.5rem;
+  width: 100%;
   border-top: 1px solid var(--line-subtle);
   padding-top: 1.25rem;
   margin-top: 2rem;
@@ -778,36 +787,6 @@ html, body {
 @keyframes rippleWavePulse {
   0% { transform: scale(0.8); opacity: 0.95; }
   100% { transform: scale(1.45); opacity: 0; }
-}
-
-.phase-nodes-bar {
-  display: flex;
-  align-items: center;
-  gap: 0.65rem;
-}
-
-.phase-node {
-  width: 9px;
-  height: 9px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.2);
-  border: 1px solid rgba(56, 189, 248, 0.35);
-  cursor: pointer;
-  padding: 0;
-  transition: transform 0.25s ease, background-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.phase-node:hover {
-  transform: scale(1.3);
-  background: var(--color-cyan);
-  box-shadow: 0 0 8px var(--color-cyan);
-}
-
-.phase-node.active {
-  background: var(--color-cyan);
-  box-shadow: 0 0 10px var(--color-cyan), 0 0 18px rgba(245, 158, 11, 0.5);
-  transform: scale(1.35);
-  border-color: #ffffff;
 }
 
 /* Blocchi di Sezione Generici all'interno del Portale (Timeline, Crediti, Pubblicazioni) */
@@ -1022,14 +1001,13 @@ html, body {
   }
 
   .portal-back-home-widget {
-    top: 5rem;
-    left: 1rem;
-    width: 100px;
-    height: 100px;
+    width: 110px;
+    height: 110px;
+    margin: 0 auto 1rem auto;
   }
 
   .portal-standard-layout {
-    padding: 8rem 1.5rem 3rem 1.5rem;
+    padding: 6.5rem 1.25rem 3rem 1.25rem;
   }
 
   .portal-split-view {
@@ -1048,12 +1026,16 @@ html, body {
 
   .portal-media-column {
     width: 100%;
-    max-width: 300px;
+    max-width: 320px;
   }
 
   .portal-circle-media-wrapper {
-    width: 280px;
-    height: 280px;
+    width: 300px;
+    height: 300px;
+  }
+
+  .portal-circle-img-mask {
+    inset: 20px;
   }
 
   .gallery-circular-grid {
