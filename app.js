@@ -26,8 +26,8 @@
         'I ricercatori hanno viaggiato in 5 città dell\'Emilia-Romagna per registrare il paesaggio sonoro di 11 piazze storiche e teatri: da Piazza Duomo a Parma e Piazza Cavour a Rimini, fino a Faenza, Comacchio e Tresigallo.',
         'Al centro di ogni piazza è stata posizionata una speciale sfera con 64 microfoni insieme a una telecamera a 360°. Questo sistema permette di "fotografare" il suono da ogni direzione, catturando la vita autentica del luogo: il vociare sotto i portici, i passi sui ciottoli e il riverbero dei palazzi storici.'
       ],
-      image: 'assets/gallery/image27.jpg',
-      imageCaption: 'La speciale sfera microfonica a 64 capsule (em64) utilizzata per catturare il suono a 360° nelle piazze storiche.'
+      image: 'assets/gallery/image12.jpg',
+      imageCaption: 'Rilievo acustico in Piazza Cavour a Rimini: la speciale sonda microfonica a 64 capsule (em64) posizionata al centro della piazza per catturare il soundscape a 360°.'
     },
     {
       num: 2,
@@ -1369,6 +1369,11 @@
 
     const portal = document.getElementById('circularPortal');
     const soundscapeContainer = document.getElementById('soundscapeContainer');
+    const layout = document.getElementById('portalStandardLayout');
+    const fullView = document.getElementById('portalFullView');
+
+    if (layout) layout.classList.remove('gallery-mode');
+    if (fullView) fullView.classList.remove('gallery-mode');
 
     if (portal) {
       portal.classList.remove('visible');
@@ -1392,6 +1397,10 @@
 
     const splitView = document.getElementById('portalSplitView');
     const fullView = document.getElementById('portalFullView');
+    const layout = document.getElementById('portalStandardLayout');
+
+    if (layout) layout.classList.remove('gallery-mode');
+    if (fullView) fullView.classList.remove('gallery-mode');
     if (splitView) splitView.style.display = 'flex';
     if (fullView) fullView.style.display = 'none';
 
@@ -1456,94 +1465,120 @@
     bodyElem.innerHTML = '';
 
     galleryCirclesRegistry.length = 0; // reset
+    const layout = document.getElementById('portalStandardLayout');
 
-    // Gallery Generale: tutte le immagini inscritte in cerchi con bordo d'onda identico alla home
+    // Gallery Generale: immagini più grandi inscritte in cerchi con bordo d'onda, griglia sfalsata a nido d'ape a tutto schermo
     if (data.isGallery && Array.isArray(data.items)) {
-      const grid = document.createElement('div');
-      grid.className = 'gallery-circular-grid';
+      if (layout) layout.classList.add('gallery-mode');
+      if (fullView) fullView.classList.add('gallery-mode');
 
-      data.items.forEach(function (item, idx) {
-        const card = document.createElement('div');
-        card.className = 'gallery-circular-card';
+      const honeycombContainer = document.createElement('div');
+      honeycombContainer.className = 'gallery-honeycomb-container';
 
-        const mediaWrap = document.createElement('div');
-        mediaWrap.className = 'gallery-circle-media-wrap';
+      // Calcolo colonne per la griglia sfalsata a nido d'ape (file alterne K e K-1)
+      const winW = window.innerWidth;
+      const primaryCount = winW >= 1650 ? 6 : (winW >= 1280 ? 5 : (winW >= 920 ? 4 : (winW >= 600 ? 3 : 2)));
+      const secondaryCount = Math.max(1, primaryCount - 1);
 
-        const mask = document.createElement('div');
-        mask.className = 'gallery-circle-img-mask';
+      let itemIndex = 0;
+      let rowIndex = 0;
+      while (itemIndex < data.items.length) {
+        const countInRow = (rowIndex % 2 === 0) ? primaryCount : secondaryCount;
+        const rowItems = data.items.slice(itemIndex, itemIndex + countInRow);
+        if (rowItems.length === 0) break;
 
-        const img = document.createElement('img');
-        img.className = 'gallery-circle-img';
-        img.src = item.image;
-        img.alt = item.title;
-        img.loading = 'lazy';
-        mask.appendChild(img);
-        mediaWrap.appendChild(mask);
+        const rowDiv = document.createElement('div');
+        rowDiv.className = 'gallery-honeycomb-row' + (rowIndex % 2 !== 0 ? ' staggered' : '');
 
-        // SVG cerchio d'onda con filamenti armonici identico alla Home (formato compatto per griglia a scorrimento minimo)
-        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-        svg.setAttribute('class', 'gallery-circle-wave-svg');
-        svg.setAttribute('viewBox', '0 0 155 155');
+        rowItems.forEach(function (item) {
+          const card = document.createElement('div');
+          card.className = 'gallery-circular-card';
 
-        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-        const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
-        const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
-        const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        pathVis.setAttribute('class', 'wave-single-circle');
-        const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-        hitProxy.setAttribute('class', 'circle-hit-proxy');
+          const mediaWrap = document.createElement('div');
+          mediaWrap.className = 'gallery-circle-media-wrap';
 
-        g.appendChild(strandA);
-        g.appendChild(strandB);
-        g.appendChild(pathVis);
-        g.appendChild(hitProxy);
-        svg.appendChild(g);
-        mediaWrap.appendChild(svg);
+          const mask = document.createElement('div');
+          mask.className = 'gallery-circle-img-mask';
 
-        const circleEntry = {
-          cx: 77.5,
-          cy: 77.5,
-          radius: 70,
-          pathVis: pathVis,
-          strandA: strandA,
-          strandB: strandB,
-          hitProxy: hitProxy,
-          isHovered: false,
-          motionEnergy: 0
-        };
+          const img = document.createElement('img');
+          img.className = 'gallery-circle-img';
+          img.src = item.image;
+          img.alt = item.title;
+          img.loading = 'lazy';
+          mask.appendChild(img);
+          mediaWrap.appendChild(mask);
 
-        hitProxy.addEventListener('pointerenter', function () {
-          ensureAudioUnlocked();
-          circleEntry.isHovered = true;
-          circleEntry.motionEnergy = 1.0;
+          // SVG cerchio d'onda ampio 220x220 con filamenti armonici identico alla Home
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.setAttribute('class', 'gallery-circle-wave-svg');
+          svg.setAttribute('viewBox', '0 0 220 220');
+
+          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
+          const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
+          const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          pathVis.setAttribute('class', 'wave-single-circle');
+          const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          hitProxy.setAttribute('class', 'circle-hit-proxy');
+
+          g.appendChild(strandA);
+          g.appendChild(strandB);
+          g.appendChild(pathVis);
+          g.appendChild(hitProxy);
+          svg.appendChild(g);
+          mediaWrap.appendChild(svg);
+
+          const circleEntry = {
+            cx: 110,
+            cy: 110,
+            radius: 100,
+            pathVis: pathVis,
+            strandA: strandA,
+            strandB: strandB,
+            hitProxy: hitProxy,
+            isHovered: false,
+            motionEnergy: 0
+          };
+
+          hitProxy.addEventListener('pointerenter', function () {
+            ensureAudioUnlocked();
+            circleEntry.isHovered = true;
+            circleEntry.motionEnergy = 1.0;
+          });
+          hitProxy.addEventListener('pointermove', function () {
+            circleEntry.motionEnergy = Math.min(1.0, circleEntry.motionEnergy + 0.15);
+          });
+          hitProxy.addEventListener('pointerleave', function () {
+            circleEntry.isHovered = false;
+          });
+
+          galleryCirclesRegistry.push(circleEntry);
+
+          const title = document.createElement('h3');
+          title.className = 'gallery-circular-title';
+          title.textContent = item.title;
+
+          const cap = document.createElement('p');
+          cap.className = 'gallery-circular-caption';
+          cap.textContent = item.caption;
+
+          card.appendChild(mediaWrap);
+          card.appendChild(title);
+          card.appendChild(cap);
+          rowDiv.appendChild(card);
         });
-        hitProxy.addEventListener('pointermove', function () {
-          circleEntry.motionEnergy = Math.min(1.0, circleEntry.motionEnergy + 0.15);
-        });
-        hitProxy.addEventListener('pointerleave', function () {
-          circleEntry.isHovered = false;
-        });
 
-        galleryCirclesRegistry.push(circleEntry);
+        honeycombContainer.appendChild(rowDiv);
+        itemIndex += countInRow;
+        rowIndex++;
+      }
 
-        const title = document.createElement('h3');
-        title.className = 'gallery-circular-title';
-        title.textContent = item.title;
-
-        const cap = document.createElement('p');
-        cap.className = 'gallery-circular-caption';
-        cap.textContent = item.caption;
-
-        card.appendChild(mediaWrap);
-        card.appendChild(title);
-        card.appendChild(cap);
-        grid.appendChild(card);
-      });
-
-      bodyElem.appendChild(grid);
+      bodyElem.appendChild(honeycombContainer);
     } else {
+      if (layout) layout.classList.remove('gallery-mode');
+      if (fullView) fullView.classList.remove('gallery-mode');
       // Loghi Partner: inseriti nei cerchi d'onda come tutte le immagini, con sfondo bianco protettivo e dimensioni generose
       if (data.logos && Array.isArray(data.logos)) {
         const partnerGrid = document.createElement('div');
