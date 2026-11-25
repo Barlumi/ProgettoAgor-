@@ -490,6 +490,7 @@
   const state = {
     activeSection: 'laboratorio',
     currentPhaseIndex: 0,
+    currentGalleryTrioIndex: 0,
     portalOpen: false,
     audioMuted: false,
 
@@ -1347,6 +1348,9 @@
       }
       renderPortalLabPhase(state.currentPhaseIndex);
     } else {
+      if (sectionKey === 'gallery') {
+        state.currentGalleryTrioIndex = 0;
+      }
       renderPortalSection(sectionKey);
     }
 
@@ -1466,116 +1470,183 @@
 
     galleryCirclesRegistry.length = 0; // reset
     const layout = document.getElementById('portalStandardLayout');
+    if (layout) layout.classList.remove('gallery-mode');
+    if (fullView) fullView.classList.remove('gallery-mode');
 
-    // Gallery Generale: immagini più grandi inscritte in cerchi con bordo d'onda, griglia sfalsata a nido d'ape a tutto schermo
-    if (data.isGallery && Array.isArray(data.items)) {
-      if (layout) layout.classList.add('gallery-mode');
-      if (fullView) fullView.classList.add('gallery-mode');
+    // Funzione di partizione degli elementi in trii (con ultimo gruppo da 4 o 5 se non multipli di 3)
+    function getGalleryTrios(items) {
+      const trios = [];
+      let i = 0;
+      while (i < items.length) {
+        const remaining = items.length - i;
+        if (remaining === 4 || remaining === 5) {
+          trios.push(items.slice(i));
+          break;
+        }
+        trios.push(items.slice(i, i + 3));
+        i += 3;
+      }
+      return trios;
+    }
 
-      const honeycombContainer = document.createElement('div');
-      honeycombContainer.className = 'gallery-honeycomb-container';
+    // Render del Trio attivo
+    function renderGalleryTrioStage() {
+      bodyElem.innerHTML = '';
+      galleryCirclesRegistry.length = 0;
 
-      // Calcolo colonne per la griglia sfalsata a nido d'ape (file alterne K e K-1)
-      const winW = window.innerWidth;
-      const primaryCount = winW >= 1650 ? 6 : (winW >= 1280 ? 5 : (winW >= 920 ? 4 : (winW >= 600 ? 3 : 2)));
-      const secondaryCount = Math.max(1, primaryCount - 1);
+      const trios = getGalleryTrios(data.items);
+      if (trios.length === 0) return;
 
-      let itemIndex = 0;
-      let rowIndex = 0;
-      while (itemIndex < data.items.length) {
-        const countInRow = (rowIndex % 2 === 0) ? primaryCount : secondaryCount;
-        const rowItems = data.items.slice(itemIndex, itemIndex + countInRow);
-        if (rowItems.length === 0) break;
+      if (state.currentGalleryTrioIndex < 0) state.currentGalleryTrioIndex = trios.length - 1;
+      if (state.currentGalleryTrioIndex >= trios.length) state.currentGalleryTrioIndex = 0;
 
-        const rowDiv = document.createElement('div');
-        rowDiv.className = 'gallery-honeycomb-row' + (rowIndex % 2 !== 0 ? ' staggered' : '');
+      const currentTrio = trios[state.currentGalleryTrioIndex];
 
-        rowItems.forEach(function (item) {
-          const card = document.createElement('div');
-          card.className = 'gallery-circular-card';
+      // Stage del Trio
+      const stage = document.createElement('div');
+      stage.className = 'gallery-trio-stage';
 
-          const mediaWrap = document.createElement('div');
-          mediaWrap.className = 'gallery-circle-media-wrap';
+      currentTrio.forEach(function (item) {
+        const card = document.createElement('div');
+        card.className = 'gallery-trio-card';
 
-          const mask = document.createElement('div');
-          mask.className = 'gallery-circle-img-mask';
+        const mediaWrap = document.createElement('div');
+        mediaWrap.className = 'gallery-trio-media-wrap';
 
-          const img = document.createElement('img');
-          img.className = 'gallery-circle-img';
-          img.src = item.image;
-          img.alt = item.title;
-          img.loading = 'lazy';
-          mask.appendChild(img);
-          mediaWrap.appendChild(mask);
+        const mask = document.createElement('div');
+        mask.className = 'gallery-trio-img-mask';
 
-          // SVG cerchio d'onda ampio 220x220 con filamenti armonici identico alla Home
-          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-          svg.setAttribute('class', 'gallery-circle-wave-svg');
-          svg.setAttribute('viewBox', '0 0 220 220');
+        const img = document.createElement('img');
+        img.className = 'gallery-trio-img';
+        img.src = item.image;
+        img.alt = item.title;
+        img.loading = 'lazy';
+        mask.appendChild(img);
+        mediaWrap.appendChild(mask);
 
-          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-          const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
-          const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
-          const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          pathVis.setAttribute('class', 'wave-single-circle');
-          const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-          hitProxy.setAttribute('class', 'circle-hit-proxy');
+        // SVG cerchio d'onda ampio 240x240 con filamenti armonici identico alla Home
+        const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.setAttribute('class', 'gallery-circle-wave-svg');
+        svg.setAttribute('viewBox', '0 0 240 240');
 
-          g.appendChild(strandA);
-          g.appendChild(strandB);
-          g.appendChild(pathVis);
-          g.appendChild(hitProxy);
-          svg.appendChild(g);
-          mediaWrap.appendChild(svg);
+        const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+        const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
+        const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
+        const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        pathVis.setAttribute('class', 'wave-single-circle');
+        const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+        hitProxy.setAttribute('class', 'circle-hit-proxy');
 
-          const circleEntry = {
-            cx: 110,
-            cy: 110,
-            radius: 100,
-            pathVis: pathVis,
-            strandA: strandA,
-            strandB: strandB,
-            hitProxy: hitProxy,
-            isHovered: false,
-            motionEnergy: 0
-          };
+        g.appendChild(strandA);
+        g.appendChild(strandB);
+        g.appendChild(pathVis);
+        g.appendChild(hitProxy);
+        svg.appendChild(g);
+        mediaWrap.appendChild(svg);
 
-          hitProxy.addEventListener('pointerenter', function () {
-            ensureAudioUnlocked();
-            circleEntry.isHovered = true;
-            circleEntry.motionEnergy = 1.0;
-          });
-          hitProxy.addEventListener('pointermove', function () {
-            circleEntry.motionEnergy = Math.min(1.0, circleEntry.motionEnergy + 0.15);
-          });
-          hitProxy.addEventListener('pointerleave', function () {
-            circleEntry.isHovered = false;
-          });
+        const circleEntry = {
+          cx: 120,
+          cy: 120,
+          radius: 108,
+          pathVis: pathVis,
+          strandA: strandA,
+          strandB: strandB,
+          hitProxy: hitProxy,
+          isHovered: false,
+          motionEnergy: 0
+        };
 
-          galleryCirclesRegistry.push(circleEntry);
-
-          const title = document.createElement('h3');
-          title.className = 'gallery-circular-title';
-          title.textContent = item.title;
-
-          const cap = document.createElement('p');
-          cap.className = 'gallery-circular-caption';
-          cap.textContent = item.caption;
-
-          card.appendChild(mediaWrap);
-          card.appendChild(title);
-          card.appendChild(cap);
-          rowDiv.appendChild(card);
+        hitProxy.addEventListener('pointerenter', function () {
+          ensureAudioUnlocked();
+          circleEntry.isHovered = true;
+          circleEntry.motionEnergy = 1.0;
+        });
+        hitProxy.addEventListener('pointermove', function () {
+          circleEntry.motionEnergy = Math.min(1.0, circleEntry.motionEnergy + 0.15);
+        });
+        hitProxy.addEventListener('pointerleave', function () {
+          circleEntry.isHovered = false;
         });
 
-        honeycombContainer.appendChild(rowDiv);
-        itemIndex += countInRow;
-        rowIndex++;
-      }
+        galleryCirclesRegistry.push(circleEntry);
 
-      bodyElem.appendChild(honeycombContainer);
+        const title = document.createElement('h3');
+        title.className = 'gallery-trio-title';
+        title.textContent = item.title;
+
+        const cap = document.createElement('p');
+        cap.className = 'gallery-trio-caption';
+        cap.textContent = item.caption;
+
+        card.appendChild(mediaWrap);
+        card.appendChild(title);
+        card.appendChild(cap);
+        stage.appendChild(card);
+      });
+
+      bodyElem.appendChild(stage);
+
+      // Navigazione: Trio Precedente / Successivo (senza box, con ondina circolare animata)
+      const navDiv = document.createElement('div');
+      navDiv.className = 'gallery-trio-nav';
+
+      const btnPrev = document.createElement('button');
+      btnPrev.type = 'button';
+      btnPrev.className = 'btn-phase-wave';
+      btnPrev.title = 'Trio precedente';
+      btnPrev.setAttribute('aria-label', 'Trio precedente');
+      btnPrev.innerHTML = `
+        <span class="wave-circle-icon" aria-hidden="true">
+          <span class="wave-ripple wr-1"></span>
+          <span class="wave-ripple wr-2"></span>
+          <span class="wave-ripple wr-3"></span>
+          <span class="wave-dot"></span>
+        </span>
+        <span class="btn-wave-label">Trio Precedente</span>
+      `;
+      btnPrev.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        playPhaseStepSound();
+        state.currentGalleryTrioIndex--;
+        renderGalleryTrioStage();
+      });
+
+      const counter = document.createElement('span');
+      counter.className = 'gallery-trio-counter';
+      counter.textContent = `Serie ${state.currentGalleryTrioIndex + 1} di ${trios.length}`;
+
+      const btnNext = document.createElement('button');
+      btnNext.type = 'button';
+      btnNext.className = 'btn-phase-wave';
+      btnNext.title = 'Trio successivo';
+      btnNext.setAttribute('aria-label', 'Trio successivo');
+      btnNext.innerHTML = `
+        <span class="btn-wave-label">Trio Successivo</span>
+        <span class="wave-circle-icon" aria-hidden="true">
+          <span class="wave-ripple wr-1"></span>
+          <span class="wave-ripple wr-2"></span>
+          <span class="wave-ripple wr-3"></span>
+          <span class="wave-dot"></span>
+        </span>
+      `;
+      btnNext.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        playPhaseStepSound();
+        state.currentGalleryTrioIndex++;
+        renderGalleryTrioStage();
+      });
+
+      navDiv.appendChild(btnPrev);
+      navDiv.appendChild(counter);
+      navDiv.appendChild(btnNext);
+      bodyElem.appendChild(navDiv);
+    }
+
+    // Gallery Generale: a scorrimento per trii come le fasi del laboratorio
+    if (data.isGallery && Array.isArray(data.items)) {
+      renderGalleryTrioStage();
     } else {
       if (layout) layout.classList.remove('gallery-mode');
       if (fullView) fullView.classList.remove('gallery-mode');
@@ -1821,10 +1892,28 @@
       });
     }
 
-    // Tasto Escape per chiudere la schermata
+    // Tasto Escape e frecce per navigazione e chiusura schermata
     window.addEventListener('keydown', function (e) {
       if (e.key === 'Escape') {
         if (state.portalOpen) closeCircularPortal();
+      } else if (state.portalOpen && e.key === 'ArrowLeft') {
+        if (state.activeSection === 'laboratorio') {
+          playPhaseStepSound();
+          renderPortalLabPhase(state.currentPhaseIndex - 1);
+        } else if (state.activeSection === 'gallery') {
+          playPhaseStepSound();
+          state.currentGalleryTrioIndex--;
+          renderPortalSection('gallery');
+        }
+      } else if (state.portalOpen && e.key === 'ArrowRight') {
+        if (state.activeSection === 'laboratorio') {
+          playPhaseStepSound();
+          renderPortalLabPhase(state.currentPhaseIndex + 1);
+        } else if (state.activeSection === 'gallery') {
+          playPhaseStepSound();
+          state.currentGalleryTrioIndex++;
+          renderPortalSection('gallery');
+        }
       }
     });
 
