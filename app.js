@@ -587,6 +587,48 @@
   }
 
   // -------------------------------------------------------------------------
+  // SILENZIAMENTO RIGOROSO DI TUTTE LE VOCI AUDIO RESIDUE
+  // (Evita droni continui al cambio pagina o al ritorno alla home)
+  // -------------------------------------------------------------------------
+  function silenceAllVoices(fadeSec) {
+    if (!audioCtx) return;
+    const time = audioCtx.currentTime;
+    const ramp = fadeSec || 0.03;
+
+    backHomeState.isHovered = false;
+    backHomeState.motionEnergy = 0;
+    mediaWaveState.isHovered = false;
+    mediaWaveState.motionEnergy = 0;
+
+    CIRCLES_REGISTRY.forEach(function (c) {
+      if (state.circles[c.id]) {
+        state.circles[c.id].isHovered = false;
+        state.circles[c.id].motionEnergy = 0;
+      }
+      if (audioNodes[c.id] && audioNodes[c.id].gain) {
+        try {
+          audioNodes[c.id].gain.gain.cancelScheduledValues(time);
+          audioNodes[c.id].gain.gain.setTargetAtTime(0.0001, time, ramp);
+        } catch (e) {}
+      }
+    });
+
+    if (audioNodes['back-home'] && audioNodes['back-home'].gain) {
+      try {
+        audioNodes['back-home'].gain.gain.cancelScheduledValues(time);
+        audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, time, ramp);
+      } catch (e) {}
+    }
+
+    if (audioNodes['portal-media'] && audioNodes['portal-media'].gain) {
+      try {
+        audioNodes['portal-media'].gain.gain.cancelScheduledValues(time);
+        audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, time, ramp);
+      } catch (e) {}
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // SINTESI EFFETTI SONORI TRANSIZIONI (ZOOM IN, RITORNO MELODICO, FASI)
   // -------------------------------------------------------------------------
   function playZoomInChime(baseFreq) {
@@ -978,25 +1020,44 @@
         dom.strandB.style.opacity = '';
       }
 
-      // 4. Modulazione sonora armonica
-      if (audioCtx && !state.audioMuted && audioNodes[c.id]) {
+      // 4. Modulazione sonora armonica dei cerchi della Home
+      if (audioCtx && audioNodes[c.id]) {
         const voice = audioNodes[c.id];
-        const combinedIntensity = Math.min(1.0, st.motionEnergy * 1.2 + (st.isHovered ? 0.4 : 0));
-        const targetVol = Math.max(0.0001, Math.pow(combinedIntensity, 1.3) * activeStyle.audio.maxVoiceGain);
-        const targetCutoff = activeStyle.audio.baseFilterCutoff + combinedIntensity * activeStyle.audio.filterModulationRange;
+        if (state.portalOpen || state.audioMuted) {
+          // Quando si è in una pagina interna o l'audio è spento, i cerchi della Home non devono suonare
+          voice.gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.04);
+        } else {
+          const combinedIntensity = Math.min(1.0, st.motionEnergy * 1.2 + (st.isHovered ? 0.4 : 0));
+          const targetVol = Math.max(0.0001, Math.pow(combinedIntensity, 1.3) * activeStyle.audio.maxVoiceGain);
+          const targetCutoff = activeStyle.audio.baseFilterCutoff + combinedIntensity * activeStyle.audio.filterModulationRange;
 
-        voice.gain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
-        voice.filter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
+          voice.gain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
+          voice.filter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
+        }
       }
     });
 
-    // 5. Animazione del cerchio rotante "Torna alla Home"
+    // 5. Animazione del cerchio rotante "Torna alla Home" e dell'immagine
     if (state.portalOpen) {
       animateBackHomeCircle();
-      animatePortalMediaCircle();
+      if (state.activeSection === 'laboratorio') {
+        animatePortalMediaCircle();
+      } else if (audioCtx && audioNodes['portal-media']) {
+        audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
+      }
       if (state.activeSection === 'gallery') {
         animateGalleryCircles();
       }
+    } else {
+      // Quando siamo sulla Home: silenzia rigorosamente le voci della pagina interna
+      if (audioCtx) {
+        if (audioNodes['back-home']) audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
+        if (audioNodes['portal-media']) audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
+      }
+      backHomeState.isHovered = false;
+      backHomeState.motionEnergy = 0;
+      mediaWaveState.isHovered = false;
+      mediaWaveState.motionEnergy = 0;
     }
 
     requestAnimationFrame(mainAnimationLoop);
@@ -1307,6 +1368,7 @@
   // -------------------------------------------------------------------------
   function openCircularPortal(sectionKey, phaseIndex, clickOrigin) {
     ensureAudioUnlocked();
+    silenceAllVoices(0.02);
 
     // 1. Calcolo del centro del cerchio/hub per la transizione di zoom
     let originX = '33.75%';
@@ -1368,6 +1430,7 @@
 
   function closeCircularPortal() {
     if (!state.portalOpen) return;
+    silenceAllVoices(0.02);
     playReturnChime();
     galleryCirclesRegistry.length = 0;
 
@@ -1395,6 +1458,12 @@
   function renderPortalLabPhase(index) {
     if (index < 0) index = LAB_PHASES.length - 1;
     if (index >= LAB_PHASES.length) index = 0;
+
+    if (audioCtx && audioNodes['portal-media']) {
+      audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
+    }
+    mediaWaveState.isHovered = false;
+    mediaWaveState.motionEnergy = 0;
 
     state.currentPhaseIndex = index;
     const phaseData = LAB_PHASES[index];
@@ -1450,6 +1519,12 @@
   }
 
   function renderPortalSection(sectionKey) {
+    if (audioCtx && audioNodes['portal-media']) {
+      audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
+    }
+    mediaWaveState.isHovered = false;
+    mediaWaveState.motionEnergy = 0;
+
     const data = DRAWER_DATA[sectionKey];
     if (!data) return;
 
