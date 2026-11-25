@@ -1365,6 +1365,7 @@
   function closeCircularPortal() {
     if (!state.portalOpen) return;
     playReturnChime();
+    galleryCirclesRegistry.length = 0;
 
     const portal = document.getElementById('circularPortal');
     const soundscapeContainer = document.getElementById('soundscapeContainer');
@@ -1479,10 +1480,10 @@
         mask.appendChild(img);
         mediaWrap.appendChild(mask);
 
-        // SVG cerchio d'onda con filamenti armonici identico alla Home
+        // SVG cerchio d'onda con filamenti armonici identico alla Home (formato compatto per griglia a scorrimento minimo)
         const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
         svg.setAttribute('class', 'gallery-circle-wave-svg');
-        svg.setAttribute('viewBox', '0 0 230 230');
+        svg.setAttribute('viewBox', '0 0 155 155');
 
         const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
         const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
@@ -1502,9 +1503,9 @@
         mediaWrap.appendChild(svg);
 
         const circleEntry = {
-          cx: 115,
-          cy: 115,
-          radius: 105,
+          cx: 77.5,
+          cy: 77.5,
+          radius: 70,
           pathVis: pathVis,
           strandA: strandA,
           strandB: strandB,
@@ -1543,39 +1544,87 @@
 
       bodyElem.appendChild(grid);
     } else {
-      // Loghi Partner
+      // Loghi Partner: inseriti nei cerchi d'onda come tutte le immagini, con sfondo bianco protettivo e dimensioni generose
       if (data.logos && Array.isArray(data.logos)) {
-        const whiteBlock = document.createElement('div');
-        whiteBlock.className = 'partner-logos-white-block';
-
-        const blockLabel = document.createElement('div');
-        blockLabel.className = 'partner-logos-label';
-        blockLabel.textContent = 'Istituzioni & Partner di Ricerca';
-        whiteBlock.appendChild(blockLabel);
-
-        const logosGrid = document.createElement('div');
-        logosGrid.className = 'partner-logos-grid';
+        const partnerGrid = document.createElement('div');
+        partnerGrid.className = 'partner-circular-grid';
 
         data.logos.forEach(function (logo) {
-          const item = document.createElement('div');
-          item.className = 'partner-logo-item';
+          const card = document.createElement('div');
+          card.className = 'partner-circular-card';
+
+          const mediaWrap = document.createElement('div');
+          mediaWrap.className = 'partner-circle-media-wrap';
+
+          const mask = document.createElement('div');
+          mask.className = 'partner-circle-img-mask';
 
           const img = document.createElement('img');
-          img.className = 'partner-logo-img';
+          img.className = 'partner-logo-circle-img';
           img.src = logo.image;
           img.alt = logo.name;
+          img.loading = 'lazy';
+          mask.appendChild(img);
+          mediaWrap.appendChild(mask);
+
+          // SVG cerchio d'onda con filamenti armonici identico alla Home
+          const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+          svg.setAttribute('class', 'gallery-circle-wave-svg');
+          svg.setAttribute('viewBox', '0 0 220 220');
+
+          const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+          const strandA = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          strandA.setAttribute('class', 'wave-harmonic-strand strand-inner');
+          const strandB = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          strandB.setAttribute('class', 'wave-harmonic-strand strand-outer');
+          const pathVis = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          pathVis.setAttribute('class', 'wave-single-circle');
+          const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+          hitProxy.setAttribute('class', 'circle-hit-proxy');
+
+          g.appendChild(strandA);
+          g.appendChild(strandB);
+          g.appendChild(pathVis);
+          g.appendChild(hitProxy);
+          svg.appendChild(g);
+          mediaWrap.appendChild(svg);
+
+          const circleEntry = {
+            cx: 110,
+            cy: 110,
+            radius: 100,
+            pathVis: pathVis,
+            strandA: strandA,
+            strandB: strandB,
+            hitProxy: hitProxy,
+            isHovered: false,
+            motionEnergy: 0
+          };
+
+          hitProxy.addEventListener('pointerenter', function () {
+            ensureAudioUnlocked();
+            circleEntry.isHovered = true;
+            circleEntry.motionEnergy = 1.0;
+          });
+          hitProxy.addEventListener('pointermove', function () {
+            circleEntry.motionEnergy = Math.min(1.0, circleEntry.motionEnergy + 0.15);
+          });
+          hitProxy.addEventListener('pointerleave', function () {
+            circleEntry.isHovered = false;
+          });
+
+          galleryCirclesRegistry.push(circleEntry);
 
           const caption = document.createElement('span');
-          caption.className = 'partner-logo-name';
+          caption.className = 'partner-circular-name';
           caption.textContent = logo.name;
 
-          item.appendChild(img);
-          item.appendChild(caption);
-          logosGrid.appendChild(item);
+          card.appendChild(mediaWrap);
+          card.appendChild(caption);
+          partnerGrid.appendChild(card);
         });
 
-        whiteBlock.appendChild(logosGrid);
-        bodyElem.appendChild(whiteBlock);
+        bodyElem.appendChild(partnerGrid);
       }
 
       if (Array.isArray(data.sections)) {
@@ -1701,13 +1750,11 @@
       }
     });
 
-    // Click sul Logo AGORA: apre la Fase 1 del Laboratorio
+    // Click sul Logo AGORA: deve sempre riportare alla home
     document.getElementById('navBtnLogo').addEventListener('click', function () {
       ensureAudioUnlocked();
-      if (state.portalOpen && state.activeSection === 'laboratorio' && state.currentPhaseIndex === 0) {
+      if (state.portalOpen) {
         closeCircularPortal();
-      } else {
-        openCircularPortal('laboratorio', 0, { x: 540, y: 475 });
       }
     });
 
