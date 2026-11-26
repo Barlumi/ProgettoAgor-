@@ -372,14 +372,14 @@
   // REGISTRO DEI CERCHI (STRUTTURA GEOMETRICA FISSA: Sinistra 5 Fasi | Destra)
   // -------------------------------------------------------------------------
   const CIRCLES_REGISTRY = [
-    // --- ONDA GRANDE A SINISTRA (5 Fasi con Titoli Specifici) ---
+    // --- ONDA GRANDE A SINISTRA (5 Fasi con Numerazione Ordinale Esplicita) ---
     {
       id: 'lab-c1',
       system: 'laboratorio',
       cx: 540,
       cy: 475,
       radius: 80,
-      labelText: 'Acquisizione 3D',
+      labelText: '1 • Acquisizione 3D',
       labelAngle: 0.85 * Math.PI, // Ore 5
       isPhase: true,
       phaseIndex: 0
@@ -390,7 +390,7 @@
       cx: 540,
       cy: 475,
       radius: 140,
-      labelText: 'Risposte ad Impulso',
+      labelText: '2 • Risposte ad Impulso',
       labelAngle: 0.25 * Math.PI, // Ore 1.5
       isPhase: true,
       phaseIndex: 1
@@ -401,7 +401,7 @@
       cx: 540,
       cy: 475,
       radius: 200,
-      labelText: 'Armoniche Sferiche',
+      labelText: '3 • Armoniche Sferiche',
       labelAngle: 1.25 * Math.PI, // Ore 7.5
       isPhase: true,
       phaseIndex: 2
@@ -412,7 +412,7 @@
       cx: 540,
       cy: 475,
       radius: 260,
-      labelText: 'Realtà Virtuale 6DoF',
+      labelText: '4 • Realtà Virtuale 6DoF',
       labelAngle: 1.75 * Math.PI, // Ore 10.5
       isPhase: true,
       phaseIndex: 3
@@ -423,7 +423,7 @@
       cx: 540,
       cy: 475,
       radius: 320,
-      labelText: 'Restituzione Immersiva',
+      labelText: '5 • Restituzione Immersiva',
       labelAngle: 0.00 * Math.PI, // Ore 12
       isPhase: true,
       phaseIndex: 4
@@ -808,6 +808,7 @@
 
       circleDOM[c.id] = {
         config: c,
+        group: g,
         pathVis: pathVis,
         strandA: strandA,
         strandB: strandB,
@@ -1453,6 +1454,9 @@
 
     state.portalOpen = false;
     updateHeaderActiveStates();
+
+    // Effetto di ri-orientamento acustico ad onde centripete/centrifughe verso l'esterno
+    setTimeout(triggerIntroExpansionRipple, 300);
   }
 
   function renderPortalLabPhase(index) {
@@ -2014,6 +2018,28 @@
   }
 
   // -------------------------------------------------------------------------
+  // EFFETTO ESPANSIONE ACUSTICA CENTRIFUGA (ONBOARDING VISIVO DAL CENTRO ALL'ESTERNO)
+  // -------------------------------------------------------------------------
+  function triggerIntroExpansionRipple() {
+    const labPhasesIds = ['lab-c1', 'lab-c2', 'lab-c3', 'lab-c4', 'lab-c5'];
+    labPhasesIds.forEach(function (id, idx) {
+      setTimeout(function () {
+        if (state.portalOpen) return;
+        if (state.circles[id]) {
+          state.circles[id].motionEnergy = 1.0;
+        }
+        const dom = circleDOM[id];
+        if (dom && dom.group) {
+          dom.group.classList.add('intro-pulse');
+          setTimeout(function () {
+            dom.group.classList.remove('intro-pulse');
+          }, 700);
+        }
+      }, 350 + idx * 220);
+    });
+  }
+
+  // -------------------------------------------------------------------------
   // AVVIO ALL'ONLOAD (PANORAMICA ONDE CONCENTRICHE INTERATTIVA)
   // -------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', function () {
@@ -2024,6 +2050,9 @@
     renderPortalLabPhase(0);
 
     requestAnimationFrame(mainAnimationLoop);
+
+    // Animazione di orientamento centripeto/centrifugo dal cuore verso l'esterno
+    setTimeout(triggerIntroExpansionRipple, 500);
   });
 
   // Esposizione per navigazione e test

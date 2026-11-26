@@ -387,17 +387,21 @@ html, body {
   stroke: rgba(56, 189, 248, 0.35); /* Tonalità ciano elettrico esterna */
 }
 
-.circle-item:hover .wave-single-circle, .wave-single-circle.active {
+.circle-item:hover .wave-single-circle, 
+.wave-single-circle.active,
+.circle-item.intro-pulse .wave-single-circle {
   stroke: url(#gradWaveActive);
   stroke-width: 2.3;
   filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.65)) drop-shadow(0 0 16px rgba(245, 158, 11, 0.35));
 }
 
-.circle-item:hover .wave-harmonic-strand.strand-inner {
+.circle-item:hover .wave-harmonic-strand.strand-inner,
+.circle-item.intro-pulse .wave-harmonic-strand.strand-inner {
   stroke: rgba(251, 191, 36, 0.75);
 }
 
-.circle-item:hover .wave-harmonic-strand.strand-outer {
+.circle-item:hover .wave-harmonic-strand.strand-outer,
+.circle-item.intro-pulse .wave-harmonic-strand.strand-outer {
   stroke: rgba(56, 189, 248, 0.85);
 }
 
@@ -420,7 +424,8 @@ html, body {
   alignment-baseline: central;
 }
 
-.circle-item:hover .wave-path-text {
+.circle-item:hover .wave-path-text,
+.circle-item.intro-pulse .wave-path-text {
   fill: #ffffff;
   font-weight: 700;
   filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.8));
