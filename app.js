@@ -500,6 +500,7 @@
     portalOpen: false,
     audioMuted: false,
     suppressHoverAudioUntil: 0,
+    introRippleAudioPlayed: false,
 
     circles: {}
   };
@@ -524,6 +525,7 @@
     if (audioCtx) return;
     try {
       const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContext) return;
       audioCtx = new AudioContext();
 
       const masterGain = audioCtx.createGain();
@@ -539,6 +541,11 @@
       // Voci audio dedicate per il pulsante rotante "Torna alla Home" e l'immagine circolare
       createAudioVoice('back-home', 440);
       createAudioVoice('portal-media', 330);
+
+      // Se il browser permette l'audio senza restrizioni autoplay
+      if (audioCtx.state === 'running') {
+        detachUnlockListeners();
+      }
     } catch (err) {
       console.warn('Audio non supportato:', err);
     }
@@ -586,11 +593,49 @@
     }
   }
 
-  function ensureAudioUnlocked() {
+  function ensureAudioUnlocked(callback) {
     if (!audioCtx) initAudioContext();
-    if (audioCtx && audioCtx.state === 'suspended') {
-      audioCtx.resume();
+    if (!audioCtx) return;
+
+    if (audioCtx.state === 'running') {
+      detachUnlockListeners();
+      if (!state.introRippleAudioPlayed && !state.portalOpen) {
+        state.introRippleAudioPlayed = true;
+        triggerIntroExpansionRipple();
+      }
+      if (typeof callback === 'function') callback();
+      return;
     }
+
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(function () {
+        if (audioCtx.state === 'running') {
+          detachUnlockListeners();
+          if (!state.introRippleAudioPlayed && !state.portalOpen) {
+            state.introRippleAudioPlayed = true;
+            triggerIntroExpansionRipple();
+          }
+          if (typeof callback === 'function') callback();
+        }
+      }).catch(function () {});
+    }
+  }
+
+  const UNLOCK_EVENTS = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown', 'click'];
+  function onFirstUserGesture() {
+    ensureAudioUnlocked();
+  }
+  function attachUnlockListeners() {
+    UNLOCK_EVENTS.forEach(function (evt) {
+      window.addEventListener(evt, onFirstUserGesture, { capture: true, passive: true });
+      document.addEventListener(evt, onFirstUserGesture, { capture: true, passive: true });
+    });
+  }
+  function detachUnlockListeners() {
+    UNLOCK_EVENTS.forEach(function (evt) {
+      window.removeEventListener(evt, onFirstUserGesture, { capture: true });
+      document.removeEventListener(evt, onFirstUserGesture, { capture: true });
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -722,6 +767,7 @@
   }
 
   function playRipplePulseSound(freq) {
+    if (!audioCtx) initAudioContext();
     if (!audioCtx || state.audioMuted || audioCtx.state !== 'running') return;
     try {
       const now = audioCtx.currentTime;
@@ -2023,9 +2069,6 @@
   // GESTIONE EVENTI (HIT PROXY 34PX & CONTROLLI)
   // -------------------------------------------------------------------------
   function initEventHandlers() {
-    window.addEventListener('pointerdown', ensureAudioUnlocked, { once: true });
-    window.addEventListener('keydown', ensureAudioUnlocked, { once: true });
-
     // Clic sui cerchi concentrici dell'SVG
     CIRCLES_REGISTRY.forEach(function (c) {
       const dom = circleDOM[c.id];
@@ -2233,6 +2276,9 @@
   // EFFETTO ESPANSIONE ACUSTICA CENTRIFUGA (PROPAGAZIONE SU TUTTI I MENU CIRCOLARI)
   // -------------------------------------------------------------------------
   function triggerIntroExpansionRipple() {
+    if (audioCtx && audioCtx.state === 'running') {
+      state.introRippleAudioPlayed = true;
+    }
     // Sequenza di propagazione a onde: dal centro del Laboratorio verso l'esterno,
     // poi si propaga agli altri menu circolari (Partner, Timeline, Crediti, Gallery, Pubblicazioni)
     const propagationSequence = [
@@ -2274,6 +2320,8 @@
   // AVVIO ALL'ONLOAD (PANORAMICA ONDE CONCENTRICHE INTERATTIVA)
   // -------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', function () {
+    initAudioContext();
+    attachUnlockListeners();
     renderSvgScene();
     initBackHomeCircle();
     initPortalMediaCircle();
