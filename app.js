@@ -21,57 +21,57 @@
     {
       num: 1,
       tag: 'Fase 1',
-      title: 'Fase 1: Registrazione del Suono e delle Piazze',
+      title: 'Fase 1: Acquisizione 3D e Soundscape Urbano',
       body: [
-        'I ricercatori hanno viaggiato in 5 città dell\'Emilia-Romagna per registrare il paesaggio sonoro di 11 piazze storiche e teatri: da Piazza Duomo a Parma e Piazza Cavour a Rimini, fino a Faenza, Comacchio e Tresigallo.',
-        'Al centro di ogni piazza è stata posizionata una speciale sfera con 64 microfoni insieme a una telecamera a 360°. Questo sistema permette di "fotografare" il suono da ogni direzione, catturando la vita autentica del luogo: il vociare sotto i portici, i passi sui ciottoli e il riverbero dei palazzi storici.'
+        'I ricercatori del CIRI-EC (Università di Bologna) e del CIDEA (Università di Parma) hanno condotto una rigorosa campagna sperimentale su 11 scene in 5 città dell\'Emilia-Romagna: da Piazza Duomo a Parma e Piazza Cavour a Rimini, fino a Faenza, Comacchio e Tresigallo, catturando il soundscape (paesaggio sonoro urbano) nella sua complessità dinamica.',
+        'Al centro delle piazze è stata impiegata una sonda sferica rigida a 64 capsule microfoniche (Eigenmike em64), posizionata coassialmente a 1,7 m di altezza con una camera a 360° in risoluzione 8K equirettangolare. Il flusso dati viene acquisito su rete digitale con protocollo Dante (48 kHz / PoE+), assicurando una sincronizzazione audiovisiva calibrata tra video panoramico e campo acustico omnidirezionale.'
       ],
       image: 'assets/gallery/image12.jpg',
-      imageCaption: 'Rilievo acustico in Piazza Cavour a Rimini: la speciale sonda microfonica a 64 capsule (em64) posizionata al centro della piazza per catturare il soundscape a 360°.'
+      imageCaption: 'Rilievo acustico in Piazza Cavour a Rimini: la speciale sonda microfonica a 64 capsule (Eigenmike em64) posizionata al centro della piazza per catturare il soundscape a 360°.'
     },
     {
       num: 2,
       tag: 'Fase 2',
-      title: 'Fase 2: L\'Impronta Sonora dei Monumenti',
+      title: 'Fase 2: Risposte all\'Impulso Spaziali (IR 3D) e Metodo ESS',
       body: [
-        'Ogni spazio architettonico possiede una voce unica, determinata dalle sue forme e dai suoi materiali. Per scoprirla, i ricercatori hanno emesso suoni calibrati nelle piazze e nei teatri, registrando come l\'ambiente risponde ed estinguendosi genera l\'eco.',
-        'Questa registrazione si chiama "risposta ad impulso": funziona come una vera e propria impronta digitale acustica, capace di descrivere esattamente come uno spazio fa risuonare la musica o la voce umana.'
+        'Ogni ambiente monumentale possiede un\'impronta sonora distintiva, determinata dalle geometrie volumetriche e dalle proprietà riflettenti delle superfici murarie. La caratterizzazione acustica segue gli standard ISO 3382, trattando lo spazio urbano all\'aperto con il rigore tipico dell\'acustica dei teatri e delle sale da concerto.',
+        'Il rilievo impiega il metodo ESS (Exponential Sine Sweep): una sorgente omnidirezionale eccita lo spazio con uno sweep sinusoidale a frequenza esponenziale che, deconvoluto con filtro inverso, isola la Risposta all\'Impulso spaziale (IR 3D) scartando le distorsioni armoniche. L\'approccio MIMO (Multiple-Input Multiple-Output) mappa tempi di riverberazione (T30 tra 1,4 e 1,9 s) e l\'orientamento delle prime riflessioni (0–80 ms).'
       ],
       image: 'assets/gallery/image31.jpg',
-      imageCaption: 'Misura dell\'impronta acustica in Piazza Cavour a Rimini: la piazza si comporta con un tempo di riverbero simile a una sala da concerto.'
+      imageCaption: 'Misura dell\'impronta acustica in Piazza Cavour a Rimini: caratterizzazione della risposta all\'impulso spaziale con matrice MIMO e sorgente omnidirezionale.'
     },
     {
       num: 3,
       tag: 'Fase 3',
-      title: 'Fase 3: La Mappa del Suono Nello Spazio',
+      title: 'Fase 3: Decomposizione in Armoniche Sferiche (HOA / Ambisonics)',
       body: [
-        'Tutti i suoni registrati vengono trasformati in un formato audio tridimensionale (chiamato Ambisonics). Invece di semplici canali stereo destro e sinistro, il suono viene scomposto in una vera e propria sfera sonora avvolgente.',
-        'Grazie a questa tecnologia, la registrazione non è legata a un singolo paio di cuffie o a un tipo di altoparlante: può essere ricreata con fedeltà assoluta in qualsiasi ambiente, facendo sentire l\'ascoltatore esattamente al centro della piazza.'
+        'I segnali discreti catturati dalle capsule vengono proiettati nel dominio spaziale continuo attraverso la scomposizione in armoniche sferiche mediante lo standard Higher Order Ambisonics (HOA). I dati vengono codificati nel formato AmbiX (ACN/SN3D) fino al 3° ordine (16 canali), fornendo una rappresentazione vettoriale omnidirezionale e svincolata dallo specifico sistema di diffusione.',
+        'Questo formalismo consente di elaborare mappe di intensità acustica tridimensionale (Loudness) sovrapposte in tempo reale alle immagini 360°. La tecnica permette di identificare con precisione analitica la provenienza energetica delle sorgenti primarie (voci, attività urbane, fontane) e le traiettorie di dispersione sonora riflesse da portici e facciate storiche.'
       ],
       image: 'assets/gallery/image28.jpg',
-      imageCaption: 'Rappresentazione della sfera acustica 3D: il suono viene catturato e orientato con precisione in tutte le direzioni dello spazio.'
+      imageCaption: 'Rappresentazione della sfera acustica 3D: decomposizione del fronte sonoro in armoniche sferiche di 3° ordine in formato master AmbiX.'
     },
     {
       num: 4,
       tag: 'Fase 4',
-      title: 'Fase 4: Camminare nel Suono in Realtà Virtuale',
+      title: 'Fase 4: Realtà Virtuale Interattiva a 6 Gradi di Libertà (6DOF)',
       body: [
-        'Attraverso foto aeree scattate con i droni e scansioni laser, le piazze sono state interamente ricostruite in 3D. A questo modello visivo è stato agganciato il motore sonoro interattivo.',
-        'L\'utente può indossare un visore o usare il computer per camminare liberamente nella piazza virtuale: avvicinandosi a un musicista il volume aumenta, allontanandosi o riparandosi sotto un portico l\'acustica cambia in tempo reale, proprio come nella realtà.'
+        'Le piazze sono state ricostruite tridimensionalmente ad alta fedeltà combinando fotogrammetria da terra e scansioni aeree con droni. Questo gemello digitale è stato innestato nel motore grafico in tempo reale Unreal Engine, armonizzando le coordinate geometriche visive con il modello acustico computazionale.',
+        'La simulazione integra un motore di auralizzazione basato su convolutori a matrice a bassissima latenza (X-MCFX) e rotazione della scena (IEM SceneRotator) vincolata al tracciamento della testa (head tracking via OSC). L\'utente sperimenta una navigazione a 6 gradi di libertà (6DOF - traslazione e rotazione), dove l\'acustica muta dinamicamente in tempo reale muovendosi verso gli strumenti musicali o riparandosi sotto un loggiato.'
       ],
       image: 'assets/gallery/image35.jpg',
-      imageCaption: 'Esplorazione in Realtà Virtuale di Piazzale San Francesco a Parma: l\'utente cammina liberamente ascoltando l\'esecuzione dal vivo de Il Trovatore.'
+      imageCaption: 'Esplorazione in Realtà Virtuale 6DOF di Piazzale San Francesco a Parma: auralizzazione spazializzata in tempo reale durante l\'esecuzione de Il Trovatore.'
     },
     {
       num: 5,
       tag: 'Fase 5',
-      title: 'Fase 5: Rivivere il Patrimonio per Tutti',
+      title: 'Fase 5: Restituzione Immersiva, WFS e Accessibilità Culturale',
       body: [
-        'Il risultato finale del laboratorio apre la cultura a tutti: persone con disabilità motorie o fragilità che non possono viaggiare possono rivivere la magia e il paesaggio sonoro delle piazze storiche da casa o da musei dedicati.',
-        'A Tresigallo, nell\'edificio storico "Sogni", è stata inoltre allestita una sala speciale con 32 altoparlanti che ricrea fisicamente il campo sonoro delle piazze, unendo ricerca scientifica, memoria civica e inclusione sociale.'
+        'La fruizione acustica dei beni immateriali si articola in due canali ad alta fedeltà: riproduzione personale in cuffia con filtraggio binaurale basato su funzioni di trasferimento della testa (HRTF), oppure resa olografica in sala tramite decodifica AllRAD (IEM AllRADecoder) e sintesi del fronte d\'onda (Wave Field Synthesis - WFS) su array fisici multicanale.',
+        'Presso l\'edificio razionalista "Sogni" a Tresigallo, è stata allestita una sala immersiva permanente con sistema WFS a 32 stadi di amplificazione dedicati e proiezione ottagonale a 360°. Il laboratorio converte la ricerca acustica avanzata in uno strumento di inclusione sociale, consentendo a persone con disabilità motorie o fragilità di vivere il patrimonio sonoro delle piazze storiche.'
       ],
       image: 'assets/gallery/tresigallo_wfs_room.jpg',
-      imageCaption: 'La sala d\'ascolto immersiva di Tresigallo con array circolare WFS di altoparlanti e videoproiezione panoramica all\'edificio "Sogni".'
+      imageCaption: 'La sala d\'ascolto immersiva di Tresigallo all\'edificio "Sogni": array di altoparlanti WFS e videoproiezione panoramica per la fruizione culturale accessibile.'
     }
   ];
 
@@ -83,14 +83,14 @@
         {
           heading: '2019 – 2021: Progetto SIPARIO (I Teatri Storici)',
           text: [
-            'Programma: POR FESR 2014–2020 / FSC della Regione Emilia-Romagna (Contributo regionale: 501.500 €, durata 24 mesi).',
+            'Programma: POR FESR 2014–2020 / FSC della Regione Emilia-Romagna (durata 24 mesi).',
             'Focus scientifico: documentazione e rilievo dell\'acustica tridimensionale di 7 teatri d\'opera storici regionali (tra cui il Teatro Pavarotti di Modena, il Teatro Masini di Faenza, il Teatro Municipale di Piacenza e il Teatro Comunale di Bologna). Misure MIMO con sorgente sferica a 32 altoparlanti, Eigenmike-32 e fotogrammetria con drone per le prime sale d\'ascolto a Parma e Bologna.'
           ]
         },
         {
           heading: '2024 – 2026: Progetto AGORÀ (Dalle Sale alle Piazze)',
           text: [
-            'Programma: PR FESR Emilia-Romagna 2021–2027 (Costo totale: 763.535 €, durata 30 mesi: 30/01/2024 – 29/07/2026).',
+            'Programma: PR FESR Emilia-Romagna 2021–2027 (durata 30 mesi: 30/01/2024 – 29/07/2026).',
             'Focus scientifico: trasposizione ed evoluzione metodologica dallo spazio chiuso teatrale allo spazio pubblico urbano delle piazze monumentali intese come beni culturali immateriali. Rilievi su 11 piazze in 5 città, campionamento 3D con sonda em64 a 64 capsule e video 8K, modellazione VR a 6 gradi di libertà (6DoF) e restituzione accessibile per persone con disabilità.'
           ]
         },
@@ -188,8 +188,12 @@
       title: 'Credits & Governance',
       sections: [
         {
-          heading: 'Inquadramento Programmatico & Finanziamento',
-          text: 'AGORÀ — "Atelier sonoro per il GiocO, la RicercA, l\'AcusticA". Cofinanziato dai Fondi Europei della Regione Emilia-Romagna nell\'ambito del PR FESR 2021–2027 (Azione 1.1.2 - Sostegno alla ricerca industriale). Budget totale: 763.535 €, durata 30 mesi (30/01/2024 – 29/07/2026). Il progetto continua ed estende all\'aperto il patrimonio di competenze di SIPARIO (POR FESR 2014–2020).'
+          heading: 'Inquadramento Programmatico & Finanziamento (Fondi Europei e Regionali)',
+          text: [
+            '• Progetto AGORÀ ("Atelier sonoro per il GiocO, la RicercA, l\'AcusticA"): Cofinanziato dai Fondi Europei della Regione Emilia-Romagna nell\'ambito del Programma PR FESR 2021–2027 (Azione 1.1.2 - Sostegno alla ricerca industriale delle filiere produttive e dell\'innovazione). Costo e budget totale del progetto: 763.535,00 € (durata 30 mesi: 30/01/2024 – 29/07/2026).',
+            '• Progetto SIPARIO ("Il Suono dei Teatri d\'Opera"): Progetto capostipite propedeutico, cofinanziato dal Programma POR FESR 2014–2020 / FSC della Regione Emilia-Romagna. Contributo pubblico regionale erogato: 501.500,00 € (durata 24 mesi: 2019–2021).',
+            'Tutte le risorse economiche, gli stanziamenti e i contributi dei programmi comunitari sono accentrati sotto la supervisione e la rendicontazione amministrativa del soggetto capofila Gruppo C.S.A. S.p.A. e della Regione Emilia-Romagna.'
+          ]
         },
         {
           heading: 'Coordinamento Scientifico Generale',
@@ -495,6 +499,7 @@
     currentLightboxIndex: 0,
     portalOpen: false,
     audioMuted: false,
+    suppressHoverAudioUntil: 0,
 
     circles: {}
   };
@@ -1026,8 +1031,10 @@
       // 4. Modulazione sonora armonica dei cerchi della Home
       if (audioCtx && audioNodes[c.id]) {
         const voice = audioNodes[c.id];
-        if (state.portalOpen || state.audioMuted) {
-          // Quando si è in una pagina interna o l'audio è spento, i cerchi della Home non devono suonare
+        const isHoverAudioSuppressed = performance.now() < state.suppressHoverAudioUntil;
+        if (state.portalOpen || state.audioMuted || isHoverAudioSuppressed) {
+          // Quando si è in una pagina interna, l'audio è spento o durante la propagazione di ritorno alla home,
+          // i cerchi della Home non devono produrre suoni di passaggio del mouse
           voice.gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.04);
         } else {
           const combinedIntensity = Math.min(1.0, st.motionEnergy * 1.2 + (st.isHovered ? 0.4 : 0));
@@ -1459,6 +1466,16 @@
 
     state.portalOpen = false;
     updateHeaderActiveStates();
+
+    // Silenzia e azzera lo stato hover di tutti i cerchi della home per evitare sovrapposizioni
+    CIRCLES_REGISTRY.forEach(function (c) {
+      if (state.circles[c.id]) {
+        state.circles[c.id].isHovered = false;
+        state.circles[c.id].motionEnergy = 0;
+      }
+    });
+    // Soppressione del suono al passaggio del mouse per 2.2 secondi durante la propagazione sonora
+    state.suppressHoverAudioUntil = performance.now() + 2200;
 
     // Effetto di ri-orientamento acustico ad onde centripete/centrifughe verso l'esterno
     setTimeout(triggerIntroExpansionRipple, 300);
@@ -1995,11 +2012,17 @@
 
       hitProxy.addEventListener('pointerenter', function () {
         ensureAudioUnlocked();
+        if (performance.now() < state.suppressHoverAudioUntil) {
+          return;
+        }
         state.circles[c.id].isHovered = true;
         state.circles[c.id].motionEnergy = 1.0;
       });
 
       hitProxy.addEventListener('pointermove', function () {
+        if (performance.now() < state.suppressHoverAudioUntil) {
+          return;
+        }
         state.circles[c.id].motionEnergy = Math.min(1.0, state.circles[c.id].motionEnergy + 0.15);
       });
 
@@ -2218,6 +2241,7 @@
     requestAnimationFrame(mainAnimationLoop);
 
     // Animazione di orientamento centripeto/centrifugo dal cuore verso l'esterno
+    state.suppressHoverAudioUntil = performance.now() + 2200;
     setTimeout(triggerIntroExpansionRipple, 500);
   });
 
