@@ -1701,16 +1701,15 @@
 
       const btnPrev = document.createElement('button');
       btnPrev.type = 'button';
-      btnPrev.className = 'btn-phase-wave';
+      btnPrev.className = 'btn-phase-wave btn-nav-prev';
       btnPrev.title = 'Indietro';
       btnPrev.setAttribute('aria-label', 'Indietro');
       btnPrev.innerHTML = `
-        <span class="wave-circle-icon" aria-hidden="true">
-          <span class="wave-ripple wr-1"></span>
-          <span class="wave-ripple wr-2"></span>
-          <span class="wave-ripple wr-3"></span>
-          <span class="wave-dot"></span>
-        </span>
+        <svg class="modernist-nav-arrow arrow-left" viewBox="0 0 28 28" aria-hidden="true">
+          <circle cx="14" cy="14" r="12" class="nav-arrow-ring" />
+          <line x1="18" y1="14" x2="9" y2="14" class="nav-arrow-axis" />
+          <polyline points="14,9 9,14 14,19" class="nav-arrow-chevron" />
+        </svg>
         <span class="btn-wave-label">Indietro</span>
       `;
       btnPrev.addEventListener('click', function () {
@@ -1726,17 +1725,16 @@
 
       const btnNext = document.createElement('button');
       btnNext.type = 'button';
-      btnNext.className = 'btn-phase-wave';
+      btnNext.className = 'btn-phase-wave btn-nav-next';
       btnNext.title = 'Avanti';
       btnNext.setAttribute('aria-label', 'Avanti');
       btnNext.innerHTML = `
         <span class="btn-wave-label">Avanti</span>
-        <span class="wave-circle-icon" aria-hidden="true">
-          <span class="wave-ripple wr-1"></span>
-          <span class="wave-ripple wr-2"></span>
-          <span class="wave-ripple wr-3"></span>
-          <span class="wave-dot"></span>
-        </span>
+        <svg class="modernist-nav-arrow arrow-right" viewBox="0 0 28 28" aria-hidden="true">
+          <circle cx="14" cy="14" r="12" class="nav-arrow-ring" />
+          <line x1="10" y1="14" x2="19" y2="14" class="nav-arrow-axis" />
+          <polyline points="14,9 19,14 14,19" class="nav-arrow-chevron" />
+        </svg>
       `;
       btnNext.addEventListener('click', function () {
         ensureAudioUnlocked();

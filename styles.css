@@ -443,7 +443,9 @@ html, body {
   pointer-events: none;
   visibility: hidden;
   transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1), visibility 0.65s ease;
-  background: radial-gradient(circle at center, rgba(3, 7, 18, 0.72) 0%, rgba(3, 7, 18, 0.95) 100%);
+  background: radial-gradient(circle at center, rgba(3, 7, 18, 0.88) 0%, rgba(3, 7, 18, 0.98) 100%);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
   overflow: hidden;
 }
 
@@ -1108,6 +1110,96 @@ html, body {
 
 .btn-phase-wave:active {
   color: #ffffff !important;
+}
+
+/* --------------------------------------------------------------------------
+   Frecce Moderniste Geometriche (Navigazione Fasi e Gallery Trio)
+   -------------------------------------------------------------------------- */
+.modernist-nav-arrow {
+  width: 24px;
+  height: 24px;
+  overflow: visible;
+  flex-shrink: 0;
+  display: inline-block;
+  vertical-align: middle;
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.modernist-nav-arrow .nav-arrow-ring {
+  fill: none;
+  stroke: rgba(148, 163, 184, 0.35);
+  stroke-width: 1.2;
+  stroke-dasharray: 4 2.5;
+  transition: stroke 0.25s ease, stroke-dasharray 0.25s ease;
+}
+
+.modernist-nav-arrow.arrow-left .nav-arrow-chevron,
+.modernist-nav-arrow.arrow-left .nav-arrow-axis {
+  fill: none;
+  stroke: #38bdf8;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s ease, filter 0.2s ease;
+}
+
+.modernist-nav-arrow.arrow-right .nav-arrow-chevron,
+.modernist-nav-arrow.arrow-right .nav-arrow-axis {
+  fill: none;
+  stroke: #f59e0b;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: stroke 0.2s ease, filter 0.2s ease;
+}
+
+.modernist-nav-arrow .nav-arrow-chevron {
+  stroke-width: 2.2;
+}
+
+.modernist-nav-arrow .nav-arrow-axis {
+  stroke-width: 1.8;
+}
+
+/* Hover e Focus differenziati per Prev (Ciano) e Next (Ambra) */
+.btn-phase-wave.btn-nav-prev:hover,
+.btn-phase-wave.btn-nav-prev:focus-visible {
+  color: #38bdf8 !important;
+  text-shadow: 0 0 12px rgba(56, 189, 248, 0.5);
+}
+
+.btn-phase-wave.btn-nav-prev:hover .modernist-nav-arrow.arrow-left {
+  transform: translateX(-4px) scale(1.08);
+}
+
+.btn-phase-wave.btn-nav-prev:hover .nav-arrow-ring {
+  stroke: rgba(56, 189, 248, 0.85);
+  stroke-dasharray: 6 2;
+}
+
+.btn-phase-wave.btn-nav-prev:hover .nav-arrow-chevron,
+.btn-phase-wave.btn-nav-prev:hover .nav-arrow-axis {
+  stroke: #67e8f9;
+  filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.95));
+}
+
+.btn-phase-wave.btn-nav-next:hover,
+.btn-phase-wave.btn-nav-next:focus-visible {
+  color: #f59e0b !important;
+  text-shadow: 0 0 12px rgba(245, 158, 11, 0.5);
+}
+
+.btn-phase-wave.btn-nav-next:hover .modernist-nav-arrow.arrow-right {
+  transform: translateX(4px) scale(1.08);
+}
+
+.btn-phase-wave.btn-nav-next:hover .nav-arrow-ring {
+  stroke: rgba(245, 158, 11, 0.85);
+  stroke-dasharray: 6 2;
+}
+
+.btn-phase-wave.btn-nav-next:hover .nav-arrow-chevron,
+.btn-phase-wave.btn-nav-next:hover .nav-arrow-axis {
+  stroke: #fbbf24;
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.95));
 }
 
 .wave-circle-icon {

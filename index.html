@@ -32,11 +32,11 @@
       <!-- Tutte le Voci del Menu allineate a destra -->
       <nav class="nav-side nav-right">
         <button type="button" class="nav-link" id="navBtnLab">Laboratorio Virtuale</button>
-        <button type="button" class="nav-link" id="navBtnPartnership">Partner</button>
-        <button type="button" class="nav-link" id="navBtnCredits">Crediti</button>
-        <button type="button" class="nav-link" id="navBtnPubblicazioni">Pubblicazioni</button>
         <button type="button" class="nav-link" id="navBtnTimeline">Timeline</button>
         <button type="button" class="nav-link" id="navBtnGallery">Gallery</button>
+        <button type="button" class="nav-link" id="navBtnPartnership">Partner</button>
+        <button type="button" class="nav-link" id="navBtnPubblicazioni">Pubblicazioni</button>
+        <button type="button" class="nav-link" id="navBtnCredits">Crediti</button>
         
         <!-- Voce Audio con testo coordinato e onda SVG a 3 gobbe colorate / piatta grigia -->
         <button type="button" class="nav-link nav-audio-btn" id="btnAudioMute" title="Silenzia o attiva l'audio interattivo" aria-label="Controllo audio interattivo">
@@ -128,26 +128,24 @@
               <!-- Paragrafi inseriti dinamicamente -->
             </div>
 
-            <!-- Navigazione tra le fasi con onde sonore circolari (Senza box, solo testo e ondina) -->
+            <!-- Navigazione tra le fasi con frecce moderniste geometriche (Senza box pesante, solo testo e freccia) -->
             <div class="portal-phase-nav" id="portalPhaseNav">
-              <button type="button" class="btn-phase-wave" id="btnPhasePrev" title="Fase Precedente" aria-label="Fase Precedente">
-                <span class="wave-circle-icon" aria-hidden="true">
-                  <span class="wave-ripple wr-1"></span>
-                  <span class="wave-ripple wr-2"></span>
-                  <span class="wave-ripple wr-3"></span>
-                  <span class="wave-dot"></span>
-                </span>
+              <button type="button" class="btn-phase-wave btn-nav-prev" id="btnPhasePrev" title="Fase Precedente" aria-label="Fase Precedente">
+                <svg class="modernist-nav-arrow arrow-left" viewBox="0 0 28 28" aria-hidden="true">
+                  <circle cx="14" cy="14" r="12" class="nav-arrow-ring" />
+                  <line x1="18" y1="14" x2="9" y2="14" class="nav-arrow-axis" />
+                  <polyline points="14,9 9,14 14,19" class="nav-arrow-chevron" />
+                </svg>
                 <span class="btn-wave-label">Fase Precedente</span>
               </button>
 
-              <button type="button" class="btn-phase-wave" id="btnPhaseNext" title="Fase Successiva" aria-label="Fase Successiva">
+              <button type="button" class="btn-phase-wave btn-nav-next" id="btnPhaseNext" title="Fase Successiva" aria-label="Fase Successiva">
                 <span class="btn-wave-label">Fase Successiva</span>
-                <span class="wave-circle-icon" aria-hidden="true">
-                  <span class="wave-ripple wr-1"></span>
-                  <span class="wave-ripple wr-2"></span>
-                  <span class="wave-ripple wr-3"></span>
-                  <span class="wave-dot"></span>
-                </span>
+                <svg class="modernist-nav-arrow arrow-right" viewBox="0 0 28 28" aria-hidden="true">
+                  <circle cx="14" cy="14" r="12" class="nav-arrow-ring" />
+                  <line x1="10" y1="14" x2="19" y2="14" class="nav-arrow-axis" />
+                  <polyline points="14,9 19,14 14,19" class="nav-arrow-chevron" />
+                </svg>
               </button>
             </div>
           </div>
