@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="styles.css?v=2">
 </head>
 <body class="site-body" data-theme="easy">
 
@@ -267,60 +267,13 @@
         </button>
       </div>
 
-      <nav class="mobile-nav-list">
-        <button type="button" class="mobile-nav-item" data-section="laboratorio" id="mobileNavLab">
-          <span class="mobile-nav-index">01</span>
-          <div class="mobile-nav-text-group">
-            <span class="mobile-nav-title">Laboratorio Virtuale</span>
-            <span class="mobile-nav-desc">5 Fasi Sperimentali & Soundscape 3D</span>
-          </div>
-          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
-        </button>
-
-        <button type="button" class="mobile-nav-item" data-section="timeline" id="mobileNavTimeline">
-          <span class="mobile-nav-index">02</span>
-          <div class="mobile-nav-text-group">
-            <span class="mobile-nav-title">Timeline</span>
-            <span class="mobile-nav-desc">Evoluzione da SIPARIO a PR FESR</span>
-          </div>
-          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
-        </button>
-
-        <button type="button" class="mobile-nav-item" data-section="gallery" id="mobileNavGallery">
-          <span class="mobile-nav-index">03</span>
-          <div class="mobile-nav-text-group">
-            <span class="mobile-nav-title">Gallery del Progetto</span>
-            <span class="mobile-nav-desc">Archivio fotografico & rilievi piazze</span>
-          </div>
-          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
-        </button>
-
-        <button type="button" class="mobile-nav-item" data-section="partnership" id="mobileNavPartnership">
-          <span class="mobile-nav-index">04</span>
-          <div class="mobile-nav-text-group">
-            <span class="mobile-nav-title">Partner & Ruoli</span>
-            <span class="mobile-nav-desc">Capofila industriale & università</span>
-          </div>
-          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
-        </button>
-
-        <button type="button" class="mobile-nav-item" data-section="pubblicazioni" id="mobileNavPubblicazioni">
-          <span class="mobile-nav-index">05</span>
-          <div class="mobile-nav-text-group">
-            <span class="mobile-nav-title">Pubblicazioni</span>
-            <span class="mobile-nav-desc">Paper scientifici & atti congressuali</span>
-          </div>
-          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
-        </button>
-
-        <button type="button" class="mobile-nav-item" data-section="credits" id="mobileNavCredits">
-          <span class="mobile-nav-index">06</span>
-          <div class="mobile-nav-text-group">
-            <span class="mobile-nav-title">Crediti & Governance</span>
-            <span class="mobile-nav-desc">Fondi europei e regionali, budget</span>
-          </div>
-          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
-        </button>
+      <nav class="mobile-nav-list" aria-label="Menu Mobile">
+        <button type="button" class="mobile-nav-link" data-section="laboratorio" id="mobileNavLab">Laboratorio</button>
+        <button type="button" class="mobile-nav-link" data-section="timeline" id="mobileNavTimeline">Timeline</button>
+        <button type="button" class="mobile-nav-link" data-section="gallery" id="mobileNavGallery">Gallery</button>
+        <button type="button" class="mobile-nav-link" data-section="partnership" id="mobileNavPartnership">Partner</button>
+        <button type="button" class="mobile-nav-link" data-section="pubblicazioni" id="mobileNavPubblicazioni">Pubblicazioni</button>
+        <button type="button" class="mobile-nav-link" data-section="credits" id="mobileNavCredits">Crediti</button>
       </nav>
 
       <div class="mobile-nav-footer">
