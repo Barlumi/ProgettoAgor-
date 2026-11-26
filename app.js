@@ -375,118 +375,150 @@
   // -------------------------------------------------------------------------
   // REGISTRO DEI CERCHI (STRUTTURA GEOMETRICA FISSA: Sinistra 5 Fasi | Destra)
   // -------------------------------------------------------------------------
+  // -------------------------------------------------------------------------
+  // REGISTRO DEI CERCHI (COORDINATE DINAMICHE: Desktop Orizzontale | Mobile Verticale)
+  // -------------------------------------------------------------------------
   const CIRCLES_REGISTRY = [
-    // --- ONDA GRANDE A SINISTRA (5 Fasi con Numerazione Ordinale Esplicita) ---
+    // --- ONDA 1: LABORATORIO VIRTUALE (5 Fasi con Numerazione Ordinale Esplicita) ---
     {
       id: 'lab-c1',
       system: 'laboratorio',
-      cx: 540,
-      cy: 475,
-      radius: 80,
+      cx: 540, cy: 475, radius: 80, labelAngle: 0.85 * Math.PI,
+      mobileCx: 400, mobileCy: 380, mobileRadius: 75, mobileLabelAngle: 0.85 * Math.PI,
       labelText: '1 • Acquisizione 3D',
-      labelAngle: 0.85 * Math.PI, // Ore 5
       isPhase: true,
       phaseIndex: 0
     },
     {
       id: 'lab-c2',
       system: 'laboratorio',
-      cx: 540,
-      cy: 475,
-      radius: 140,
+      cx: 540, cy: 475, radius: 140, labelAngle: 0.25 * Math.PI,
+      mobileCx: 400, mobileCy: 380, mobileRadius: 130, mobileLabelAngle: 0.25 * Math.PI,
       labelText: '2 • Risposte ad Impulso',
-      labelAngle: 0.25 * Math.PI, // Ore 1.5
       isPhase: true,
       phaseIndex: 1
     },
     {
       id: 'lab-c3',
       system: 'laboratorio',
-      cx: 540,
-      cy: 475,
-      radius: 200,
+      cx: 540, cy: 475, radius: 200, labelAngle: 1.25 * Math.PI,
+      mobileCx: 400, mobileCy: 380, mobileRadius: 185, mobileLabelAngle: 1.25 * Math.PI,
       labelText: '3 • Armoniche Sferiche',
-      labelAngle: 1.25 * Math.PI, // Ore 7.5
       isPhase: true,
       phaseIndex: 2
     },
     {
       id: 'lab-c4',
       system: 'laboratorio',
-      cx: 540,
-      cy: 475,
-      radius: 260,
+      cx: 540, cy: 475, radius: 260, labelAngle: 1.75 * Math.PI,
+      mobileCx: 400, mobileCy: 380, mobileRadius: 240, mobileLabelAngle: 1.75 * Math.PI,
       labelText: '4 • Realtà Virtuale 6DoF',
-      labelAngle: 1.75 * Math.PI, // Ore 10.5
       isPhase: true,
       phaseIndex: 3
     },
     {
       id: 'lab-c5',
       system: 'laboratorio',
-      cx: 540,
-      cy: 475,
-      radius: 320,
+      cx: 540, cy: 475, radius: 320, labelAngle: 0.00 * Math.PI,
+      mobileCx: 400, mobileCy: 380, mobileRadius: 295, mobileLabelAngle: 0.00 * Math.PI,
       labelText: '5 • Restituzione Immersiva',
-      labelAngle: 0.00 * Math.PI, // Ore 12
       isPhase: true,
       phaseIndex: 4
     },
 
-    // --- ONDA MEDIA A DESTRA IN ALTO (Partner, Crediti, Pubblicazioni) ---
+    // --- ONDA 2: RETE & RICERCA (Partner, Crediti, Pubblicazioni) ---
     {
       id: 'part-c1',
       system: 'partnership',
-      cx: 1240,
-      cy: 285,
-      radius: 65,
+      cx: 1240, cy: 285, radius: 65, labelAngle: 0.90 * Math.PI,
+      mobileCx: 400, mobileCy: 860, mobileRadius: 65, mobileLabelAngle: 0.90 * Math.PI,
       labelText: 'Partner',
-      labelAngle: 0.90 * Math.PI, // Ore 5
       isPhase: false
     },
     {
       id: 'part-c2',
       system: 'credits',
-      cx: 1240,
-      cy: 285,
-      radius: 115,
+      cx: 1240, cy: 285, radius: 115, labelAngle: 1.65 * Math.PI,
+      mobileCx: 400, mobileCy: 860, mobileRadius: 110, mobileLabelAngle: 1.65 * Math.PI,
       labelText: 'Crediti',
-      labelAngle: 1.65 * Math.PI, // Ore 10
       isPhase: false
     },
     {
       id: 'part-c3',
       system: 'pubblicazioni',
-      cx: 1240,
-      cy: 285,
-      radius: 165,
+      cx: 1240, cy: 285, radius: 165, labelAngle: 0.00 * Math.PI,
+      mobileCx: 400, mobileCy: 860, mobileRadius: 155, mobileLabelAngle: 0.00 * Math.PI,
       labelText: 'Pubblicazioni',
-      labelAngle: 0.00 * Math.PI, // Ore 12
       isPhase: false
     },
 
-    // --- ONDA PICCOLA A DESTRA IN BASSO (Timeline & Gallery) ---
+    // --- ONDA 3: ARCHIVIO (Timeline & Gallery) ---
     {
       id: 'cred-c1',
       system: 'timeline',
-      cx: 1240,
-      cy: 690,
-      radius: 65,
+      cx: 1240, cy: 690, radius: 65, labelAngle: 0.85 * Math.PI,
+      mobileCx: 400, mobileCy: 1220, mobileRadius: 65, mobileLabelAngle: 0.85 * Math.PI,
       labelText: 'Timeline',
-      labelAngle: 0.85 * Math.PI, // Ore 5
       isPhase: false
     },
     {
       id: 'cred-c2',
       system: 'gallery',
-      cx: 1240,
-      cy: 690,
-      radius: 110,
+      cx: 1240, cy: 690, radius: 110, labelAngle: 0.00 * Math.PI,
+      mobileCx: 400, mobileCy: 1220, mobileRadius: 115, mobileLabelAngle: 0.00 * Math.PI,
       labelText: 'Gallery',
-      labelAngle: 0.00 * Math.PI, // Ore 12
       isPhase: false
     }
   ];
+
+  // Hub informativi centrali nei cerchi (Chiari sia su desktop che su mobile)
+  const SYSTEM_HUBS = [
+    {
+      id: 'hub-lab',
+      system: 'laboratorio',
+      title: 'LABORATORIO',
+      subtitle: '5 Fasi Sperimentali',
+      desktopCx: 540,
+      desktopCy: 475,
+      mobileCx: 400,
+      mobileCy: 380,
+      phaseIndex: 0
+    },
+    {
+      id: 'hub-part',
+      system: 'partnership',
+      title: 'RETE & RICERCA',
+      subtitle: 'Partner • Crediti • Pubblicazioni',
+      desktopCx: 1240,
+      desktopCy: 285,
+      mobileCx: 400,
+      mobileCy: 860
+    },
+    {
+      id: 'hub-arch',
+      system: 'gallery',
+      title: 'ARCHIVIO',
+      subtitle: 'Gallery • Timeline',
+      desktopCx: 1240,
+      desktopCy: 690,
+      mobileCx: 400,
+      mobileCy: 1220
+    }
+  ];
+
+  function isMobileViewport() {
+    return window.innerWidth <= 900;
+  }
+
+  function getCircleCoords(c) {
+    const isMob = isMobileViewport();
+    return {
+      cx: isMob ? (c.mobileCx || c.cx) : c.cx,
+      cy: isMob ? (c.mobileCy || c.cy) : c.cy,
+      radius: isMob ? (c.mobileRadius || c.radius) : c.radius,
+      labelAngle: isMob ? (c.mobileLabelAngle || c.labelAngle) : c.labelAngle
+    };
+  }
 
   // -------------------------------------------------------------------------
   // STATO DINAMICO DELL'INTERAZIONE
@@ -820,12 +852,14 @@
       return { hasGap: false };
     }
 
-    const textPxWidth = c.labelText.length * 10.5;
-    const paddingPx = 22; // Respiro laterale
+    const coords = getCircleCoords(c);
+    const isMob = isMobileViewport();
+    const textPxWidth = c.labelText.length * (isMob ? 13.0 : 10.5);
+    const paddingPx = isMob ? 26 : 22; // Respiro laterale
     const totalGapPx = textPxWidth + paddingPx * 2;
 
-    const gapHalfAngle = (totalGapPx / 2) / c.radius;
-    const centerAngle = c.labelAngle;
+    const gapHalfAngle = (totalGapPx / 2) / coords.radius;
+    const centerAngle = coords.labelAngle;
 
     const arcStartAngle = centerAngle + gapHalfAngle;
     const arcEndAngle = centerAngle - gapHalfAngle;
@@ -850,13 +884,62 @@
     });
   }
 
+  function updateSvgLayout() {
+    const svg = document.getElementById('soundWavesSvg');
+    if (!svg) return;
+    const isMob = isMobileViewport();
+    if (isMob) {
+      svg.setAttribute('viewBox', '0 0 800 1420');
+    } else {
+      svg.setAttribute('viewBox', '0 0 1600 950');
+    }
+
+    // Aggiorna le posizioni degli Hub centrali
+    SYSTEM_HUBS.forEach(function (hub) {
+      const g = document.getElementById('hub-group-' + hub.id);
+      if (!g) return;
+      const hx = isMob ? hub.mobileCx : hub.desktopCx;
+      const hy = isMob ? hub.mobileCy : hub.desktopCy;
+      const tTitle = g.querySelector('.system-hub-title');
+      const tSub = g.querySelector('.system-hub-subtitle');
+      const hit = g.querySelector('.hub-hit-circle');
+      if (tTitle) {
+        tTitle.setAttribute('x', hx);
+        tTitle.setAttribute('y', hy - 5);
+      }
+      if (tSub) {
+        tSub.setAttribute('x', hx);
+        tSub.setAttribute('y', hy + 14);
+      }
+      if (hit) {
+        hit.setAttribute('cx', hx);
+        hit.setAttribute('cy', hy);
+        hit.setAttribute('r', isMob ? 46 : 40);
+      }
+    });
+
+    // Ricalcola i varchi per i testi su tutti i cerchi
+    CIRCLES_REGISTRY.forEach(function (c) {
+      const dom = circleDOM[c.id];
+      if (dom) {
+        dom.gapData = computeCircleGapArc(c);
+      }
+    });
+  }
+
   // -------------------------------------------------------------------------
-  // COSTRUZIONE SCENA SVG (CON FILAMENTI ARMONICI MULTIPLI)
+  // COSTRUZIONE SCENA SVG (CON FILAMENTI ARMONICI MULTIPLI & HUB CENTRALI)
   // -------------------------------------------------------------------------
   function renderSvgScene() {
     const sceneGroup = document.getElementById('wavesSceneGroup');
     if (!sceneGroup) return;
     sceneGroup.innerHTML = '';
+
+    const svg = document.getElementById('soundWavesSvg');
+    const isMob = isMobileViewport();
+    if (svg) {
+      svg.setAttribute('viewBox', isMob ? '0 0 800 1420' : '0 0 1600 950');
+    }
 
     CIRCLES_REGISTRY.forEach(function (c) {
       const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
@@ -926,6 +1009,56 @@
         gapData: computeCircleGapArc(c)
       };
     });
+
+    // 5. Hub Centrali Informativi (Rendono immediatamente chiaro il contenuto di ogni gruppo di onde)
+    SYSTEM_HUBS.forEach(function (hub) {
+      const hx = isMob ? hub.mobileCx : hub.desktopCx;
+      const hy = isMob ? hub.mobileCy : hub.desktopCy;
+
+      const gHub = document.createElementNS('http://www.w3.org/2000/svg', 'g');
+      gHub.setAttribute('class', 'system-hub-group');
+      gHub.setAttribute('id', 'hub-group-' + hub.id);
+      gHub.setAttribute('role', 'button');
+      gHub.setAttribute('tabindex', '0');
+
+      const hitCircle = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+      hitCircle.setAttribute('class', 'hub-hit-circle');
+      hitCircle.setAttribute('cx', hx);
+      hitCircle.setAttribute('cy', hy);
+      hitCircle.setAttribute('r', isMob ? 46 : 40);
+      hitCircle.setAttribute('fill', 'rgba(3, 7, 18, 0.55)');
+      hitCircle.setAttribute('stroke', 'rgba(56, 189, 248, 0.28)');
+      hitCircle.setAttribute('stroke-width', '1');
+      gHub.appendChild(hitCircle);
+
+      const title = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      title.setAttribute('class', 'system-hub-title');
+      title.setAttribute('x', hx);
+      title.setAttribute('y', hy - 5);
+      title.setAttribute('text-anchor', 'middle');
+      title.textContent = hub.title;
+      gHub.appendChild(title);
+
+      const sub = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+      sub.setAttribute('class', 'system-hub-subtitle');
+      sub.setAttribute('x', hx);
+      sub.setAttribute('y', hy + 14);
+      sub.setAttribute('text-anchor', 'middle');
+      sub.textContent = hub.subtitle;
+      gHub.appendChild(sub);
+
+      hitCircle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        ensureAudioUnlocked();
+        if (hub.system === 'laboratorio') {
+          openCircularPortal('laboratorio', hub.phaseIndex || 0, { x: hx, y: hy });
+        } else {
+          openCircularPortal(hub.system, null, { x: hx, y: hy });
+        }
+      });
+
+      sceneGroup.appendChild(gHub);
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -960,31 +1093,22 @@
 
   function generateTextGuideArc(cx, cy, radius, centerAngle, labelText) {
     const textLen = (labelText && labelText.length) ? labelText.length : 12;
-    // Calcolo dell'estensione dell'arco guida:
-    // Ciascun carattere a 11px occupa ~8.5px. Sul cerchio di raggio 'radius' corrisponde a un angolo (rad).
-    // Lo span deve coprire comodamente il testo senza MAI superare 1.25 rad (~71°, totale < 142°),
-    // garantendo che l'arco sia sempre < 180° e NON collassi mai all'interno con large-arc-flag=0.
-    const charAngle = 9.0 / radius;
-    const span = Math.min(1.25, Math.max(0.60, (textLen * charAngle) / 2 + 0.30));
+    const isMob = isMobileViewport();
+    // Calcolo dell'estensione dell'arco guida calibrato su scala desktop e mobile
+    const charAngle = (isMob ? 11.5 : 9.0) / radius;
+    const span = Math.min(1.35, Math.max(0.60, (textLen * charAngle) / 2 + 0.30));
 
     // Normalizziamo l'angolo centrale in [0, 2*PI)
     let normAngle = centerAngle % (Math.PI * 2);
     if (normAngle < 0) normAngle += Math.PI * 2;
 
-    // Se l'etichetta ricade nell'emisfero inferiore del cerchio (tra ~80° e ~280°, cioè la metà inferiore),
-    // scorrendo in senso orario il testo risulterebbe a testa in giù per l'osservatore (come in foto).
-    // Invertendo il senso del tracciato (antiorario con sweep-flag 0),
-    // i caratteri si capovolgono dritti e si leggono naturalmente da sinistra verso destra.
     const isUpsideDown = normAngle > 0.45 * Math.PI && normAngle < 1.55 * Math.PI;
 
     const a1 = centerAngle - span;
     const a2 = centerAngle + span;
 
     if (isUpsideDown) {
-      // Senso antiorario da a2 verso a1: capovolge i caratteri dritti
-      // Con una calibrazione fine del raggio guida (+3px), il testo si allinea perfettamente
-      // alla linea circolare del varco senza sprofondare verso l'interno.
-      const guideR = radius + 3.0;
+      const guideR = radius + (isMob ? 4.0 : 3.0);
       const x1 = cx + guideR * Math.sin(a1);
       const y1 = cy - guideR * Math.cos(a1);
       const x2 = cx + guideR * Math.sin(a2);
@@ -992,7 +1116,6 @@
 
       return ['M', x2.toFixed(2), y2.toFixed(2), 'A', guideR.toFixed(2), guideR.toFixed(2), 0, 0, 0, x1.toFixed(2), y1.toFixed(2)].join(' ');
     } else {
-      // Senso orario da a1 verso a2: tracciato naturale sul bordo
       const guideR = radius - 0.5;
       const x1 = cx + guideR * Math.sin(a1);
       const y1 = cy - guideR * Math.cos(a1);
@@ -1016,6 +1139,8 @@
       const dom = circleDOM[c.id];
       if (!dom) return;
 
+      const coords = getCircleCoords(c);
+
       // Parametri dinamici derivati dallo Stile attivo
       const waveProfile = activeStyle.dynamics.circleWaves[c.id] || { cycles: 12, speed: 2.0 };
       const cycles = waveProfile.cycles;
@@ -1030,7 +1155,7 @@
       if (st.isHovered) {
         radiusOffset = Math.sin(animTime * activeStyle.dynamics.hoverPulseSpeed) * activeStyle.dynamics.hoverPulseRadius;
       }
-      const currentRadius = c.radius + radiusOffset;
+      const currentRadius = coords.radius + radiusOffset;
 
       // 3. Generazione tracciato cerchio aperto principale
       let dVisible = '';
@@ -1041,8 +1166,8 @@
       if (dom.gapData.hasGap) {
         // Linea principale
         dVisible = generateArcPathString(
-          c.cx,
-          c.cy,
+          coords.cx,
+          coords.cy,
           currentRadius,
           dom.gapData.arcStartAngle,
           dom.gapData.arcEndAngle,
@@ -1053,8 +1178,8 @@
 
         // Filamento armonico interno (leggermente sfasato)
         dStrandInner = generateArcPathString(
-          c.cx,
-          c.cy,
+          coords.cx,
+          coords.cy,
           currentRadius - 2.5,
           dom.gapData.arcStartAngle,
           dom.gapData.arcEndAngle,
@@ -1065,8 +1190,8 @@
 
         // Filamento armonico esterno (leggermente sfasato)
         dStrandOuter = generateArcPathString(
-          c.cx,
-          c.cy,
+          coords.cx,
+          coords.cy,
           currentRadius + 2.5,
           dom.gapData.arcStartAngle,
           dom.gapData.arcEndAngle,
@@ -1076,15 +1201,15 @@
         );
 
         if (dom.guidePath) {
-          const dGuide = generateTextGuideArc(c.cx, c.cy, currentRadius, dom.gapData.centerAngle, c.labelText);
+          const dGuide = generateTextGuideArc(coords.cx, coords.cy, currentRadius, dom.gapData.centerAngle, c.labelText);
           dom.guidePath.setAttribute('d', dGuide);
         }
 
-        dHit = generateArcPathString(c.cx, c.cy, c.radius, 0, Math.PI * 2, 0, 1, 0);
+        dHit = generateArcPathString(coords.cx, coords.cy, coords.radius, 0, Math.PI * 2, 0, 1, 0);
       } else {
         dVisible = generateArcPathString(
-          c.cx,
-          c.cy,
+          coords.cx,
+          coords.cy,
           currentRadius,
           0,
           Math.PI * 2,
@@ -1093,8 +1218,8 @@
           animTime * speed
         );
         dStrandInner = generateArcPathString(
-          c.cx,
-          c.cy,
+          coords.cx,
+          coords.cy,
           currentRadius - 2.5,
           0,
           Math.PI * 2,
@@ -1103,8 +1228,8 @@
           animTime * speed + 0.6
         );
         dStrandOuter = generateArcPathString(
-          c.cx,
-          c.cy,
+          coords.cx,
+          coords.cy,
           currentRadius + 2.5,
           0,
           Math.PI * 2,
@@ -1483,28 +1608,32 @@
     ensureAudioUnlocked();
     silenceAllVoices(0.02);
 
+    const isMob = isMobileViewport();
+    const refW = isMob ? 800 : 1600;
+    const refH = isMob ? 1420 : 950;
+
     // 1. Calcolo del centro del cerchio/hub per la transizione di zoom
-    let originX = '33.75%';
-    let originY = '50%';
+    let originX = isMob ? '50%' : '33.75%';
+    let originY = isMob ? '26.76%' : '50%';
     let baseFreq = 220;
 
     if (clickOrigin && typeof clickOrigin.x === 'number' && typeof clickOrigin.y === 'number') {
-      originX = ((clickOrigin.x / 1600) * 100).toFixed(2) + '%';
-      originY = ((clickOrigin.y / 950) * 100).toFixed(2) + '%';
+      originX = ((clickOrigin.x / refW) * 100).toFixed(2) + '%';
+      originY = ((clickOrigin.y / refH) * 100).toFixed(2) + '%';
       if (clickOrigin.id && activeStyle.audio.frequencies[clickOrigin.id]) {
         baseFreq = activeStyle.audio.frequencies[clickOrigin.id];
       }
     } else if (sectionKey === 'laboratorio') {
-      originX = '33.75%';
-      originY = '50%';
+      originX = isMob ? '50%' : '33.75%';
+      originY = isMob ? '26.76%' : '50%';
       baseFreq = 220;
     } else if (sectionKey === 'partnership' || sectionKey === 'credits' || sectionKey === 'pubblicazioni') {
-      originX = '77.5%';
-      originY = '30%';
+      originX = isMob ? '50%' : '77.5%';
+      originY = isMob ? '60.56%' : '30%';
       baseFreq = 293.7;
     } else if (sectionKey === 'timeline' || sectionKey === 'gallery') {
-      originX = '77.5%';
-      originY = '72.63%';
+      originX = isMob ? '50%' : '77.5%';
+      originY = isMob ? '85.91%' : '72.63%';
       baseFreq = 349.2;
     }
 
@@ -2022,6 +2151,47 @@
         navMap[key].classList.toggle('active', state.portalOpen && state.activeSection === key);
       }
     });
+
+    const drawerMap = {
+      laboratorio: document.getElementById('mobileNavLab'),
+      timeline: document.getElementById('mobileNavTimeline'),
+      gallery: document.getElementById('mobileNavGallery'),
+      partnership: document.getElementById('mobileNavPartnership'),
+      pubblicazioni: document.getElementById('mobileNavPubblicazioni'),
+      credits: document.getElementById('mobileNavCredits')
+    };
+
+    Object.keys(drawerMap).forEach(function (key) {
+      if (drawerMap[key]) {
+        drawerMap[key].classList.toggle('active', state.portalOpen && state.activeSection === key);
+      }
+    });
+  }
+
+  function openMobileNavDrawer() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    const toggle = document.getElementById('btnMobileMenuToggle');
+    if (!drawer) return;
+    drawer.classList.add('open');
+    drawer.setAttribute('aria-hidden', 'false');
+    if (toggle) {
+      toggle.classList.add('active');
+      toggle.setAttribute('aria-expanded', 'true');
+    }
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileNavDrawer() {
+    const drawer = document.getElementById('mobileNavDrawer');
+    const toggle = document.getElementById('btnMobileMenuToggle');
+    if (!drawer) return;
+    drawer.classList.remove('open');
+    drawer.setAttribute('aria-hidden', 'true');
+    if (toggle) {
+      toggle.classList.remove('active');
+      toggle.setAttribute('aria-expanded', 'false');
+    }
+    document.body.style.overflow = '';
   }
 
   // -------------------------------------------------------------------------
@@ -2153,10 +2323,11 @@
         e.stopPropagation();
         ensureAudioUnlocked();
 
+        const coords = getCircleCoords(c);
         if (c.system === 'laboratorio') {
-          openCircularPortal('laboratorio', c.phaseIndex, { x: c.cx, y: c.cy, id: c.id });
+          openCircularPortal('laboratorio', c.phaseIndex, { x: coords.cx, y: coords.cy, id: c.id });
         } else if (DRAWER_DATA[c.system]) {
-          openCircularPortal(c.system, null, { x: c.cx, y: c.cy, id: c.id });
+          openCircularPortal(c.system, null, { x: coords.cx, y: coords.cy, id: c.id });
         }
       });
     });
@@ -2304,26 +2475,114 @@
       }
     });
 
-    // Controllo Audio Spento / Attivo ("sound on")
+    // Controllo Audio Spento / Attivo centralizzato (Desktop, Mobile Header e Mobile Drawer)
+    function toggleAudioMute() {
+      ensureAudioUnlocked();
+      state.audioMuted = !state.audioMuted;
+      updateAudioMuteUI();
+      if (state.audioMuted && audioCtx) {
+        CIRCLES_REGISTRY.forEach(function (c) {
+          if (audioNodes[c.id]) {
+            audioNodes[c.id].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+          }
+        });
+        if (audioNodes['back-home']) audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+        if (audioNodes['portal-media']) audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+      }
+    }
+
+    function updateAudioMuteUI() {
+      const muteToggle = document.getElementById('btnAudioMute');
+      const muteLabel = document.getElementById('audioMuteLabel');
+      if (muteToggle) muteToggle.classList.toggle('muted', state.audioMuted);
+      if (muteLabel) muteLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
+
+      const muteMobile = document.getElementById('btnAudioMuteMobile');
+      if (muteMobile) muteMobile.classList.toggle('muted', state.audioMuted);
+
+      const drawerToggle = document.getElementById('btnDrawerAudioToggle');
+      const drawerLabel = document.getElementById('drawerAudioStatusLabel') || document.getElementById('drawerAudioLabel');
+      if (drawerToggle) drawerToggle.classList.toggle('muted', state.audioMuted);
+      if (drawerLabel) drawerLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
+    }
+
     const muteToggle = document.getElementById('btnAudioMute');
-    const muteLabel = document.getElementById('audioMuteLabel');
     if (muteToggle) {
-      muteToggle.addEventListener('click', function () {
-        ensureAudioUnlocked();
-        state.audioMuted = !state.audioMuted;
-        muteLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
-        muteToggle.classList.toggle('muted', state.audioMuted);
-        if (state.audioMuted && audioCtx) {
-          CIRCLES_REGISTRY.forEach(function (c) {
-            if (audioNodes[c.id]) {
-              audioNodes[c.id].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
-            }
-          });
-          if (audioNodes['back-home']) audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
-          if (audioNodes['portal-media']) audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+      muteToggle.addEventListener('click', toggleAudioMute);
+    }
+    const muteMobile = document.getElementById('btnAudioMuteMobile');
+    if (muteMobile) {
+      muteMobile.addEventListener('click', toggleAudioMute);
+    }
+    const drawerToggle = document.getElementById('btnDrawerAudioToggle');
+    if (drawerToggle) {
+      drawerToggle.addEventListener('click', toggleAudioMute);
+    }
+
+    // Mobile Hamburger Drawer Eventi
+    const btnMobileToggle = document.getElementById('btnMobileMenuToggle');
+    if (btnMobileToggle) {
+      btnMobileToggle.addEventListener('click', function (e) {
+        e.stopPropagation();
+        const drawer = document.getElementById('mobileNavDrawer');
+        if (drawer && drawer.classList.contains('open')) {
+          closeMobileNavDrawer();
+        } else {
+          openMobileNavDrawer();
         }
       });
     }
+
+    const btnDrawerClose = document.getElementById('btnMobileDrawerClose');
+    if (btnDrawerClose) {
+      btnDrawerClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeMobileNavDrawer();
+      });
+    }
+
+    const drawerBackdrop = document.getElementById('mobileNavBackdrop');
+    if (drawerBackdrop) {
+      drawerBackdrop.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeMobileNavDrawer();
+      });
+    }
+
+    // Link all'interno del drawer mobile
+    const mobileNavLinks = [
+      { id: 'mobileNavLab', section: 'laboratorio', isLab: true },
+      { id: 'mobileNavTimeline', section: 'timeline' },
+      { id: 'mobileNavGallery', section: 'gallery' },
+      { id: 'mobileNavPartnership', section: 'partnership' },
+      { id: 'mobileNavPubblicazioni', section: 'pubblicazioni' },
+      { id: 'mobileNavCredits', section: 'credits' }
+    ];
+
+    mobileNavLinks.forEach(function (item) {
+      const el = document.getElementById(item.id);
+      if (el) {
+        el.addEventListener('click', function () {
+          closeMobileNavDrawer();
+          ensureAudioUnlocked();
+          if (item.isLab) {
+            openCircularPortal('laboratorio', state.currentPhaseIndex || 0);
+          } else {
+            openCircularPortal(item.section, null);
+          }
+        });
+      }
+    });
+
+    // Resize listener per aggiornare reattivamente il layout dell'SVG quando si passa da desktop a mobile o viceversa
+    let lastIsMobile = isMobileViewport();
+    window.addEventListener('resize', function () {
+      const currentIsMobile = isMobileViewport();
+      if (currentIsMobile !== lastIsMobile) {
+        lastIsMobile = currentIsMobile;
+        updateSvgLayout();
+      }
+    });
   }
 
   // -------------------------------------------------------------------------

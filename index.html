@@ -29,8 +29,8 @@
         <img src="assets/logo-agora.png" alt="AGORA - Atelier sonoro per il Gioco, la Ricerca, l'Acustica" class="header-logo-img">
       </div>
 
-      <!-- Tutte le Voci del Menu allineate a destra -->
-      <nav class="nav-side nav-right">
+      <!-- Tutte le Voci del Menu allineate a destra (Desktop) -->
+      <nav class="nav-side nav-right" id="navDesktopMenu">
         <button type="button" class="nav-link" id="navBtnLab">Laboratorio Virtuale</button>
         <button type="button" class="nav-link" id="navBtnTimeline">Timeline</button>
         <button type="button" class="nav-link" id="navBtnGallery">Gallery</button>
@@ -63,6 +63,28 @@
           </svg>
         </button>
       </nav>
+
+      <!-- Gruppo Controlli Mobile (Audio + Hamburger Menu) -->
+      <div class="mobile-header-actions" id="mobileHeaderActions">
+        <button type="button" class="mobile-audio-btn" id="btnAudioMuteMobile" title="Silenzia o attiva l'audio interattivo" aria-label="Controllo audio interattivo">
+          <svg class="audio-wave-icon" viewBox="0 0 42 18" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <line class="wave-flat-line" x1="1" y1="9" x2="41" y2="9" stroke="#64748b" stroke-width="1.3" stroke-linecap="round" />
+            <g class="wave-active-group">
+              <line class="wave-axis-line" x1="1" y1="9" x2="41" y2="9" stroke="rgba(255,255,255,0.2)" stroke-width="0.75" />
+              <path class="wave-hump-strand strand-main" d="M 1 9 C 6 9, 8 2, 13 2 C 17 2, 19 16, 25 16 C 30 16, 33 5, 41 9" stroke="url(#iconWaveGrad)" stroke-width="1.4" stroke-linecap="round" />
+              <path class="wave-hump-strand strand-sub1" d="M 1 9 C 6 9, 9 3.5, 14 3.5 C 18 3.5, 20 14.5, 26 14.5 C 31 14.5, 34 6.5, 41 9" stroke="url(#iconWaveGrad)" stroke-width="0.85" stroke-opacity="0.65" />
+            </g>
+          </svg>
+        </button>
+
+        <button type="button" class="mobile-menu-toggle-btn" id="btnMobileMenuToggle" aria-label="Apri menu di navigazione" aria-expanded="false">
+          <span class="hamburger-box">
+            <span class="hamburger-line line-top"></span>
+            <span class="hamburger-line line-mid"></span>
+            <span class="hamburger-line line-bot"></span>
+          </span>
+        </button>
+      </div>
     </div>
   </header>
 
@@ -223,6 +245,92 @@
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- DRAWER / MENU A TENDINA MOBILE AD ALTA LEGGIBILITÀ                -->
+  <!-- ================================================================= -->
+  <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
+    <div class="mobile-nav-backdrop" id="mobileNavBackdrop"></div>
+
+    <div class="mobile-nav-panel" id="mobileNavPanel">
+      <div class="mobile-nav-header">
+        <div class="mobile-nav-logo">
+          <img src="assets/logo-agora.png" alt="AGORA" class="mobile-nav-logo-img">
+        </div>
+        <button type="button" class="btn-mobile-drawer-close" id="btnMobileDrawerClose" aria-label="Chiudi menu">
+          <svg viewBox="0 0 24 24" class="icon-drawer-close" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="4" y1="4" x2="20" y2="20"></line>
+            <line x1="20" y1="4" x2="4" y2="20"></line>
+          </svg>
+        </button>
+      </div>
+
+      <nav class="mobile-nav-list">
+        <button type="button" class="mobile-nav-item" data-section="laboratorio" id="mobileNavLab">
+          <span class="mobile-nav-index">01</span>
+          <div class="mobile-nav-text-group">
+            <span class="mobile-nav-title">Laboratorio Virtuale</span>
+            <span class="mobile-nav-desc">5 Fasi Sperimentali & Soundscape 3D</span>
+          </div>
+          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
+        </button>
+
+        <button type="button" class="mobile-nav-item" data-section="timeline" id="mobileNavTimeline">
+          <span class="mobile-nav-index">02</span>
+          <div class="mobile-nav-text-group">
+            <span class="mobile-nav-title">Timeline</span>
+            <span class="mobile-nav-desc">Evoluzione da SIPARIO a PR FESR</span>
+          </div>
+          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
+        </button>
+
+        <button type="button" class="mobile-nav-item" data-section="gallery" id="mobileNavGallery">
+          <span class="mobile-nav-index">03</span>
+          <div class="mobile-nav-text-group">
+            <span class="mobile-nav-title">Gallery del Progetto</span>
+            <span class="mobile-nav-desc">Archivio fotografico & rilievi piazze</span>
+          </div>
+          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
+        </button>
+
+        <button type="button" class="mobile-nav-item" data-section="partnership" id="mobileNavPartnership">
+          <span class="mobile-nav-index">04</span>
+          <div class="mobile-nav-text-group">
+            <span class="mobile-nav-title">Partner & Ruoli</span>
+            <span class="mobile-nav-desc">Capofila industriale & università</span>
+          </div>
+          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
+        </button>
+
+        <button type="button" class="mobile-nav-item" data-section="pubblicazioni" id="mobileNavPubblicazioni">
+          <span class="mobile-nav-index">05</span>
+          <div class="mobile-nav-text-group">
+            <span class="mobile-nav-title">Pubblicazioni</span>
+            <span class="mobile-nav-desc">Paper scientifici & atti congressuali</span>
+          </div>
+          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
+        </button>
+
+        <button type="button" class="mobile-nav-item" data-section="credits" id="mobileNavCredits">
+          <span class="mobile-nav-index">06</span>
+          <div class="mobile-nav-text-group">
+            <span class="mobile-nav-title">Crediti & Governance</span>
+            <span class="mobile-nav-desc">Fondi europei e regionali, budget</span>
+          </div>
+          <svg class="mobile-nav-arrow" viewBox="0 0 16 16"><polyline points="6,3 11,8 6,13"></polyline></svg>
+        </button>
+      </nav>
+
+      <div class="mobile-nav-footer">
+        <div class="mobile-nav-audio-status">
+          <span class="mobile-audio-text">Audio Interattivo:</span>
+          <button type="button" class="mobile-drawer-audio-toggle" id="btnDrawerAudioToggle">
+            <span id="drawerAudioStatusLabel">Audio Attivo</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
