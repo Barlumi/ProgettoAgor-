@@ -1705,10 +1705,8 @@
       btnPrev.title = 'Indietro';
       btnPrev.setAttribute('aria-label', 'Indietro');
       btnPrev.innerHTML = `
-        <svg class="modernist-nav-arrow arrow-left" viewBox="0 0 28 28" aria-hidden="true">
-          <circle cx="14" cy="14" r="12" class="nav-arrow-ring" />
-          <line x1="18" y1="14" x2="9" y2="14" class="nav-arrow-axis" />
-          <polyline points="14,9 9,14 14,19" class="nav-arrow-chevron" />
+        <svg class="nav-arrow-chevron-svg arrow-left" viewBox="0 0 16 16" aria-hidden="true">
+          <polyline points="10,3 5,8 10,13" />
         </svg>
         <span class="btn-wave-label">Indietro</span>
       `;
@@ -1730,10 +1728,8 @@
       btnNext.setAttribute('aria-label', 'Avanti');
       btnNext.innerHTML = `
         <span class="btn-wave-label">Avanti</span>
-        <svg class="modernist-nav-arrow arrow-right" viewBox="0 0 28 28" aria-hidden="true">
-          <circle cx="14" cy="14" r="12" class="nav-arrow-ring" />
-          <line x1="10" y1="14" x2="19" y2="14" class="nav-arrow-axis" />
-          <polyline points="14,9 19,14 14,19" class="nav-arrow-chevron" />
+        <svg class="nav-arrow-chevron-svg arrow-right" viewBox="0 0 16 16" aria-hidden="true">
+          <polyline points="6,3 11,8 6,13" />
         </svg>
       `;
       btnNext.addEventListener('click', function () {
