@@ -491,6 +491,8 @@
     activeSection: 'laboratorio',
     currentPhaseIndex: 0,
     currentGalleryTrioIndex: 0,
+    galleryLightboxOpen: false,
+    currentLightboxIndex: 0,
     portalOpen: false,
     audioMuted: false,
 
@@ -1431,6 +1433,9 @@
 
   function closeCircularPortal() {
     if (!state.portalOpen) return;
+    if (state.galleryLightboxOpen) {
+      closeGalleryLightbox();
+    }
     silenceAllVoices(0.02);
     playReturnChime();
     galleryCirclesRegistry.length = 0;
@@ -1586,8 +1591,25 @@
       stage.className = 'gallery-trio-stage';
 
       currentTrio.forEach(function (item) {
+        const globalIdx = data.items.indexOf(item);
         const card = document.createElement('div');
         card.className = 'gallery-trio-card';
+        card.setAttribute('role', 'button');
+        card.setAttribute('tabindex', '0');
+        card.setAttribute('title', 'Ingrandisci foto: ' + item.title);
+
+        card.addEventListener('click', function () {
+          ensureAudioUnlocked();
+          openGalleryLightbox(globalIdx);
+        });
+
+        card.addEventListener('keydown', function (e) {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            ensureAudioUnlocked();
+            openGalleryLightbox(globalIdx);
+          }
+        });
 
         const mediaWrap = document.createElement('div');
         mediaWrap.className = 'gallery-trio-media-wrap';
@@ -1647,6 +1669,12 @@
         });
         hitProxy.addEventListener('pointerleave', function () {
           circleEntry.isHovered = false;
+        });
+
+        hitProxy.addEventListener('click', function (e) {
+          e.stopPropagation();
+          ensureAudioUnlocked();
+          openGalleryLightbox(globalIdx);
         });
 
         galleryCirclesRegistry.push(circleEntry);
@@ -1864,6 +1892,100 @@
   }
 
   // -------------------------------------------------------------------------
+  // GESTIONE LIGHTBOX GALLERY (BANNER SOVRAIMPRESSO CON FRECCE MODERNISTE)
+  // -------------------------------------------------------------------------
+  function openGalleryLightbox(index) {
+    const galleryData = DRAWER_DATA.gallery;
+    if (!galleryData || !Array.isArray(galleryData.items) || galleryData.items.length === 0) return;
+
+    const total = galleryData.items.length;
+    if (typeof index !== 'number' || index < 0) index = 0;
+    if (index >= total) index = total - 1;
+
+    state.currentLightboxIndex = index;
+    state.galleryLightboxOpen = true;
+
+    renderGalleryLightbox();
+
+    const modal = document.getElementById('galleryLightboxModal');
+    if (modal) {
+      modal.style.display = 'flex';
+      void modal.offsetWidth; // Trigger reflow per transizione CSS fluida
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
+    }
+
+    playPhaseStepSound();
+  }
+
+  function closeGalleryLightbox() {
+    if (!state.galleryLightboxOpen) return;
+    state.galleryLightboxOpen = false;
+
+    const modal = document.getElementById('galleryLightboxModal');
+    if (modal) {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      setTimeout(function () {
+        if (!state.galleryLightboxOpen) {
+          modal.style.display = 'none';
+        }
+      }, 320);
+    }
+
+    playPhaseStepSound();
+  }
+
+  function navigateGalleryLightbox(delta) {
+    const galleryData = DRAWER_DATA.gallery;
+    if (!galleryData || !Array.isArray(galleryData.items) || galleryData.items.length === 0) return;
+
+    const total = galleryData.items.length;
+    let nextIdx = (state.currentLightboxIndex + delta) % total;
+    if (nextIdx < 0) nextIdx += total;
+
+    state.currentLightboxIndex = nextIdx;
+    renderGalleryLightbox();
+    playPhaseStepSound();
+  }
+
+  function renderGalleryLightbox() {
+    const galleryData = DRAWER_DATA.gallery;
+    if (!galleryData || !Array.isArray(galleryData.items)) return;
+
+    const item = galleryData.items[state.currentLightboxIndex];
+    if (!item) return;
+
+    const imgElem = document.getElementById('galleryLightboxImg');
+    const counterElem = document.getElementById('lightboxCounter');
+    const titleElem = document.getElementById('lightboxTitle');
+    const captionElem = document.getElementById('lightboxCaption');
+
+    if (imgElem) {
+      imgElem.style.opacity = '0.35';
+      imgElem.style.transform = 'scale(0.97)';
+      imgElem.src = item.image;
+      imgElem.alt = item.title;
+      setTimeout(function () {
+        imgElem.style.opacity = '1';
+        imgElem.style.transform = 'scale(1)';
+      }, 60);
+    }
+
+    if (counterElem) {
+      counterElem.textContent = `Foto ${state.currentLightboxIndex + 1} di ${galleryData.items.length}`;
+    }
+
+    if (titleElem) {
+      titleElem.textContent = item.title;
+    }
+
+    if (captionElem) {
+      captionElem.textContent = item.caption;
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // GESTIONE EVENTI (HIT PROXY 34PX & CONTROLLI)
   // -------------------------------------------------------------------------
   function initEventHandlers() {
@@ -1971,8 +2093,58 @@
       });
     }
 
-    // Tasto Escape e frecce per navigazione e chiusura schermata
+    // Eventi del Lightbox Banner Gallery (Apertura a pieno schermo)
+    const btnLbClose = document.getElementById('btnLightboxClose');
+    const lbBackdrop = document.getElementById('galleryLightboxBackdrop');
+    const btnLbPrev = document.getElementById('btnLightboxPrev');
+    const btnLbNext = document.getElementById('btnLightboxNext');
+
+    if (btnLbClose) {
+      btnLbClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeGalleryLightbox();
+      });
+    }
+
+    if (lbBackdrop) {
+      lbBackdrop.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeGalleryLightbox();
+      });
+    }
+
+    if (btnLbPrev) {
+      btnLbPrev.addEventListener('click', function (e) {
+        e.stopPropagation();
+        ensureAudioUnlocked();
+        navigateGalleryLightbox(-1);
+      });
+    }
+
+    if (btnLbNext) {
+      btnLbNext.addEventListener('click', function (e) {
+        e.stopPropagation();
+        ensureAudioUnlocked();
+        navigateGalleryLightbox(1);
+      });
+    }
+
+    // Tasto Escape e frecce per navigazione e chiusura schermata (supporta sia pagina che lightbox)
     window.addEventListener('keydown', function (e) {
+      if (state.galleryLightboxOpen) {
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeGalleryLightbox();
+        } else if (e.key === 'ArrowLeft') {
+          e.preventDefault();
+          navigateGalleryLightbox(-1);
+        } else if (e.key === 'ArrowRight') {
+          e.preventDefault();
+          navigateGalleryLightbox(1);
+        }
+        return;
+      }
+
       if (e.key === 'Escape') {
         if (state.portalOpen) closeCircularPortal();
       } else if (state.portalOpen && e.key === 'ArrowLeft') {
@@ -2058,5 +2230,7 @@
   // Esposizione per navigazione e test
   window.openCircularPortal = openCircularPortal;
   window.closeCircularPortal = closeCircularPortal;
+  window.openGalleryLightbox = openGalleryLightbox;
+  window.closeGalleryLightbox = closeGalleryLightbox;
 
 })();
