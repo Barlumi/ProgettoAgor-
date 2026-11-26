@@ -21,57 +21,57 @@
     {
       num: 1,
       tag: 'Fase 1',
-      title: 'Fase 1: Catturare il Suono a 360°',
+      title: 'Fase 1: Acquisizione 3D e Soundscape',
       body: [
-        'I ricercatori hanno esplorato 11 piazze storiche tra Parma, Rimini, Faenza, Comacchio e Tresigallo per mappare il loro "soundscape", ovvero il paesaggio sonoro quotidiano fatto di passi, voci sotto i portici e il riverbero dei palazzi d\'epoca.',
-        'Per non perdere nessun dettaglio hanno posizionato al centro di ogni piazza una sfera speciale a 64 microfoni (l\'Eigenmike em64) abbinata a una telecamera a 360° in risoluzione 8K. Tramite rete digitale Dante a 48 kHz, audio e video vengono registrati in perfetto sincronismo, creando una vera e propria fotografia audiovisiva a tutto tondo.'
+        'I ricercatori hanno condotto una campagna sperimentale in 5 città dell\'Emilia-Romagna (Parma, Rimini, Faenza, Comacchio e Tresigallo), registrando il soundscape di 11 piazze storiche.',
+        'Al centro di ogni piazza è stato posizionato un microfono sferico a 64 capsule (Eigenmike em64) abbinato a una telecamera 360° in 8K. Su rete digitale Dante a 48 kHz, audio e video vengono acquisiti in sincronia per documentare il campo acustico e le immagini dello spazio urbano.'
       ],
       image: 'assets/gallery/image12.jpg',
-      imageCaption: 'Rilievo acustico in Piazza Cavour a Rimini: la speciale sonda microfonica a 64 capsule (Eigenmike em64) e la camera 8K registrano insieme il soundscape.'
+      imageCaption: 'Rilievo in Piazza Cavour a Rimini: microfono sferico Eigenmike em64 e telecamera 360° in 8K per la registrazione del soundscape.'
     },
     {
       num: 2,
       tag: 'Fase 2',
-      title: 'Fase 2: L\'Impronta Sonora dei Monumenti',
+      title: 'Fase 2: Risposta all\'Impulso e Metodo ESS',
       body: [
-        'Ogni piazza antica suona in modo unico: le facciate in mattoni, le colonne e le arcate riflettono il suono proprio come le pareti di un teatro. I ricercatori hanno misurato questa impronta seguendo lo standard acustico ISO 3382, trattando le piazze aperte come autentiche sale da concerto.',
-        'Utilizzando il metodo ESS (un fischio sinusoidale calibrato che sale di frequenza) emesso da una cassa omnidirezionale a dodecaedro, il sistema estrae la Risposta all\'Impulso (IR 3D) dello spazio. Con la tecnica multicanale MIMO si scoprono così i tempi di riverbero esatti (un T30 attorno a 1,6 secondi a Rimini) e la direzione di ogni singolo eco.'
+        'Facciate, colonne e portici riflettono il suono definendo l\'acustica di ogni piazza. Le misure seguono lo standard ISO 3382, applicando allo spazio aperto i parametri utilizzati per teatri e sale da concerto.',
+        'Attraverso il metodo ESS (Exponential Sine Sweep), una sorgente a dodecaedro emette uno sweep a frequenza crescente che permette di calcolare la Risposta all\'Impulso (IR 3D). Con l\'approccio multicanale MIMO si ricavano il tempo di riverberazione (T30 di circa 1,6 s a Rimini) e la direzione delle prime riflessioni.'
       ],
       image: 'assets/gallery/image31.jpg',
-      imageCaption: 'Misura dell\'impronta acustica a Rimini: con lo sweep sonoro e sorgenti calibrate si misura il tempo di riverbero dello spazio urbano.'
+      imageCaption: 'Misura acustica in Piazza Cavour a Rimini: calcolo della risposta all\'impulso e del tempo di riverberazione con sorgente a dodecaedro.'
     },
     {
       num: 3,
       tag: 'Fase 3',
-      title: 'Fase 3: La Mappa del Suono Nello Spazio',
+      title: 'Fase 3: Armoniche Sferiche e Mappe 3D',
       body: [
-        'I dati catturati dai 64 microfoni vengono trasformati nello standard tridimensionale Ambisonics (HOA di 3° ordine su 16 canali, in formato AmbiX). Invece di registrare una semplice traccia stereo destra/sinistra, il suono viene descritto matematicamente come una sfera acustica continua e avvolgente.',
-        'Questa codifica genera mappe visive del suono (mappe di Loudness a colori) sovrapposte direttamente alle immagini a 360°: è possibile "vedere" da dove arrivano i suoni, con quanta intensità rimbalzano e come viaggiano tra i portici e i monumenti storici.'
+        'I segnali dei 64 microfoni vengono codificati in formato Ambisonics (HOA di 3° ordine su 16 canali, standard AmbiX). Il suono viene descritto come una sfera acustica tridimensionale indipendente dal sistema di altoparlanti finale.',
+        'Da questi dati si ricavano mappe di intensità acustica (Loudness) sovrapposte alle immagini a 360°, individuando la direzione di provenienza dei suoni e l\'energia delle riflessioni su facciate e portici.'
       ],
       image: 'assets/gallery/image28.jpg',
-      imageCaption: 'La sfera acustica in formato AmbiX: scomposizione in armoniche sferiche per visualizzare la direzione e l\'energia dei suoni nello spazio.'
+      imageCaption: 'Mappa acustica in formato AmbiX: scomposizione in armoniche sferiche e intensità del suono nello spazio 3D.'
     },
     {
       num: 4,
       tag: 'Fase 4',
-      title: 'Fase 4: Camminare nel Suono in Realtà Virtuale',
+      title: 'Fase 4: Realtà Virtuale 6DOF e Auralizzazione',
       body: [
-        'Grazie a foto con i droni e scansioni da terra, le piazze sono state interamente ricostruite in 3D all\'interno del motore grafico Unreal Engine. A questo modello visivo è stato agganciato il motore sonoro interattivo sviluppato dal laboratorio.',
-        'Il sistema calcola l\'acustica in tempo reale (auralizzazione a bassissima latenza) seguendo i movimenti dell\'utente con 6 gradi di libertà (6DOF): si può camminare ed esplorare la piazza liberamente, sentendo il suono cambiare e adattarsi se ci si avvicina a un musicista o ci si sposta sotto una loggia.'
+        'I rilievi fotografici da terra e con drone sono stati utilizzati per ricostruire le piazze in 3D all\'interno del motore Unreal Engine, collegando la geometria dello spazio al modello acustico calcolato.',
+        'Il sistema esegue l\'auralizzazione in tempo reale con 6 gradi di libertà (6DOF): l\'utente naviga nella piazza e l\'acustica cambia in base alla posizione e ai movimenti della testa, simulando la propagazione del suono all\'aperto o sotto i portici.'
       ],
       image: 'assets/gallery/image35.jpg',
-      imageCaption: 'Esplorazione in Realtà Virtuale 6DOF a Parma: l\'utente cammina liberamente ascoltando l\'orchestra de Il Trovatore cambiare acustica in tempo reale.'
+      imageCaption: 'Ricostruzione in Realtà Virtuale 6DOF di Piazzale San Francesco a Parma: navigazione libera con audio interattivo.'
     },
     {
       num: 5,
       tag: 'Fase 5',
-      title: 'Fase 5: Il Patrimonio Sonoro Rivive per Tutti',
+      title: 'Fase 5: Restituzione Immersiva e Inclusione',
       body: [
-        'L\'esperienza può essere vissuta ovunque: da casa indossando normali cuffie grazie a speciali filtri binaurali (HRTF) che ingannano il cervello ricreando la tridimensionalità acustica, oppure dal vivo all\'interno di sale d\'ascolto dedicate.',
-        'A Tresigallo, nell\'edificio razionalista "Sogni", è stata allestita una sala immersiva con tecnologia WFS (Wave Field Synthesis) e 32 diffusori acustici sincronizzati a proiezioni a 360°. Questo permette a persone con disabilità o mobilità ridotta di viaggiare e immergersi nella vita delle piazze d\'arte come patrimonio culturale condiviso.'
+        'La riproduzione avviene in cuffia tramite filtri binaurali (HRTF) che ricostruiscono la spazialità per l\'ascolto individuale, oppure in sale d\'ascolto dedicate.',
+        'A Tresigallo, nell\'edificio "Sogni", è stata realizzata una sala immersiva con sistema WFS (Wave Field Synthesis), 32 altoparlanti e proiezione a 360°. L\'ambiente consente anche a persone con disabilità motorie di accedere all\'esperienza acustica e visiva delle piazze storiche.'
       ],
       image: 'assets/gallery/tresigallo_wfs_room.jpg',
-      imageCaption: 'La sala d\'ascolto WFS di Tresigallo con 32 altoparlanti e proiezione a 360° per rendere il patrimonio sonoro accessibile a chiunque.'
+      imageCaption: 'Sala d\'ascolto WFS a Tresigallo: 32 altoparlanti e proiezione a 360° per la fruizione accessibile del patrimonio sonoro.'
     }
   ];
 
