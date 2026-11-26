@@ -721,6 +721,29 @@
     }
   }
 
+  function playRipplePulseSound(freq) {
+    if (!audioCtx || state.audioMuted || audioCtx.state !== 'running') return;
+    try {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, now);
+
+      gain.gain.setValueAtTime(0.0001, now);
+      gain.gain.exponentialRampToValueAtTime(0.065, now + 0.04);
+      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
+
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      osc.start(now);
+      osc.stop(now + 0.6);
+    } catch (e) {
+      // Ignora errori
+    }
+  }
+
   // -------------------------------------------------------------------------
   // CALCOLO GEOMETRICO: CERCHIO APERTO CON RESPIRO LATERALE PER IL TESTO
   // -------------------------------------------------------------------------
@@ -1474,8 +1497,8 @@
         state.circles[c.id].motionEnergy = 0;
       }
     });
-    // Soppressione del suono al passaggio del mouse per 2.2 secondi durante la propagazione sonora
-    state.suppressHoverAudioUntil = performance.now() + 2200;
+    // Soppressione del suono al passaggio del mouse per 2.7 secondi durante la propagazione sonora
+    state.suppressHoverAudioUntil = performance.now() + 2700;
 
     // Effetto di ri-orientamento acustico ad onde centripete/centrifughe verso l'esterno
     setTimeout(triggerIntroExpansionRipple, 300);
@@ -2207,13 +2230,30 @@
   }
 
   // -------------------------------------------------------------------------
-  // EFFETTO ESPANSIONE ACUSTICA CENTRIFUGA (ONBOARDING VISIVO DAL CENTRO ALL'ESTERNO)
+  // EFFETTO ESPANSIONE ACUSTICA CENTRIFUGA (PROPAGAZIONE SU TUTTI I MENU CIRCOLARI)
   // -------------------------------------------------------------------------
   function triggerIntroExpansionRipple() {
-    const labPhasesIds = ['lab-c1', 'lab-c2', 'lab-c3', 'lab-c4', 'lab-c5'];
-    labPhasesIds.forEach(function (id, idx) {
+    // Sequenza di propagazione a onde: dal centro del Laboratorio verso l'esterno,
+    // poi si propaga agli altri menu circolari (Partner, Timeline, Crediti, Gallery, Pubblicazioni)
+    const propagationSequence = [
+      // 1. Centro ed espansione del Laboratorio Virtuale (Fasi 1 -> 5)
+      { id: 'lab-c1', delay: 250 },
+      { id: 'lab-c2', delay: 450 },
+      { id: 'lab-c3', delay: 650 },
+      { id: 'lab-c4', delay: 850 },
+      { id: 'lab-c5', delay: 1050 },
+      // 2. Propagazione a cascata ai menu circolari di destra
+      { id: 'part-c1', delay: 1250 }, // Partner (anello interno in alto)
+      { id: 'cred-c1', delay: 1350 }, // Timeline (anello interno in basso)
+      { id: 'part-c2', delay: 1500 }, // Crediti (anello medio in alto)
+      { id: 'cred-c2', delay: 1600 }, // Gallery (anello esterno in basso)
+      { id: 'part-c3', delay: 1750 }  // Pubblicazioni (anello esterno in alto)
+    ];
+
+    propagationSequence.forEach(function (step) {
       setTimeout(function () {
         if (state.portalOpen) return;
+        const id = step.id;
         if (state.circles[id]) {
           state.circles[id].motionEnergy = 1.0;
         }
@@ -2222,9 +2262,11 @@
           dom.group.classList.add('intro-pulse');
           setTimeout(function () {
             dom.group.classList.remove('intro-pulse');
-          }, 700);
+          }, 650);
         }
-      }, 350 + idx * 220);
+        const freq = activeStyle.audio.frequencies[id] || 220;
+        playRipplePulseSound(freq);
+      }, step.delay);
     });
   }
 
@@ -2240,8 +2282,8 @@
 
     requestAnimationFrame(mainAnimationLoop);
 
-    // Animazione di orientamento centripeto/centrifugo dal cuore verso l'esterno
-    state.suppressHoverAudioUntil = performance.now() + 2200;
+    // Animazione di orientamento centripeto/centrifugo dal cuore verso l'esterno su tutti i cerchi
+    state.suppressHoverAudioUntil = performance.now() + 2700;
     setTimeout(triggerIntroExpansionRipple, 500);
   });
 
