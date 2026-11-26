@@ -2059,12 +2059,16 @@ html, body {
     display: none !important;
   }
 
-  /* Azioni Mobile nell'header: pulsante Audio e Hamburger puliti senza bordi né ombre */
+  /* Azioni Mobile nell'header: Hamburger pulito senza bordi né ombre */
   .mobile-header-actions {
     display: flex;
     align-items: center;
     gap: 0.85rem;
     justify-content: flex-end;
+  }
+
+  .mobile-audio-btn {
+    display: none !important;
   }
 
   /* Home: scorrimento verticale naturale per vivere un'onda sonora grande alla volta */
