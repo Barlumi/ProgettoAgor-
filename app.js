@@ -1612,25 +1612,44 @@
     const imgElem = document.getElementById('portalCircleImg');
     const capElem = document.getElementById('portalMediaCaption');
 
-    if (catElem) catElem.textContent = 'Laboratorio Virtuale — ' + phaseData.tag;
-    if (titleElem) titleElem.textContent = phaseData.title;
+    function applyPhaseContent() {
+      if (catElem) catElem.textContent = 'Laboratorio Virtuale — ' + phaseData.tag;
+      if (titleElem) {
+        titleElem.textContent = phaseData.title;
+        titleElem.style.opacity = '1';
+      }
 
-    if (bodyElem) {
-      bodyElem.innerHTML = '';
-      phaseData.body.forEach(function (pText) {
-        const p = document.createElement('p');
-        p.textContent = pText;
-        bodyElem.appendChild(p);
-      });
+      if (bodyElem) {
+        bodyElem.innerHTML = '';
+        phaseData.body.forEach(function (pText) {
+          const p = document.createElement('p');
+          p.textContent = pText;
+          bodyElem.appendChild(p);
+        });
+        bodyElem.style.opacity = '1';
+      }
+
+      if (imgElem) {
+        imgElem.src = phaseData.image;
+        imgElem.alt = phaseData.title;
+        imgElem.style.opacity = '1';
+      }
+
+      if (capElem) {
+        capElem.textContent = phaseData.imageCaption || '';
+        capElem.style.opacity = '1';
+      }
     }
 
-    if (imgElem) {
-      imgElem.src = phaseData.image;
-      imgElem.alt = phaseData.title;
-    }
+    if (state.portalOpen && titleElem && titleElem.textContent) {
+      if (titleElem) titleElem.style.opacity = '0.35';
+      if (bodyElem) bodyElem.style.opacity = '0.35';
+      if (imgElem) imgElem.style.opacity = '0.35';
+      if (capElem) capElem.style.opacity = '0.35';
 
-    if (capElem) {
-      capElem.textContent = phaseData.imageCaption || '';
+      setTimeout(applyPhaseContent, 60);
+    } else {
+      applyPhaseContent();
     }
 
     // Aggiorna i cerchi concentrici nell'SVG per la fase attiva
@@ -2422,6 +2441,30 @@
     renderPortalLabPhase(0);
 
     requestAnimationFrame(mainAnimationLoop);
+
+    // Gestione deep-link hash per apertura diretta (es. #lab, #lab-2, #timeline, #gallery, #partner, #crediti)
+    try {
+      const hash = (window.location.hash || '').toLowerCase().replace('#', '');
+      if (hash.startsWith('lab') || hash.startsWith('fase') || hash.startsWith('phase')) {
+        let pIdx = 0;
+        const match = hash.match(/\d+/);
+        if (match) {
+          pIdx = parseInt(match[0], 10) - 1;
+          if (isNaN(pIdx) || pIdx < 0 || pIdx > 4) pIdx = 0;
+        }
+        openCircularPortal('laboratorio', pIdx);
+      } else if (hash === 'timeline') {
+        openCircularPortal('timeline', null);
+      } else if (hash === 'gallery') {
+        openCircularPortal('gallery', null);
+      } else if (hash === 'partner' || hash === 'partnership') {
+        openCircularPortal('partnership', null);
+      } else if (hash === 'pubblicazioni') {
+        openCircularPortal('pubblicazioni', null);
+      } else if (hash === 'crediti' || hash === 'credits') {
+        openCircularPortal('credits', null);
+      }
+    } catch (e) {}
 
     // Comparsa iniziale dal nulla delle ondine dalla più piccola alla più grande (ritmo rapido)
     setTimeout(triggerInitialEmergenceIntro, 180);
