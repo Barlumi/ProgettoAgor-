@@ -543,45 +543,14 @@
       createAudioVoice('back-home', 440);
       createAudioVoice('portal-media', 330);
 
-      // Se il browser permette l'audio senza restrizioni autoplay
-      if (audioCtx.state === 'running') {
-        detachUnlockListeners();
-      }
-      updateAudioStatusUI();
+      // Tenta l'attivazione immediata all'avvio
+      audioCtx.resume().then(function () {
+        if (audioCtx.state === 'running') {
+          detachUnlockListeners();
+        }
+      }).catch(function () {});
     } catch (err) {
       console.warn('Audio non supportato:', err);
-    }
-  }
-
-  function updateAudioStatusUI() {
-    const muteToggle = document.getElementById('btnAudioMute');
-    const muteLabel = document.getElementById('audioMuteLabel');
-    const banner = document.getElementById('audioUnlockBanner');
-
-    if (state.audioMuted) {
-      if (muteLabel) muteLabel.textContent = 'Audio Spento';
-      if (muteToggle) {
-        muteToggle.classList.add('muted');
-        muteToggle.classList.remove('needs-activation');
-      }
-      if (banner) banner.classList.add('hidden');
-    } else if (!audioCtx || audioCtx.state === 'suspended') {
-      if (muteLabel) muteLabel.textContent = 'Attiva Audio';
-      if (muteToggle) {
-        muteToggle.classList.remove('muted');
-        muteToggle.classList.add('needs-activation');
-      }
-      if (banner && !state.portalOpen) {
-        banner.classList.remove('hidden');
-      }
-    } else {
-      if (muteLabel) muteLabel.textContent = 'Audio Attivo';
-      if (muteToggle) {
-        muteToggle.classList.remove('muted', 'needs-activation');
-      }
-      if (banner) {
-        banner.classList.add('hidden');
-      }
     }
   }
 
@@ -633,7 +602,6 @@
 
     function onUnlocked() {
       detachUnlockListeners();
-      updateAudioStatusUI();
       if (!state.introRippleAudioPlayed && !state.portalOpen) {
         state.introRippleAudioPlayed = true;
         triggerIntroExpansionRipple();
@@ -655,20 +623,24 @@
     }
   }
 
-  const UNLOCK_EVENTS = ['pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown', 'click'];
-  function onFirstUserGesture() {
+  // Ascoltatori reattivi su qualsiasi movimento del mouse, tocco o tasto
+  const UNLOCK_EVENTS = [
+    'pointermove', 'mousemove', 'mouseenter', 'mouseover', 'wheel',
+    'pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown'
+  ];
+  function onUserWakeGesture() {
     ensureAudioUnlocked();
   }
   function attachUnlockListeners() {
     UNLOCK_EVENTS.forEach(function (evt) {
-      window.addEventListener(evt, onFirstUserGesture, { capture: true, passive: true });
-      document.addEventListener(evt, onFirstUserGesture, { capture: true, passive: true });
+      window.addEventListener(evt, onUserWakeGesture, { capture: true, passive: true });
+      document.addEventListener(evt, onUserWakeGesture, { capture: true, passive: true });
     });
   }
   function detachUnlockListeners() {
     UNLOCK_EVENTS.forEach(function (evt) {
-      window.removeEventListener(evt, onFirstUserGesture, { capture: true });
-      document.removeEventListener(evt, onFirstUserGesture, { capture: true });
+      window.removeEventListener(evt, onUserWakeGesture, { capture: true });
+      document.removeEventListener(evt, onUserWakeGesture, { capture: true });
     });
   }
 
@@ -802,7 +774,23 @@
 
   function playRipplePulseSound(freq) {
     if (!audioCtx) initAudioContext();
-    if (!audioCtx || state.audioMuted || audioCtx.state !== 'running') return;
+    if (!audioCtx || state.audioMuted) return;
+
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(function () {
+        if (audioCtx.state === 'running') {
+          playSineTone(freq);
+        }
+      }).catch(function () {});
+      return;
+    }
+
+    if (audioCtx.state === 'running') {
+      playSineTone(freq);
+    }
+  }
+
+  function playSineTone(freq) {
     try {
       const now = audioCtx.currentTime;
       const osc = audioCtx.createOscillator();
@@ -2302,18 +2290,10 @@
     const muteLabel = document.getElementById('audioMuteLabel');
     if (muteToggle) {
       muteToggle.addEventListener('click', function () {
-        if (!audioCtx || audioCtx.state === 'suspended') {
-          // Se l'audio era sospeso dal browser, il click lo attiva direttamente
-          state.audioMuted = false;
-          ensureAudioUnlocked(function () {
-            updateAudioStatusUI();
-          });
-          return;
-        }
-
+        ensureAudioUnlocked();
         state.audioMuted = !state.audioMuted;
-        updateAudioStatusUI();
-
+        muteLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
+        muteToggle.classList.toggle('muted', state.audioMuted);
         if (state.audioMuted && audioCtx) {
           CIRCLES_REGISTRY.forEach(function (c) {
             if (audioNodes[c.id]) {
@@ -2322,24 +2302,6 @@
           });
           if (audioNodes['back-home']) audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
           if (audioNodes['portal-media']) audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
-        }
-      });
-    }
-
-    // Banner di sblocco audio al tocco
-    const unlockBanner = document.getElementById('audioUnlockBanner');
-    if (unlockBanner) {
-      unlockBanner.addEventListener('click', function () {
-        ensureAudioUnlocked(function () {
-          updateAudioStatusUI();
-        });
-      });
-      unlockBanner.addEventListener('keydown', function (e) {
-        if (e.key === 'Enter' || e.key === ' ') {
-          e.preventDefault();
-          ensureAudioUnlocked(function () {
-            updateAudioStatusUI();
-          });
         }
       });
     }
@@ -2373,8 +2335,6 @@
       { id: 'cred-c2', delay: 1080 }, // Gallery (r=110)
       { id: 'part-c3', delay: 1200 }  // Pubblicazioni (r=165)
     ];
-
-    state.suppressHoverAudioUntil = performance.now() + 1350;
 
     emergenceSequence.forEach(function (step, idx) {
       setTimeout(function () {
@@ -2460,12 +2420,11 @@
     initPortalMediaCircle();
     initEventHandlers();
     renderPortalLabPhase(0);
-    updateAudioStatusUI();
 
     requestAnimationFrame(mainAnimationLoop);
 
     // Comparsa iniziale dal nulla delle ondine dalla più piccola alla più grande (ritmo rapido)
-    setTimeout(triggerInitialEmergenceIntro, 250);
+    setTimeout(triggerInitialEmergenceIntro, 180);
   });
 
   // Esposizione per navigazione e test
