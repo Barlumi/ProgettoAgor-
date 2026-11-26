@@ -379,12 +379,12 @@
   // REGISTRO DEI CERCHI (COORDINATE DINAMICHE: Desktop Orizzontale | Mobile Verticale)
   // -------------------------------------------------------------------------
   const CIRCLES_REGISTRY = [
-    // --- ONDA 1: LABORATORIO VIRTUALE (5 ONDE CONCENTRICHE ARMONIZZATE, RESPIRO DAI BORDI) ---
+    // --- ONDA 1: LABORATORIO VIRTUALE (5 ONDE CONCENTRICHE, DISTANZE ARMONIZZATE E COMPATTE) ---
     {
       id: 'lab-c1',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 80, labelAngle: 0.85 * Math.PI,
-      mobileCx: 285, mobileCy: 440, mobileRadius: 70, mobileLabelAngle: 0.85 * Math.PI,
+      mobileCx: 285, mobileCy: 390, mobileRadius: 65, mobileLabelAngle: 0.85 * Math.PI,
       labelText: '1 • Acquisizione 3D',
       isPhase: true,
       phaseIndex: 0
@@ -393,7 +393,7 @@
       id: 'lab-c2',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 140, labelAngle: 0.25 * Math.PI,
-      mobileCx: 285, mobileCy: 440, mobileRadius: 105, mobileLabelAngle: 0.25 * Math.PI,
+      mobileCx: 285, mobileCy: 390, mobileRadius: 100, mobileLabelAngle: 0.25 * Math.PI,
       labelText: '2 • Risposte ad Impulso',
       isPhase: true,
       phaseIndex: 1
@@ -402,7 +402,7 @@
       id: 'lab-c3',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 200, labelAngle: 1.25 * Math.PI,
-      mobileCx: 285, mobileCy: 440, mobileRadius: 140, mobileLabelAngle: 1.25 * Math.PI,
+      mobileCx: 285, mobileCy: 390, mobileRadius: 135, mobileLabelAngle: 1.25 * Math.PI,
       labelText: '3 • Armoniche Sferiche',
       isPhase: true,
       phaseIndex: 2
@@ -411,7 +411,7 @@
       id: 'lab-c4',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 260, labelAngle: 1.75 * Math.PI,
-      mobileCx: 285, mobileCy: 440, mobileRadius: 175, mobileLabelAngle: 1.75 * Math.PI,
+      mobileCx: 285, mobileCy: 390, mobileRadius: 170, mobileLabelAngle: 1.75 * Math.PI,
       labelText: '4 • Realtà Virtuale 6DoF',
       isPhase: true,
       phaseIndex: 3
@@ -420,18 +420,18 @@
       id: 'lab-c5',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 320, labelAngle: 0.00 * Math.PI,
-      mobileCx: 285, mobileCy: 440, mobileRadius: 210, mobileLabelAngle: 0.05 * Math.PI,
+      mobileCx: 285, mobileCy: 390, mobileRadius: 205, mobileLabelAngle: 0.05 * Math.PI,
       labelText: '5 • Restituzione Immersiva',
       isPhase: true,
       phaseIndex: 4
     },
 
-    // --- ONDA 2: RETE & RICERCA (Partner, Crediti, Pubblicazioni - ARMONICAMENTE SFASATE A DESTRA) ---
+    // --- ONDA 2: RETE & RICERCA (Partner, Crediti, Pubblicazioni - CONTINUITÀ ACUSTICA) ---
     {
       id: 'part-c1',
       system: 'partnership',
       cx: 1240, cy: 285, radius: 65, labelAngle: 0.90 * Math.PI,
-      mobileCx: 315, mobileCy: 1140, mobileRadius: 80, mobileLabelAngle: 0.85 * Math.PI,
+      mobileCx: 315, mobileCy: 890, mobileRadius: 75, mobileLabelAngle: 0.85 * Math.PI,
       labelText: 'Partner',
       isPhase: false
     },
@@ -439,7 +439,7 @@
       id: 'part-c2',
       system: 'credits',
       cx: 1240, cy: 285, radius: 115, labelAngle: 1.65 * Math.PI,
-      mobileCx: 315, mobileCy: 1140, mobileRadius: 135, mobileLabelAngle: 1.65 * Math.PI,
+      mobileCx: 315, mobileCy: 890, mobileRadius: 128, mobileLabelAngle: 1.65 * Math.PI,
       labelText: 'Crediti',
       isPhase: false
     },
@@ -447,17 +447,17 @@
       id: 'part-c3',
       system: 'pubblicazioni',
       cx: 1240, cy: 285, radius: 165, labelAngle: 0.00 * Math.PI,
-      mobileCx: 315, mobileCy: 1140, mobileRadius: 190, mobileLabelAngle: 0.15 * Math.PI,
+      mobileCx: 315, mobileCy: 890, mobileRadius: 180, mobileLabelAngle: 0.15 * Math.PI,
       labelText: 'Pubblicazioni',
       isPhase: false
     },
 
-    // --- ONDA 3: ARCHIVIO (Timeline & Gallery - ARMONICAMENTE SFASATE A SINISTRA) ---
+    // --- ONDA 3: ARCHIVIO (Timeline & Gallery - RACCORDO FLUIDO) ---
     {
       id: 'cred-c1',
       system: 'timeline',
       cx: 1240, cy: 690, radius: 65, labelAngle: 0.85 * Math.PI,
-      mobileCx: 285, mobileCy: 1800, mobileRadius: 90, mobileLabelAngle: 0.85 * Math.PI,
+      mobileCx: 285, mobileCy: 1340, mobileRadius: 85, mobileLabelAngle: 0.85 * Math.PI,
       labelText: 'Timeline',
       isPhase: false
     },
@@ -465,7 +465,7 @@
       id: 'cred-c2',
       system: 'gallery',
       cx: 1240, cy: 690, radius: 110, labelAngle: 0.00 * Math.PI,
-      mobileCx: 285, mobileCy: 1800, mobileRadius: 160, mobileLabelAngle: 0.05 * Math.PI,
+      mobileCx: 285, mobileCy: 1340, mobileRadius: 155, mobileLabelAngle: 0.05 * Math.PI,
       labelText: 'Gallery',
       isPhase: false
     }
@@ -822,8 +822,8 @@
 
     const coords = getCircleCoords(c);
     const isMob = isMobileViewport();
-    const textPxWidth = c.labelText.length * (isMob ? 11.2 : 10.5);
-    const paddingPx = isMob ? 16 : 22; // Respiro laterale calibrato
+    const textPxWidth = c.labelText.length * (isMob ? 11.0 : 10.5);
+    const paddingPx = isMob ? 14 : 22; // Respiro laterale calibrato
     const totalGapPx = textPxWidth + paddingPx * 2;
 
     const gapHalfAngle = (totalGapPx / 2) / coords.radius;
@@ -857,7 +857,7 @@
     if (!svg) return;
     const isMob = isMobileViewport();
     if (isMob) {
-      svg.setAttribute('viewBox', '0 0 600 2200');
+      svg.setAttribute('viewBox', '0 0 600 1700');
     } else {
       svg.setAttribute('viewBox', '0 0 1600 950');
     }
@@ -906,7 +906,7 @@
     const svg = document.getElementById('soundWavesSvg');
     const isMob = isMobileViewport();
     if (svg) {
-      svg.setAttribute('viewBox', isMob ? '0 0 600 2200' : '0 0 1600 950');
+      svg.setAttribute('viewBox', isMob ? '0 0 600 1700' : '0 0 1600 950');
     }
 
     CIRCLES_REGISTRY.forEach(function (c) {
@@ -1578,11 +1578,11 @@
 
     const isMob = isMobileViewport();
     const refW = isMob ? 600 : 1600;
-    const refH = isMob ? 2200 : 950;
+    const refH = isMob ? 1700 : 950;
 
     // 1. Calcolo del centro del cerchio per la transizione di zoom
     let originX = isMob ? '47.50%' : '33.75%';
-    let originY = isMob ? '20.00%' : '50%';
+    let originY = isMob ? '22.94%' : '50%';
     let baseFreq = 220;
 
     if (clickOrigin && typeof clickOrigin.x === 'number' && typeof clickOrigin.y === 'number') {
@@ -1593,15 +1593,15 @@
       }
     } else if (sectionKey === 'laboratorio') {
       originX = isMob ? '47.50%' : '33.75%';
-      originY = isMob ? '20.00%' : '50%';
+      originY = isMob ? '22.94%' : '50%';
       baseFreq = 220;
     } else if (sectionKey === 'partnership' || sectionKey === 'credits' || sectionKey === 'pubblicazioni') {
       originX = isMob ? '52.50%' : '77.5%';
-      originY = isMob ? '51.82%' : '30%';
+      originY = isMob ? '52.35%' : '30%';
       baseFreq = 293.7;
     } else if (sectionKey === 'timeline' || sectionKey === 'gallery') {
       originX = isMob ? '47.50%' : '77.5%';
-      originY = isMob ? '81.82%' : '72.63%';
+      originY = isMob ? '78.82%' : '72.63%';
       baseFreq = 349.2;
     }
 
@@ -2541,6 +2541,86 @@
         });
       }
     });
+
+    // -------------------------------------------------------------------------
+    // SCROLL SONORO SU MOBILE: Sintonizzatore Acustico Armonico
+    // -------------------------------------------------------------------------
+    const interactiveStage = document.querySelector('.interactive-stage');
+    let lastActiveCircleId = null;
+    let lastChimeTime = 0;
+    let scrollRafId = null;
+
+    function handleMobileAcousticScroll() {
+      if (!isMobileViewport() || state.portalOpen || state.audioMuted || !state.initialIntroCompleted) {
+        return;
+      }
+      ensureAudioUnlocked();
+
+      if (!interactiveStage) return;
+      const stageRect = interactiveStage.getBoundingClientRect();
+      const focalY = stageRect.top + stageRect.height * 0.46;
+
+      let bestCircle = null;
+      let minDistanceToArc = Infinity;
+
+      CIRCLES_REGISTRY.forEach(function (c) {
+        const dom = circleDOM[c.id];
+        if (!dom || !dom.hitProxy) return;
+
+        const rect = dom.hitProxy.getBoundingClientRect();
+        const circleCenterY = rect.top + rect.height / 2;
+        const circleRadiusOnScreen = rect.height / 2;
+
+        if (circleRadiusOnScreen <= 0) return;
+
+        const distFromCenter = Math.abs(focalY - circleCenterY);
+        const distToArc = Math.abs(distFromCenter - circleRadiusOnScreen);
+
+        if (distToArc < minDistanceToArc) {
+          minDistanceToArc = distToArc;
+          bestCircle = c;
+        }
+      });
+
+      if (bestCircle && minDistanceToArc <= 34) {
+        const now = performance.now();
+        if (bestCircle.id !== lastActiveCircleId && (now - lastChimeTime > 95)) {
+          lastActiveCircleId = bestCircle.id;
+          lastChimeTime = now;
+
+          const st = state.circles[bestCircle.id];
+          if (st) {
+            st.motionEnergy = 1.0;
+          }
+
+          const dom = circleDOM[bestCircle.id];
+          if (dom && dom.group) {
+            dom.group.classList.add('circle-sounding');
+            setTimeout(function () {
+              dom.group.classList.remove('circle-sounding');
+            }, 380);
+          }
+
+          const freq = (activeStyle.audio && activeStyle.audio.frequencies[bestCircle.id]) || 220;
+          playRipplePulseSound(freq);
+        }
+      }
+    }
+
+    if (interactiveStage) {
+      interactiveStage.addEventListener('scroll', function () {
+        if (scrollRafId) cancelAnimationFrame(scrollRafId);
+        scrollRafId = requestAnimationFrame(handleMobileAcousticScroll);
+      }, { passive: true });
+
+      interactiveStage.addEventListener('touchmove', function () {
+        ensureAudioUnlocked();
+      }, { passive: true });
+
+      interactiveStage.addEventListener('touchstart', function () {
+        ensureAudioUnlocked();
+      }, { passive: true });
+    }
 
     // Resize listener per aggiornare reattivamente il layout dell'SVG quando si passa da desktop a mobile o viceversa
     let lastIsMobile = isMobileViewport();
