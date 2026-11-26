@@ -547,8 +547,41 @@
       if (audioCtx.state === 'running') {
         detachUnlockListeners();
       }
+      updateAudioStatusUI();
     } catch (err) {
       console.warn('Audio non supportato:', err);
+    }
+  }
+
+  function updateAudioStatusUI() {
+    const muteToggle = document.getElementById('btnAudioMute');
+    const muteLabel = document.getElementById('audioMuteLabel');
+    const banner = document.getElementById('audioUnlockBanner');
+
+    if (state.audioMuted) {
+      if (muteLabel) muteLabel.textContent = 'Audio Spento';
+      if (muteToggle) {
+        muteToggle.classList.add('muted');
+        muteToggle.classList.remove('needs-activation');
+      }
+      if (banner) banner.classList.add('hidden');
+    } else if (!audioCtx || audioCtx.state === 'suspended') {
+      if (muteLabel) muteLabel.textContent = 'Attiva Audio';
+      if (muteToggle) {
+        muteToggle.classList.remove('muted');
+        muteToggle.classList.add('needs-activation');
+      }
+      if (banner && !state.portalOpen) {
+        banner.classList.remove('hidden');
+      }
+    } else {
+      if (muteLabel) muteLabel.textContent = 'Audio Attivo';
+      if (muteToggle) {
+        muteToggle.classList.remove('muted', 'needs-activation');
+      }
+      if (banner) {
+        banner.classList.add('hidden');
+      }
     }
   }
 
@@ -598,29 +631,25 @@
     if (!audioCtx) initAudioContext();
     if (!audioCtx) return;
 
-    if (audioCtx.state === 'running') {
+    function onUnlocked() {
       detachUnlockListeners();
+      updateAudioStatusUI();
       if (!state.introRippleAudioPlayed && !state.portalOpen) {
         state.introRippleAudioPlayed = true;
-        if (state.initialIntroCompleted) {
-          triggerIntroExpansionRipple();
-        }
+        triggerIntroExpansionRipple();
       }
       if (typeof callback === 'function') callback();
+    }
+
+    if (audioCtx.state === 'running') {
+      onUnlocked();
       return;
     }
 
     if (audioCtx.state === 'suspended') {
       audioCtx.resume().then(function () {
         if (audioCtx.state === 'running') {
-          detachUnlockListeners();
-          if (!state.introRippleAudioPlayed && !state.portalOpen) {
-            state.introRippleAudioPlayed = true;
-            if (state.initialIntroCompleted) {
-              triggerIntroExpansionRipple();
-            }
-          }
-          if (typeof callback === 'function') callback();
+          onUnlocked();
         }
       }).catch(function () {});
     }
@@ -1560,8 +1589,8 @@
         state.circles[c.id].motionEnergy = 0;
       }
     });
-    // Soppressione del suono al passaggio del mouse per 2.7 secondi durante la propagazione sonora
-    state.suppressHoverAudioUntil = performance.now() + 2700;
+    // Soppressione del suono al passaggio del mouse durante la veloce propagazione sonora
+    state.suppressHoverAudioUntil = performance.now() + 1100;
 
     // Effetto di ri-orientamento acustico ad onde centripete/centrifughe verso l'esterno
     setTimeout(triggerIntroExpansionRipple, 300);
@@ -2268,14 +2297,23 @@
       }
     });
 
-    // Controllo Audio Spento / Attivo ("sound on") - rimane invariato e indipendente
+    // Controllo Audio Spento / Attivo ("sound on")
     const muteToggle = document.getElementById('btnAudioMute');
     const muteLabel = document.getElementById('audioMuteLabel');
     if (muteToggle) {
       muteToggle.addEventListener('click', function () {
+        if (!audioCtx || audioCtx.state === 'suspended') {
+          // Se l'audio era sospeso dal browser, il click lo attiva direttamente
+          state.audioMuted = false;
+          ensureAudioUnlocked(function () {
+            updateAudioStatusUI();
+          });
+          return;
+        }
+
         state.audioMuted = !state.audioMuted;
-        muteLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
-        muteToggle.classList.toggle('muted', state.audioMuted);
+        updateAudioStatusUI();
+
         if (state.audioMuted && audioCtx) {
           CIRCLES_REGISTRY.forEach(function (c) {
             if (audioNodes[c.id]) {
@@ -2287,11 +2325,29 @@
         }
       });
     }
+
+    // Banner di sblocco audio al tocco
+    const unlockBanner = document.getElementById('audioUnlockBanner');
+    if (unlockBanner) {
+      unlockBanner.addEventListener('click', function () {
+        ensureAudioUnlocked(function () {
+          updateAudioStatusUI();
+        });
+      });
+      unlockBanner.addEventListener('keydown', function (e) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          ensureAudioUnlocked(function () {
+            updateAudioStatusUI();
+          });
+        }
+      });
+    }
   }
 
   // -------------------------------------------------------------------------
   // EFFETTO COMPARSA INIZIALE DAL NULLA (SOLO AL PRIMO CARICAMENTO)
-  // Dal cerchio più piccolo al più grande con movimento ondoso e suono
+  // Dal cerchio più piccolo al più grande con movimento ondoso rapido e fluido
   // -------------------------------------------------------------------------
   function triggerInitialEmergenceIntro() {
     if (state.initialIntroCompleted) return;
@@ -2300,25 +2356,25 @@
       state.introRippleAudioPlayed = true;
     }
 
-    // Sequenza di comparsa ordinale dal cerchio più piccolo al più grande:
+    // Sequenza di comparsa rapida e ritmica dal cerchio più piccolo al più grande:
     // 1. Centro del Laboratorio (Fase 1 r=80) verso l'esterno (Fase 5 r=320)
     // 2. Menu circolari di destra dai più piccoli ai più grandi
     const emergenceSequence = [
       // Laboratorio Virtuale (dal nucleo più piccolo al più grande)
-      { id: 'lab-c1', delay: 350 },  // Fase 1: r=80
-      { id: 'lab-c2', delay: 650 },  // Fase 2: r=140
-      { id: 'lab-c3', delay: 950 },  // Fase 3: r=200
-      { id: 'lab-c4', delay: 1250 }, // Fase 4: r=260
-      { id: 'lab-c5', delay: 1550 }, // Fase 5: r=320
+      { id: 'lab-c1', delay: 100 },  // Fase 1: r=80
+      { id: 'lab-c2', delay: 220 },  // Fase 2: r=140
+      { id: 'lab-c3', delay: 340 },  // Fase 3: r=200
+      { id: 'lab-c4', delay: 460 },  // Fase 4: r=260
+      { id: 'lab-c5', delay: 580 },  // Fase 5: r=320
       // Menu di destra (dai più piccoli ai più grandi)
-      { id: 'part-c1', delay: 1800 }, // Partner (r=65)
-      { id: 'cred-c1', delay: 1950 }, // Timeline (r=65)
-      { id: 'part-c2', delay: 2150 }, // Crediti (r=115)
-      { id: 'cred-c2', delay: 2300 }, // Gallery (r=110)
-      { id: 'part-c3', delay: 2500 }  // Pubblicazioni (r=165)
+      { id: 'part-c1', delay: 720 }, // Partner (r=65)
+      { id: 'cred-c1', delay: 840 }, // Timeline (r=65)
+      { id: 'part-c2', delay: 960 }, // Crediti (r=115)
+      { id: 'cred-c2', delay: 1080 }, // Gallery (r=110)
+      { id: 'part-c3', delay: 1200 }  // Pubblicazioni (r=165)
     ];
 
-    state.suppressHoverAudioUntil = performance.now() + 3200;
+    state.suppressHoverAudioUntil = performance.now() + 1350;
 
     emergenceSequence.forEach(function (step, idx) {
       setTimeout(function () {
@@ -2335,7 +2391,7 @@
           setTimeout(function () {
             dom.group.classList.remove('intro-pulse', 'circle-revealing');
             dom.group.classList.add('circle-revealed');
-          }, 700);
+          }, 420);
         }
 
         if (state.circles[id]) {
@@ -2359,21 +2415,18 @@
     if (audioCtx && audioCtx.state === 'running') {
       state.introRippleAudioPlayed = true;
     }
-    // Sequenza di propagazione a onde: dal centro del Laboratorio verso l'esterno,
-    // poi si propaga agli altri menu circolari (Partner, Timeline, Crediti, Gallery, Pubblicazioni)
+    // Sequenza rapida di propagazione a onde dal centro del Laboratorio verso l'esterno
     const propagationSequence = [
-      // 1. Centro ed espansione del Laboratorio Virtuale (Fasi 1 -> 5)
-      { id: 'lab-c1', delay: 250 },
-      { id: 'lab-c2', delay: 450 },
-      { id: 'lab-c3', delay: 650 },
-      { id: 'lab-c4', delay: 850 },
-      { id: 'lab-c5', delay: 1050 },
-      // 2. Propagazione a cascata ai menu circolari di destra
-      { id: 'part-c1', delay: 1250 }, // Partner (anello interno in alto)
-      { id: 'cred-c1', delay: 1350 }, // Timeline (anello interno in basso)
-      { id: 'part-c2', delay: 1500 }, // Crediti (anello medio in alto)
-      { id: 'cred-c2', delay: 1600 }, // Gallery (anello esterno in basso)
-      { id: 'part-c3', delay: 1750 }  // Pubblicazioni (anello esterno in alto)
+      { id: 'lab-c1', delay: 90 },
+      { id: 'lab-c2', delay: 180 },
+      { id: 'lab-c3', delay: 270 },
+      { id: 'lab-c4', delay: 360 },
+      { id: 'lab-c5', delay: 450 },
+      { id: 'part-c1', delay: 550 },
+      { id: 'cred-c1', delay: 630 },
+      { id: 'part-c2', delay: 710 },
+      { id: 'cred-c2', delay: 790 },
+      { id: 'part-c3', delay: 870 }
     ];
 
     propagationSequence.forEach(function (step) {
@@ -2388,7 +2441,7 @@
           dom.group.classList.add('intro-pulse');
           setTimeout(function () {
             dom.group.classList.remove('intro-pulse');
-          }, 650);
+          }, 400);
         }
         const freq = activeStyle.audio.frequencies[id] || 220;
         playRipplePulseSound(freq);
@@ -2407,11 +2460,12 @@
     initPortalMediaCircle();
     initEventHandlers();
     renderPortalLabPhase(0);
+    updateAudioStatusUI();
 
     requestAnimationFrame(mainAnimationLoop);
 
-    // Comparsa iniziale dal nulla delle ondine dalla più piccola alla più grande
-    setTimeout(triggerInitialEmergenceIntro, 400);
+    // Comparsa iniziale dal nulla delle ondine dalla più piccola alla più grande (ritmo rapido)
+    setTimeout(triggerInitialEmergenceIntro, 250);
   });
 
   // Esposizione per navigazione e test
