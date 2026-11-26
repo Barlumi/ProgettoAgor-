@@ -379,12 +379,12 @@
   // REGISTRO DEI CERCHI (COORDINATE DINAMICHE: Desktop Orizzontale | Mobile Verticale)
   // -------------------------------------------------------------------------
   const CIRCLES_REGISTRY = [
-    // --- ONDA 1: LABORATORIO VIRTUALE (5 ONDE CONCENTRICHE GRANDI, SFASATE A SINISTRA) ---
+    // --- ONDA 1: LABORATORIO VIRTUALE (5 ONDE CONCENTRICHE ARMONIZZATE, RESPIRO DAI BORDI) ---
     {
       id: 'lab-c1',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 80, labelAngle: 0.85 * Math.PI,
-      mobileCx: 330, mobileCy: 680, mobileRadius: 75, mobileLabelAngle: 0.85 * Math.PI,
+      mobileCx: 285, mobileCy: 440, mobileRadius: 70, mobileLabelAngle: 0.85 * Math.PI,
       labelText: '1 • Acquisizione 3D',
       isPhase: true,
       phaseIndex: 0
@@ -393,7 +393,7 @@
       id: 'lab-c2',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 140, labelAngle: 0.25 * Math.PI,
-      mobileCx: 330, mobileCy: 680, mobileRadius: 140, mobileLabelAngle: 0.25 * Math.PI,
+      mobileCx: 285, mobileCy: 440, mobileRadius: 105, mobileLabelAngle: 0.25 * Math.PI,
       labelText: '2 • Risposte ad Impulso',
       isPhase: true,
       phaseIndex: 1
@@ -402,7 +402,7 @@
       id: 'lab-c3',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 200, labelAngle: 1.25 * Math.PI,
-      mobileCx: 330, mobileCy: 680, mobileRadius: 205, mobileLabelAngle: 1.25 * Math.PI,
+      mobileCx: 285, mobileCy: 440, mobileRadius: 140, mobileLabelAngle: 1.25 * Math.PI,
       labelText: '3 • Armoniche Sferiche',
       isPhase: true,
       phaseIndex: 2
@@ -411,7 +411,7 @@
       id: 'lab-c4',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 260, labelAngle: 1.75 * Math.PI,
-      mobileCx: 330, mobileCy: 680, mobileRadius: 270, mobileLabelAngle: 1.75 * Math.PI,
+      mobileCx: 285, mobileCy: 440, mobileRadius: 175, mobileLabelAngle: 1.75 * Math.PI,
       labelText: '4 • Realtà Virtuale 6DoF',
       isPhase: true,
       phaseIndex: 3
@@ -420,18 +420,18 @@
       id: 'lab-c5',
       system: 'laboratorio',
       cx: 540, cy: 475, radius: 320, labelAngle: 0.00 * Math.PI,
-      mobileCx: 330, mobileCy: 680, mobileRadius: 335, mobileLabelAngle: 0.00 * Math.PI,
+      mobileCx: 285, mobileCy: 440, mobileRadius: 210, mobileLabelAngle: 0.05 * Math.PI,
       labelText: '5 • Restituzione Immersiva',
       isPhase: true,
       phaseIndex: 4
     },
 
-    // --- ONDA 2: RETE & RICERCA (Partner, Crediti, Pubblicazioni - SFASATE A DESTRA) ---
+    // --- ONDA 2: RETE & RICERCA (Partner, Crediti, Pubblicazioni - ARMONICAMENTE SFASATE A DESTRA) ---
     {
       id: 'part-c1',
       system: 'partnership',
       cx: 1240, cy: 285, radius: 65, labelAngle: 0.90 * Math.PI,
-      mobileCx: 400, mobileCy: 2000, mobileRadius: 110, mobileLabelAngle: 0.90 * Math.PI,
+      mobileCx: 315, mobileCy: 1140, mobileRadius: 80, mobileLabelAngle: 0.85 * Math.PI,
       labelText: 'Partner',
       isPhase: false
     },
@@ -439,7 +439,7 @@
       id: 'part-c2',
       system: 'credits',
       cx: 1240, cy: 285, radius: 115, labelAngle: 1.65 * Math.PI,
-      mobileCx: 400, mobileCy: 2000, mobileRadius: 190, mobileLabelAngle: 1.65 * Math.PI,
+      mobileCx: 315, mobileCy: 1140, mobileRadius: 135, mobileLabelAngle: 1.65 * Math.PI,
       labelText: 'Crediti',
       isPhase: false
     },
@@ -447,17 +447,17 @@
       id: 'part-c3',
       system: 'pubblicazioni',
       cx: 1240, cy: 285, radius: 165, labelAngle: 0.00 * Math.PI,
-      mobileCx: 400, mobileCy: 2000, mobileRadius: 270, mobileLabelAngle: 0.00 * Math.PI,
+      mobileCx: 315, mobileCy: 1140, mobileRadius: 190, mobileLabelAngle: 0.15 * Math.PI,
       labelText: 'Pubblicazioni',
       isPhase: false
     },
 
-    // --- ONDA 3: ARCHIVIO (Timeline & Gallery - SFASATE A SINISTRA) ---
+    // --- ONDA 3: ARCHIVIO (Timeline & Gallery - ARMONICAMENTE SFASATE A SINISTRA) ---
     {
       id: 'cred-c1',
       system: 'timeline',
       cx: 1240, cy: 690, radius: 65, labelAngle: 0.85 * Math.PI,
-      mobileCx: 310, mobileCy: 3250, mobileRadius: 120, mobileLabelAngle: 0.85 * Math.PI,
+      mobileCx: 285, mobileCy: 1800, mobileRadius: 90, mobileLabelAngle: 0.85 * Math.PI,
       labelText: 'Timeline',
       isPhase: false
     },
@@ -465,7 +465,7 @@
       id: 'cred-c2',
       system: 'gallery',
       cx: 1240, cy: 690, radius: 110, labelAngle: 0.00 * Math.PI,
-      mobileCx: 310, mobileCy: 3250, mobileRadius: 215, mobileLabelAngle: 0.00 * Math.PI,
+      mobileCx: 285, mobileCy: 1800, mobileRadius: 160, mobileLabelAngle: 0.05 * Math.PI,
       labelText: 'Gallery',
       isPhase: false
     }
@@ -822,8 +822,8 @@
 
     const coords = getCircleCoords(c);
     const isMob = isMobileViewport();
-    const textPxWidth = c.labelText.length * (isMob ? 13.0 : 10.5);
-    const paddingPx = isMob ? 26 : 22; // Respiro laterale
+    const textPxWidth = c.labelText.length * (isMob ? 11.2 : 10.5);
+    const paddingPx = isMob ? 16 : 22; // Respiro laterale calibrato
     const totalGapPx = textPxWidth + paddingPx * 2;
 
     const gapHalfAngle = (totalGapPx / 2) / coords.radius;
@@ -857,7 +857,7 @@
     if (!svg) return;
     const isMob = isMobileViewport();
     if (isMob) {
-      svg.setAttribute('viewBox', '0 0 700 4000');
+      svg.setAttribute('viewBox', '0 0 600 2200');
     } else {
       svg.setAttribute('viewBox', '0 0 1600 950');
     }
@@ -906,7 +906,7 @@
     const svg = document.getElementById('soundWavesSvg');
     const isMob = isMobileViewport();
     if (svg) {
-      svg.setAttribute('viewBox', isMob ? '0 0 700 4000' : '0 0 1600 950');
+      svg.setAttribute('viewBox', isMob ? '0 0 600 2200' : '0 0 1600 950');
     }
 
     CIRCLES_REGISTRY.forEach(function (c) {
@@ -1577,12 +1577,12 @@
     silenceAllVoices(0.02);
 
     const isMob = isMobileViewport();
-    const refW = isMob ? 700 : 1600;
-    const refH = isMob ? 4000 : 950;
+    const refW = isMob ? 600 : 1600;
+    const refH = isMob ? 2200 : 950;
 
     // 1. Calcolo del centro del cerchio per la transizione di zoom
-    let originX = isMob ? '47.14%' : '33.75%';
-    let originY = isMob ? '17.00%' : '50%';
+    let originX = isMob ? '47.50%' : '33.75%';
+    let originY = isMob ? '20.00%' : '50%';
     let baseFreq = 220;
 
     if (clickOrigin && typeof clickOrigin.x === 'number' && typeof clickOrigin.y === 'number') {
@@ -1592,16 +1592,16 @@
         baseFreq = activeStyle.audio.frequencies[clickOrigin.id];
       }
     } else if (sectionKey === 'laboratorio') {
-      originX = isMob ? '47.14%' : '33.75%';
-      originY = isMob ? '17.00%' : '50%';
+      originX = isMob ? '47.50%' : '33.75%';
+      originY = isMob ? '20.00%' : '50%';
       baseFreq = 220;
     } else if (sectionKey === 'partnership' || sectionKey === 'credits' || sectionKey === 'pubblicazioni') {
-      originX = isMob ? '57.14%' : '77.5%';
-      originY = isMob ? '50.00%' : '30%';
+      originX = isMob ? '52.50%' : '77.5%';
+      originY = isMob ? '51.82%' : '30%';
       baseFreq = 293.7;
     } else if (sectionKey === 'timeline' || sectionKey === 'gallery') {
-      originX = isMob ? '44.29%' : '77.5%';
-      originY = isMob ? '81.25%' : '72.63%';
+      originX = isMob ? '47.50%' : '77.5%';
+      originY = isMob ? '81.82%' : '72.63%';
       baseFreq = 349.2;
     }
 

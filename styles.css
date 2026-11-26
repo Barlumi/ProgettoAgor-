@@ -2088,8 +2088,8 @@ html, body {
     height: auto !important;
     max-height: none !important;
     display: block !important;
-    padding-top: 4.5rem;
-    padding-bottom: 6rem;
+    padding-top: 3.5rem;
+    padding-bottom: 4rem;
     box-sizing: border-box;
     transform-origin: center center !important;
   }
@@ -2099,20 +2099,20 @@ html, body {
     top: auto !important;
     left: auto !important;
     width: 100% !important;
-    height: calc(100vw * 5.71) !important;
-    min-height: 2200px !important;
+    height: calc(100vw * 3.67) !important;
+    min-height: 1350px !important;
     max-height: none !important;
     display: block !important;
   }
 
   .wave-path-text {
-    font-size: 14px;
-    letter-spacing: 0.16em;
+    font-size: 15px;
+    letter-spacing: 0.14em;
   }
 
   /* Hit proxy SVG calibrato per il tocco delle dita sui cerchi */
   .circle-hit-proxy {
-    stroke-width: 52px;
+    stroke-width: 48px;
   }
 
   /* Widget "Torna alla Home" posizionato in alto a sinistra sotto al logo */
