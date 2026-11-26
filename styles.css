@@ -350,6 +350,24 @@ html, body {
    -------------------------------------------------------------------------- */
 .circle-item {
   cursor: pointer;
+  transition: opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Stato iniziale al primissimo caricamento della home: nascosto dal nulla */
+.circle-item.initial-hidden {
+  opacity: 0 !important;
+  pointer-events: none !important;
+}
+
+/* Transizione di comparsa dinamica dalla più piccola alla più grande */
+.circle-item.circle-revealing {
+  opacity: 1 !important;
+  pointer-events: auto;
+}
+
+.circle-item.circle-revealed {
+  opacity: 1;
+  pointer-events: auto;
 }
 
 /* Hit Area Ingrandita Trasparente da 34px */

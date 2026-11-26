@@ -501,6 +501,7 @@
     audioMuted: false,
     suppressHoverAudioUntil: 0,
     introRippleAudioPlayed: false,
+    initialIntroCompleted: false,
 
     circles: {}
   };
@@ -601,7 +602,9 @@
       detachUnlockListeners();
       if (!state.introRippleAudioPlayed && !state.portalOpen) {
         state.introRippleAudioPlayed = true;
-        triggerIntroExpansionRipple();
+        if (state.initialIntroCompleted) {
+          triggerIntroExpansionRipple();
+        }
       }
       if (typeof callback === 'function') callback();
       return;
@@ -613,7 +616,9 @@
           detachUnlockListeners();
           if (!state.introRippleAudioPlayed && !state.portalOpen) {
             state.introRippleAudioPlayed = true;
-            triggerIntroExpansionRipple();
+            if (state.initialIntroCompleted) {
+              triggerIntroExpansionRipple();
+            }
           }
           if (typeof callback === 'function') callback();
         }
@@ -817,6 +822,17 @@
     };
   }
 
+  function revealAllCirclesImmediately() {
+    state.initialIntroCompleted = true;
+    CIRCLES_REGISTRY.forEach(function (c) {
+      const dom = circleDOM[c.id];
+      if (dom && dom.group) {
+        dom.group.classList.remove('initial-hidden', 'circle-revealing');
+        dom.group.classList.add('circle-revealed');
+      }
+    });
+  }
+
   // -------------------------------------------------------------------------
   // COSTRUZIONE SCENA SVG (CON FILAMENTI ARMONICI MULTIPLI)
   // -------------------------------------------------------------------------
@@ -827,7 +843,7 @@
 
     CIRCLES_REGISTRY.forEach(function (c) {
       const g = document.createElementNS('http://www.w3.org/2000/svg', 'g');
-      g.setAttribute('class', 'circle-item');
+      g.setAttribute('class', state.initialIntroCompleted ? 'circle-item circle-revealed' : 'circle-item initial-hidden');
       g.setAttribute('id', 'item-' + c.id);
       g.setAttribute('data-id', c.id);
       g.setAttribute('data-system', c.system);
@@ -1446,6 +1462,7 @@
   // GESTIONE DELLA PAGINA (ZOOM IN/OUT & NAVIGAZIONE AD ONDE)
   // -------------------------------------------------------------------------
   function openCircularPortal(sectionKey, phaseIndex, clickOrigin) {
+    revealAllCirclesImmediately();
     ensureAudioUnlocked();
     silenceAllVoices(0.02);
 
@@ -2273,6 +2290,69 @@
   }
 
   // -------------------------------------------------------------------------
+  // EFFETTO COMPARSA INIZIALE DAL NULLA (SOLO AL PRIMO CARICAMENTO)
+  // Dal cerchio più piccolo al più grande con movimento ondoso e suono
+  // -------------------------------------------------------------------------
+  function triggerInitialEmergenceIntro() {
+    if (state.initialIntroCompleted) return;
+
+    if (audioCtx && audioCtx.state === 'running') {
+      state.introRippleAudioPlayed = true;
+    }
+
+    // Sequenza di comparsa ordinale dal cerchio più piccolo al più grande:
+    // 1. Centro del Laboratorio (Fase 1 r=80) verso l'esterno (Fase 5 r=320)
+    // 2. Menu circolari di destra dai più piccoli ai più grandi
+    const emergenceSequence = [
+      // Laboratorio Virtuale (dal nucleo più piccolo al più grande)
+      { id: 'lab-c1', delay: 350 },  // Fase 1: r=80
+      { id: 'lab-c2', delay: 650 },  // Fase 2: r=140
+      { id: 'lab-c3', delay: 950 },  // Fase 3: r=200
+      { id: 'lab-c4', delay: 1250 }, // Fase 4: r=260
+      { id: 'lab-c5', delay: 1550 }, // Fase 5: r=320
+      // Menu di destra (dai più piccoli ai più grandi)
+      { id: 'part-c1', delay: 1800 }, // Partner (r=65)
+      { id: 'cred-c1', delay: 1950 }, // Timeline (r=65)
+      { id: 'part-c2', delay: 2150 }, // Crediti (r=115)
+      { id: 'cred-c2', delay: 2300 }, // Gallery (r=110)
+      { id: 'part-c3', delay: 2500 }  // Pubblicazioni (r=165)
+    ];
+
+    state.suppressHoverAudioUntil = performance.now() + 3200;
+
+    emergenceSequence.forEach(function (step, idx) {
+      setTimeout(function () {
+        if (state.portalOpen) {
+          revealAllCirclesImmediately();
+          return;
+        }
+
+        const id = step.id;
+        const dom = circleDOM[id];
+        if (dom && dom.group) {
+          dom.group.classList.remove('initial-hidden');
+          dom.group.classList.add('circle-revealing', 'intro-pulse');
+          setTimeout(function () {
+            dom.group.classList.remove('intro-pulse', 'circle-revealing');
+            dom.group.classList.add('circle-revealed');
+          }, 700);
+        }
+
+        if (state.circles[id]) {
+          state.circles[id].motionEnergy = 1.0;
+        }
+
+        const freq = activeStyle.audio.frequencies[id] || 220;
+        playRipplePulseSound(freq);
+
+        if (idx === emergenceSequence.length - 1) {
+          state.initialIntroCompleted = true;
+        }
+      }, step.delay);
+    });
+  }
+
+  // -------------------------------------------------------------------------
   // EFFETTO ESPANSIONE ACUSTICA CENTRIFUGA (PROPAGAZIONE SU TUTTI I MENU CIRCOLARI)
   // -------------------------------------------------------------------------
   function triggerIntroExpansionRipple() {
@@ -2330,9 +2410,8 @@
 
     requestAnimationFrame(mainAnimationLoop);
 
-    // Animazione di orientamento centripeto/centrifugo dal cuore verso l'esterno su tutti i cerchi
-    state.suppressHoverAudioUntil = performance.now() + 2700;
-    setTimeout(triggerIntroExpansionRipple, 500);
+    // Comparsa iniziale dal nulla delle ondine dalla più piccola alla più grande
+    setTimeout(triggerInitialEmergenceIntro, 400);
   });
 
   // Esposizione per navigazione e test
