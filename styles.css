@@ -124,22 +124,6 @@ html, body {
   border-radius: 6px;
 }
 
-.logo-mark {
-  font-family: var(--font-title);
-  font-size: 1.65rem;
-  font-weight: 700;
-  letter-spacing: 0.22em;
-  color: var(--text-bright);
-  text-transform: uppercase;
-  text-shadow: 0 0 20px rgba(56, 189, 248, 0.35);
-  transition: var(--transition-smooth);
-}
-
-.logo-mark:hover {
-  color: var(--color-cyan);
-  text-shadow: 0 0 28px rgba(56, 189, 248, 0.6);
-}
-
 .nav-side {
   display: flex;
   align-items: center;
@@ -303,11 +287,6 @@ html, body {
   color: #94a3b8;
   opacity: 1;
   text-shadow: none;
-}
-
-.nav-sep {
-  color: var(--line-subtle);
-  font-size: 0.7rem;
 }
 
 /* --------------------------------------------------------------------------
@@ -1168,80 +1147,6 @@ html, body {
   transform: translateX(4px);
 }
 
-.wave-circle-icon {
-  position: relative;
-  width: 24px;
-  height: 24px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  flex-shrink: 0;
-  transition: transform 0.25s ease;
-}
-
-.btn-phase-wave:hover .wave-circle-icon,
-.btn-phase-wave:active .wave-circle-icon {
-  transform: scale(1.12);
-}
-
-.wave-dot {
-  width: 5px;
-  height: 5px;
-  border-radius: 50%;
-  background: var(--color-cyan);
-  box-shadow: 0 0 6px var(--color-cyan);
-  z-index: 2;
-  transition: background-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.btn-phase-wave:hover .wave-dot,
-.btn-phase-wave:active .wave-dot {
-  background: #ffffff;
-  box-shadow: 0 0 10px rgba(56, 189, 248, 1);
-}
-
-.wave-ripple {
-  position: absolute;
-  border-radius: 50%;
-  border: 1.5px solid var(--color-cyan);
-  pointer-events: none;
-}
-
-.wave-ripple.wr-1 {
-  inset: 5px;
-  opacity: 0.85;
-}
-
-.wave-ripple.wr-2 {
-  inset: 2px;
-  opacity: 0.55;
-}
-
-.wave-ripple.wr-3 {
-  inset: -1px;
-  opacity: 0.35;
-}
-
-.btn-phase-wave:hover .wave-ripple.wr-1,
-.btn-phase-wave:active .wave-ripple.wr-1 {
-  animation: rippleWavePulse 1.2s ease-out infinite;
-}
-
-.btn-phase-wave:hover .wave-ripple.wr-2,
-.btn-phase-wave:active .wave-ripple.wr-2 {
-  animation: rippleWavePulse 1.2s ease-out infinite 0.25s;
-}
-
-.btn-phase-wave:hover .wave-ripple.wr-3,
-.btn-phase-wave:active .wave-ripple.wr-3 {
-  animation: rippleWavePulse 1.2s ease-out infinite 0.5s;
-}
-
-@keyframes rippleWavePulse {
-  0% { transform: scale(0.8); opacity: 0.95; }
-  100% { transform: scale(1.45); opacity: 0; }
-}
-
 /* Blocchi di Sezione Generici all'interno del Portale (Timeline, Crediti, Pubblicazioni) */
 .portal-section-block {
   margin-bottom: 2.25rem;
@@ -1279,14 +1184,6 @@ html, body {
 }
 
 .portal-block-text p:last-child {
-  margin-bottom: 0;
-}
-
-.drawer-block-text p {
-  margin-bottom: 0.8rem;
-}
-
-.drawer-block-text p:last-child {
   margin-bottom: 0;
 }
 
@@ -1375,161 +1272,6 @@ html, body {
 }
 
 /* --------------------------------------------------------------------------
-   Blocco Bianco Loghi Partner (Slide Presentazione AGORÀ)
-   -------------------------------------------------------------------------- */
-.partner-logos-white-block {
-  background: #ffffff;
-  border-radius: 6px;
-  padding: 1.25rem 1.4rem 1.4rem;
-  margin-bottom: 2.25rem;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.55), 0 0 1px rgba(255, 255, 255, 0.4);
-}
-
-.partner-logos-label {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 700;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: #64748b;
-  margin-bottom: 1rem;
-  padding-bottom: 0.5rem;
-  border-bottom: 1px solid #e2e8f0;
-  text-align: center;
-}
-
-.partner-logos-grid {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr);
-  gap: 1.25rem 1.5rem;
-  align-items: stretch;
-}
-
-.partner-logo-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 0.75rem 0.65rem;
-  background: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 4px;
-  min-height: 110px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
-}
-
-.partner-logo-item:hover {
-  transform: translateY(-2px);
-  border-color: #cbd5e1;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.partner-logo-img {
-  max-width: 100%;
-  max-height: 52px;
-  width: auto;
-  height: auto;
-  object-fit: contain;
-  display: block;
-}
-
-.partner-logo-name {
-  font-family: var(--font-body);
-  font-size: 0.72rem;
-  font-weight: 600;
-  color: #1e293b;
-  margin-top: 0.65rem;
-  line-height: 1.3;
-}
-
-/* --------------------------------------------------------------------------
-   Galleria Fotografica con Didascalie (Stile Easy Glassmorphic)
-   -------------------------------------------------------------------------- */
-.gallery-grid {
-  display: flex;
-  flex-direction: column;
-  gap: 1.75rem;
-  margin-top: 0.5rem;
-}
-
-.gallery-card {
-  background: rgba(15, 23, 42, 0.65);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  border: 1px solid rgba(56, 189, 248, 0.16);
-  border-radius: 4px;
-  overflow: hidden;
-  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
-}
-
-.gallery-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(56, 189, 248, 0.45);
-  box-shadow: 0 10px 28px rgba(6, 182, 212, 0.16);
-}
-
-.gallery-card-img-wrap {
-  width: 100%;
-  aspect-ratio: 16 / 9;
-  background: #030712;
-  overflow: hidden;
-  position: relative;
-}
-
-.gallery-card-img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  display: block;
-  transition: transform 0.4s ease;
-}
-
-.gallery-card:hover .gallery-card-img {
-  transform: scale(1.03);
-}
-
-.gallery-card-info {
-  padding: 1.15rem 1.25rem 1.35rem;
-}
-
-.gallery-card-title {
-  font-family: var(--font-heading);
-  font-size: 0.95rem;
-  font-weight: 600;
-  color: #f1f5f9;
-  margin-bottom: 0.45rem;
-  letter-spacing: -0.01em;
-  line-height: 1.35;
-}
-
-.gallery-card-caption {
-  font-family: var(--font-body);
-  font-size: 0.82rem;
-  line-height: 1.55;
-  color: var(--text-muted);
-  margin: 0;
-}
-
-/* Backdrop */
-.drawer-backdrop {
-  position: fixed;
-  inset: 0;
-  background: rgba(3, 7, 18, 0.7);
-  backdrop-filter: blur(4px);
-  -webkit-backdrop-filter: blur(4px);
-  z-index: 90;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.35s ease, visibility 0.35s ease;
-}
-
-.drawer-backdrop.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* --------------------------------------------------------------------------
    Hub Centrali Informativi SVG (Titolo e Sottotitolo nei Cerchi Concentrici)
    -------------------------------------------------------------------------- */
 .system-hub-group {
@@ -1581,35 +1323,6 @@ html, body {
   display: none;
   align-items: center;
   gap: 0.65rem;
-}
-
-.mobile-audio-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 44px;
-  height: 44px;
-  min-width: 44px;
-  min-height: 44px;
-  background: none;
-  border: none;
-  box-shadow: none;
-  color: #f8fafc;
-  cursor: pointer;
-  transition: opacity 0.2s ease, transform 0.2s ease;
-  padding: 0;
-}
-
-.mobile-audio-btn:hover,
-.mobile-audio-btn:active {
-  opacity: 0.8;
-  transform: scale(1.05);
-}
-
-.mobile-audio-btn.muted .audio-bar {
-  opacity: 0.35;
-  animation: none !important;
-  transform: scaleY(0.2) !important;
 }
 
 .mobile-menu-toggle-btn {
@@ -2113,10 +1826,6 @@ html, body {
     align-items: center;
     gap: 0.85rem;
     justify-content: flex-end;
-  }
-
-  .mobile-audio-btn {
-    display: none !important;
   }
 
   /* Home: scorrimento verticale naturale per vivere un'onda sonora grande alla volta */

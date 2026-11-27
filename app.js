@@ -2605,7 +2605,7 @@
       }
     });
 
-    // Controllo Audio Spento / Attivo centralizzato (Desktop, Mobile Header e Mobile Drawer)
+    // Controllo Audio Spento / Attivo centralizzato (Desktop e Mobile Drawer)
     function toggleAudioMute() {
       ensureAudioUnlocked();
       state.audioMuted = !state.audioMuted;
@@ -2627,9 +2627,6 @@
       if (muteToggle) muteToggle.classList.toggle('muted', state.audioMuted);
       if (muteLabel) muteLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
 
-      const muteMobile = document.getElementById('btnAudioMuteMobile');
-      if (muteMobile) muteMobile.classList.toggle('muted', state.audioMuted);
-
       const drawerToggle = document.getElementById('btnDrawerAudioToggle');
       const drawerLabel = document.getElementById('drawerAudioStatusLabel') || document.getElementById('drawerAudioLabel');
       if (drawerToggle) drawerToggle.classList.toggle('muted', state.audioMuted);
@@ -2639,10 +2636,6 @@
     const muteToggle = document.getElementById('btnAudioMute');
     if (muteToggle) {
       muteToggle.addEventListener('click', toggleAudioMute);
-    }
-    const muteMobile = document.getElementById('btnAudioMuteMobile');
-    if (muteMobile) {
-      muteMobile.addEventListener('click', toggleAudioMute);
     }
     const drawerToggle = document.getElementById('btnDrawerAudioToggle');
     if (drawerToggle) {
