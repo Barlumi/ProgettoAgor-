@@ -326,26 +326,26 @@
       bodyFont: 'Plus Jakarta Sans'
     },
 
-    // Parametri sonori specifici dello Stile Easy (Web Audio API)
+    // Parametri sonori specifici dello Stile Easy (Web Audio API — accordatura pentatonica La maggiore)
     audio: {
-      masterVolume: 0.75,
+      masterVolume: 0.62,
       osc1Type: 'sine',               // Oscillatore 1: sinusoidale puro
-      osc2Type: 'triangle',           // Oscillatore 2: triangolare armonico (+1 ottava)
-      baseFilterCutoff: 320,          // Cutoff filtro passa-basso a riposo (Hz)
-      filterModulationRange: 1650,    // Escursione di apertura filtro al movimento mouse
-      filterQ: 2.2,                   // Risonanza filtro
-      maxVoiceGain: 0.18,             // Guadagno massimo della voce durante il moto
+      osc2Type: 'sine',               // Oscillatore 2: armonica sinusoidale pura
+      baseFilterCutoff: 280,          // Cutoff filtro passa-basso a riposo (Hz)
+      filterModulationRange: 880,     // Escursione morbida del filtro al movimento mouse
+      filterQ: 0.7,                   // Roll-off naturale Butterworth senza picchi risonanti
+      maxVoiceGain: 0.095,            // Guadagno massimo della voce durante il moto
       frequencies: {
-        'lab-c1': 110.0,  // La1
-        'lab-c2': 137.5,  // Do#2
-        'lab-c3': 165.0,  // Mi2
-        'lab-c4': 220.0,  // La2
-        'lab-c5': 275.0,  // Do#3
-        'part-c1': 196.0, // Sol2 (Partner)
-        'part-c2': 246.9, // Si2 (Crediti)
-        'part-c3': 293.7, // Re3 (Pubblicazioni)
-        'cred-c1': 349.2, // Fa3 (Timeline)
-        'cred-c2': 392.0  // Sol3 (Gallery)
+        'lab-c1': 110.00, // La2
+        'lab-c2': 138.59, // Do#3
+        'lab-c3': 164.81, // Mi3
+        'lab-c4': 220.00, // La3
+        'lab-c5': 277.18, // Do#4
+        'part-c1': 185.00, // Fa#3 (Partner)
+        'part-c2': 246.94, // Si3 (Crediti)
+        'part-c3': 329.63, // Mi4 (Pubblicazioni)
+        'cred-c1': 369.99, // Fa#4 (Timeline)
+        'cred-c2': 440.00  // La4 (Gallery)
       }
     },
 
@@ -530,14 +530,121 @@
   const circleDOM = {};
 
   // -------------------------------------------------------------------------
-  // SINTESI ACUSTICA (Web Audio API)
+  // SINTESI ACUSTICA (Web Audio API — Motore Armonico Morbido & Riverbero)
   // -------------------------------------------------------------------------
+  const AUDIO_WAVEFORM = Object.freeze({
+    SINE: 'sine',
+    LOWPASS: 'lowpass'
+  });
+
+  const AUDIO_BUS_CONFIG = Object.freeze({
+    MASTER_FILTER_HZ: 3200,
+    MASTER_FILTER_Q: 0.5,
+    COMP_THRESHOLD_DB: -16,
+    COMP_KNEE_DB: 24,
+    COMP_RATIO: 4,
+    COMP_ATTACK_SEC: 0.02,
+    COMP_RELEASE_SEC: 0.25,
+    REVERB_DURATION_SEC: 1.6,
+    REVERB_DECAY_RATE: 3.0,
+    REVERB_DAMPING_HZ: 2400,
+    DRY_MIX: 0.85,
+    WET_MIX: 0.28,
+    DEFAULT_VOICE_FREQ: 220.0,
+    BACK_HOME_FREQ: 329.63,
+    PORTAL_MEDIA_FREQ: 246.94
+  });
+
+  const VOICE_HARMONICS = Object.freeze({
+    CHORUS_DETUNE_CENTS: 3.5,
+    CHORUS_GAIN: 0.32,
+    OCTAVE_RATIO: 2.0,
+    OCTAVE_GAIN: 0.20,
+    FIFTH_RATIO: 1.5,
+    FIFTH_GAIN: 0.12
+  });
+
+  const VOICE_ENVELOPE = Object.freeze({
+    GAIN_FLOOR: 0.0001,
+    INTENSITY_CURVE_EXP: 1.6,
+    ATTACK_TAU_SEC: 0.14,
+    RELEASE_TAU_SEC: 0.24,
+    FILTER_TAU_SEC: 0.18,
+    SILENCE_FADE_SEC: 0.12,
+    MUTE_FADE_SEC: 0.08,
+    UNMUTE_FADE_SEC: 0.12
+  });
+
+  const CHIME_CONFIG = Object.freeze({
+    ZOOM_PARTIALS: Object.freeze([
+      Object.freeze({ ratio: 1.0, gain: 0.070 }),
+      Object.freeze({ ratio: VOICE_HARMONICS.FIFTH_RATIO, gain: 0.035 }),
+      Object.freeze({ ratio: VOICE_HARMONICS.OCTAVE_RATIO, gain: 0.025 })
+    ]),
+    ZOOM_FILTER_MULT: 3.2,
+    ZOOM_FILTER_Q: 0.7,
+    ZOOM_ATTACK_SEC: 0.09,
+    ZOOM_DECAY_SEC: 0.95,
+    ZOOM_STOP_SEC: 1.05,
+    RETURN_CHORD_HZ: Object.freeze([440.00, 329.63, 277.18, 220.00]),
+    RETURN_STAGGER_SEC: 0.09,
+    RETURN_ATTACK_SEC: 0.07,
+    RETURN_DECAY_SEC: 0.95,
+    RETURN_STOP_SEC: 1.05,
+    RETURN_PEAK_GAIN: 0.055,
+    RETURN_FILTER_MULT: 3.2,
+    STEP_BASE_HZ: 329.63,
+    STEP_OVERTONE_HZ: 440.00,
+    STEP_BASE_GAIN: 0.055,
+    STEP_OVERTONE_GAIN: 0.020,
+    STEP_FILTER_HZ: 1600,
+    STEP_ATTACK_SEC: 0.045,
+    STEP_DECAY_SEC: 0.48,
+    STEP_STOP_SEC: 0.55,
+    RIPPLE_FILTER_MULT: 3.5,
+    RIPPLE_ATTACK_SEC: 0.06,
+    RIPPLE_DECAY_SEC: 0.90,
+    RIPPLE_STOP_SEC: 0.98,
+    RIPPLE_PEAK_GAIN: 0.045,
+    RIPPLE_OCTAVE_RATIO: 0.22
+  });
+
   let audioCtx = null;
   let masterGainNode = null;
   const audioNodes = {};
 
   function getAudioOutputNode() {
     return masterGainNode || audioCtx.destination;
+  }
+
+  // Genera una risposta all'impulso stereo morbida per dare coda acustica naturale ai toni
+  function createHarmonicReverbBuffer(ctx, durationSec, decayRate) {
+    try {
+      const sampleRate = ctx.sampleRate;
+      const length = Math.max(1, Math.floor(sampleRate * durationSec));
+      const impulse = ctx.createBuffer(2, length, sampleRate);
+      const rcCoeff = 1 / (2 * Math.PI * AUDIO_BUS_CONFIG.REVERB_DAMPING_HZ);
+      const dt = 1 / sampleRate;
+      const alpha = dt / (rcCoeff + dt);
+
+      for (let ch = 0; ch < 2; ch++) {
+        const channelData = impulse.getChannelData(ch);
+        let prevSample = 0;
+
+        for (let i = 0; i < length; i++) {
+          const progress = i / length;
+          const fadeIn = Math.min(1, i / (sampleRate * 0.015));
+          const env = fadeIn * Math.pow(1 - progress, decayRate);
+          const white = Math.random() * 2 - 1;
+          prevSample = prevSample + alpha * (white - prevSample);
+          channelData[i] = prevSample * env;
+        }
+      }
+
+      return impulse;
+    } catch (e) {
+      return null;
+    }
   }
 
   function initAudioContext() {
@@ -547,19 +654,54 @@
       if (!AudioContext) return;
       audioCtx = new AudioContext();
 
+      // Bus master: somma segnale dry + riverbero morbido, filtro caldo e limiter dolce
       masterGainNode = audioCtx.createGain();
-      masterGainNode.gain.setValueAtTime(activeStyle.audio.masterVolume, audioCtx.currentTime);
-      masterGainNode.connect(audioCtx.destination);
+      const initialMaster = state.audioMuted ? VOICE_ENVELOPE.GAIN_FLOOR : activeStyle.audio.masterVolume;
+      masterGainNode.gain.setValueAtTime(initialMaster, audioCtx.currentTime);
+
+      const masterFilter = audioCtx.createBiquadFilter();
+      masterFilter.type = AUDIO_WAVEFORM.LOWPASS;
+      masterFilter.frequency.setValueAtTime(AUDIO_BUS_CONFIG.MASTER_FILTER_HZ, audioCtx.currentTime);
+      masterFilter.Q.setValueAtTime(AUDIO_BUS_CONFIG.MASTER_FILTER_Q, audioCtx.currentTime);
+
+      const compressor = audioCtx.createDynamicsCompressor();
+      compressor.threshold.setValueAtTime(AUDIO_BUS_CONFIG.COMP_THRESHOLD_DB, audioCtx.currentTime);
+      compressor.knee.setValueAtTime(AUDIO_BUS_CONFIG.COMP_KNEE_DB, audioCtx.currentTime);
+      compressor.ratio.setValueAtTime(AUDIO_BUS_CONFIG.COMP_RATIO, audioCtx.currentTime);
+      compressor.attack.setValueAtTime(AUDIO_BUS_CONFIG.COMP_ATTACK_SEC, audioCtx.currentTime);
+      compressor.release.setValueAtTime(AUDIO_BUS_CONFIG.COMP_RELEASE_SEC, audioCtx.currentTime);
+
+      const dryGain = audioCtx.createGain();
+      dryGain.gain.setValueAtTime(AUDIO_BUS_CONFIG.DRY_MIX, audioCtx.currentTime);
+      masterGainNode.connect(dryGain);
+      dryGain.connect(masterFilter);
+
+      const reverbBuffer = createHarmonicReverbBuffer(
+        audioCtx,
+        AUDIO_BUS_CONFIG.REVERB_DURATION_SEC,
+        AUDIO_BUS_CONFIG.REVERB_DECAY_RATE
+      );
+      if (reverbBuffer) {
+        const convolver = audioCtx.createConvolver();
+        convolver.buffer = reverbBuffer;
+        const wetGain = audioCtx.createGain();
+        wetGain.gain.setValueAtTime(AUDIO_BUS_CONFIG.WET_MIX, audioCtx.currentTime);
+        masterGainNode.connect(convolver);
+        convolver.connect(wetGain);
+        wetGain.connect(masterFilter);
+      }
+
+      masterFilter.connect(compressor);
+      compressor.connect(audioCtx.destination);
 
       CIRCLES_REGISTRY.forEach(function (c) {
-        // Timbro e accordatura dal blocco di stile attivo ("Stile Easy")
-        const freq = activeStyle.audio.frequencies[c.id] || 220;
+        const freq = activeStyle.audio.frequencies[c.id] || AUDIO_BUS_CONFIG.DEFAULT_VOICE_FREQ;
         createAudioVoice(c.id, freq);
       });
 
       // Voci audio dedicate per il pulsante rotante "Torna alla Home" e l'immagine circolare
-      createAudioVoice('back-home', 440);
-      createAudioVoice('portal-media', 330);
+      createAudioVoice('back-home', AUDIO_BUS_CONFIG.BACK_HOME_FREQ);
+      createAudioVoice('portal-media', AUDIO_BUS_CONFIG.PORTAL_MEDIA_FREQ);
 
       // Tenta l'attivazione immediata all'avvio
       audioCtx.resume().then(function () {
@@ -575,36 +717,51 @@
   function createAudioVoice(id, freq) {
     if (!audioCtx) return null;
     try {
-      const osc1 = audioCtx.createOscillator();
-      osc1.type = activeStyle.audio.osc1Type;
-      osc1.frequency.setValueAtTime(freq, audioCtx.currentTime);
-
-      const osc2 = audioCtx.createOscillator();
-      osc2.type = activeStyle.audio.osc2Type;
-      osc2.frequency.setValueAtTime(freq * 2, audioCtx.currentTime);
-
+      const now = audioCtx.currentTime;
       const filter = audioCtx.createBiquadFilter();
-      filter.type = 'lowpass';
-      filter.frequency.setValueAtTime(activeStyle.audio.baseFilterCutoff, audioCtx.currentTime);
-      filter.Q.setValueAtTime(activeStyle.audio.filterQ, audioCtx.currentTime);
+      filter.type = AUDIO_WAVEFORM.LOWPASS;
+      filter.frequency.setValueAtTime(activeStyle.audio.baseFilterCutoff, now);
+      filter.Q.setValueAtTime(activeStyle.audio.filterQ, now);
 
       const gainNode = audioCtx.createGain();
-      gainNode.gain.setValueAtTime(0.0001, audioCtx.currentTime);
+      gainNode.gain.setValueAtTime(VOICE_ENVELOPE.GAIN_FLOOR, now);
 
-      osc1.connect(filter);
-      osc2.connect(filter);
+      // Tre parziali sinusoidali pure: fondamentale, coro caldo e ottava soffice
+      const partials = [
+        { freq: freq, detune: 0, level: 1.0 },
+        { freq: freq, detune: VOICE_HARMONICS.CHORUS_DETUNE_CENTS, level: VOICE_HARMONICS.CHORUS_GAIN },
+        { freq: freq * VOICE_HARMONICS.OCTAVE_RATIO, detune: 0, level: VOICE_HARMONICS.OCTAVE_GAIN }
+      ];
+      const oscillators = [];
+
+      partials.forEach(function (spec) {
+        const osc = audioCtx.createOscillator();
+        osc.type = AUDIO_WAVEFORM.SINE;
+        osc.frequency.setValueAtTime(spec.freq, now);
+        if (spec.detune !== 0) {
+          osc.detune.setValueAtTime(spec.detune, now);
+        }
+
+        const subGain = audioCtx.createGain();
+        subGain.gain.setValueAtTime(spec.level, now);
+
+        osc.connect(subGain);
+        subGain.connect(filter);
+        osc.start(now);
+        oscillators.push(osc);
+      });
+
       filter.connect(gainNode);
       gainNode.connect(getAudioOutputNode());
 
-      osc1.start();
-      osc2.start();
-
       const voiceObj = {
-        osc1: osc1,
-        osc2: osc2,
+        osc1: oscillators[0],
+        osc2: oscillators[2],
+        oscillators: oscillators,
         filter: filter,
         gain: gainNode,
-        baseFreq: freq
+        baseFreq: freq,
+        currentGain: VOICE_ENVELOPE.GAIN_FLOOR
       };
 
       audioNodes[id] = voiceObj;
@@ -612,6 +769,26 @@
     } catch (e) {
       return null;
     }
+  }
+
+  // Modula volume e filtro di una voce con attacco fluido e rilascio piu lungo
+  function modulateHarmonicVoice(voice, intensity) {
+    if (!audioCtx || !voice || !voice.gain || !voice.filter) return;
+
+    const now = audioCtx.currentTime;
+    const clamped = Math.max(0, Math.min(1.0, intensity));
+    const targetVol = Math.max(
+      VOICE_ENVELOPE.GAIN_FLOOR,
+      Math.pow(clamped, VOICE_ENVELOPE.INTENSITY_CURVE_EXP) * activeStyle.audio.maxVoiceGain
+    );
+    const targetCutoff = activeStyle.audio.baseFilterCutoff + clamped * activeStyle.audio.filterModulationRange;
+    const tau = targetVol >= (voice.currentGain || VOICE_ENVELOPE.GAIN_FLOOR)
+      ? VOICE_ENVELOPE.ATTACK_TAU_SEC
+      : VOICE_ENVELOPE.RELEASE_TAU_SEC;
+
+    voice.currentGain = targetVol;
+    voice.gain.gain.setTargetAtTime(targetVol, now, tau);
+    voice.filter.frequency.setTargetAtTime(targetCutoff, now, VOICE_ENVELOPE.FILTER_TAU_SEC);
   }
 
   function ensureAudioUnlocked(callback) {
@@ -669,7 +846,7 @@
   function silenceAllVoices(fadeSec) {
     if (!audioCtx) return;
     const time = audioCtx.currentTime;
-    const ramp = fadeSec || 0.03;
+    const ramp = fadeSec || VOICE_ENVELOPE.SILENCE_FADE_SEC;
 
     backHomeState.isHovered = false;
     backHomeState.motionEnergy = 0;
@@ -683,58 +860,76 @@
       }
       if (audioNodes[c.id] && audioNodes[c.id].gain) {
         try {
+          audioNodes[c.id].currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
           audioNodes[c.id].gain.gain.cancelScheduledValues(time);
-          audioNodes[c.id].gain.gain.setTargetAtTime(0.0001, time, ramp);
+          audioNodes[c.id].gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, time, ramp);
         } catch (e) {}
       }
     });
 
     if (audioNodes['back-home'] && audioNodes['back-home'].gain) {
       try {
+        audioNodes['back-home'].currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
         audioNodes['back-home'].gain.gain.cancelScheduledValues(time);
-        audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, time, ramp);
+        audioNodes['back-home'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, time, ramp);
       } catch (e) {}
     }
 
     if (audioNodes['portal-media'] && audioNodes['portal-media'].gain) {
       try {
+        audioNodes['portal-media'].currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
         audioNodes['portal-media'].gain.gain.cancelScheduledValues(time);
-        audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, time, ramp);
+        audioNodes['portal-media'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, time, ramp);
       } catch (e) {}
     }
   }
 
+  // Crea una nota sinusoidale filtrata con inviluppo privo di scatti
+  function triggerSoftFilteredNote(freq, peakGain, attackSec, decaySec, stopSec, filterHz, delaySec) {
+    const startAt = audioCtx.currentTime + (delaySec || 0);
+    const osc = audioCtx.createOscillator();
+    const filter = audioCtx.createBiquadFilter();
+    const gain = audioCtx.createGain();
+
+    osc.type = AUDIO_WAVEFORM.SINE;
+    osc.frequency.setValueAtTime(freq, startAt);
+
+    filter.type = AUDIO_WAVEFORM.LOWPASS;
+    filter.frequency.setValueAtTime(filterHz, startAt);
+    filter.Q.setValueAtTime(CHIME_CONFIG.ZOOM_FILTER_Q, startAt);
+
+    gain.gain.setValueAtTime(VOICE_ENVELOPE.GAIN_FLOOR, startAt);
+    gain.gain.exponentialRampToValueAtTime(peakGain, startAt + attackSec);
+    gain.gain.exponentialRampToValueAtTime(VOICE_ENVELOPE.GAIN_FLOOR, startAt + decaySec);
+
+    osc.connect(filter);
+    filter.connect(gain);
+    gain.connect(getAudioOutputNode());
+
+    osc.start(startAt);
+    osc.stop(startAt + stopSec);
+  }
+
   // -------------------------------------------------------------------------
-  // SINTESI EFFETTI SONORI TRANSIZIONI (ZOOM IN, RITORNO MELODICO, FASI)
+  // SINTESI EFFETTI SONORI TRANSIZIONI (TRIADE MORBIDA, RITORNO, FASI)
   // -------------------------------------------------------------------------
   function playZoomInChime(baseFreq) {
     if (!audioCtx || state.audioMuted) return;
     try {
-      const freq = baseFreq || 220;
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      const filter = audioCtx.createBiquadFilter();
+      const freq = baseFreq || AUDIO_BUS_CONFIG.DEFAULT_VOICE_FREQ;
+      const filterHz = freq * CHIME_CONFIG.ZOOM_FILTER_MULT;
 
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now);
-      osc.frequency.exponentialRampToValueAtTime(freq * 2.8, now + 0.6);
-
-      filter.type = 'bandpass';
-      filter.frequency.setValueAtTime(freq * 1.5, now);
-      filter.frequency.exponentialRampToValueAtTime(freq * 3.2, now + 0.6);
-      filter.Q.setValueAtTime(3.2, now);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.18, now + 0.12);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.75);
-
-      osc.connect(filter);
-      filter.connect(gain);
-      gain.connect(getAudioOutputNode());
-
-      osc.start(now);
-      osc.stop(now + 0.8);
+      CHIME_CONFIG.ZOOM_PARTIALS.forEach(function (partial) {
+        triggerSoftFilteredNote(
+          freq * partial.ratio,
+          partial.gain,
+          CHIME_CONFIG.ZOOM_ATTACK_SEC,
+          CHIME_CONFIG.ZOOM_DECAY_SEC,
+          CHIME_CONFIG.ZOOM_STOP_SEC,
+          filterHz,
+          0
+        );
+      });
     } catch (e) {
       // Ignora errori di contesto non inizializzato
     }
@@ -743,23 +938,16 @@
   function playReturnChime() {
     if (!audioCtx || state.audioMuted) return;
     try {
-      const now = audioCtx.currentTime;
-      const chord = [523.25, 392.00, 261.63]; // Do5, Sol4, Do4 (Accordo discendente etereo)
-      chord.forEach(function (freq, i) {
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(freq, now + i * 0.11);
-
-        gain.gain.setValueAtTime(0.0001, now + i * 0.11);
-        gain.gain.exponentialRampToValueAtTime(0.12, now + i * 0.11 + 0.04);
-        gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.11 + 0.7);
-
-        osc.connect(gain);
-        gain.connect(getAudioOutputNode());
-
-        osc.start(now + i * 0.11);
-        osc.stop(now + i * 0.11 + 0.75);
+      CHIME_CONFIG.RETURN_CHORD_HZ.forEach(function (freq, i) {
+        triggerSoftFilteredNote(
+          freq,
+          CHIME_CONFIG.RETURN_PEAK_GAIN,
+          CHIME_CONFIG.RETURN_ATTACK_SEC,
+          CHIME_CONFIG.RETURN_DECAY_SEC,
+          CHIME_CONFIG.RETURN_STOP_SEC,
+          freq * CHIME_CONFIG.RETURN_FILTER_MULT,
+          i * CHIME_CONFIG.RETURN_STAGGER_SEC
+        );
       });
     } catch (e) {
       // Ignora errori
@@ -769,22 +957,24 @@
   function playPhaseStepSound() {
     if (!audioCtx || state.audioMuted) return;
     try {
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(440, now);
-      osc.frequency.exponentialRampToValueAtTime(880, now + 0.12);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.14, now + 0.03);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
-
-      osc.connect(gain);
-      gain.connect(getAudioOutputNode());
-
-      osc.start(now);
-      osc.stop(now + 0.32);
+      triggerSoftFilteredNote(
+        CHIME_CONFIG.STEP_BASE_HZ,
+        CHIME_CONFIG.STEP_BASE_GAIN,
+        CHIME_CONFIG.STEP_ATTACK_SEC,
+        CHIME_CONFIG.STEP_DECAY_SEC,
+        CHIME_CONFIG.STEP_STOP_SEC,
+        CHIME_CONFIG.STEP_FILTER_HZ,
+        0
+      );
+      triggerSoftFilteredNote(
+        CHIME_CONFIG.STEP_OVERTONE_HZ,
+        CHIME_CONFIG.STEP_OVERTONE_GAIN,
+        CHIME_CONFIG.STEP_ATTACK_SEC,
+        CHIME_CONFIG.STEP_DECAY_SEC,
+        CHIME_CONFIG.STEP_STOP_SEC,
+        CHIME_CONFIG.STEP_FILTER_HZ,
+        0
+      );
     } catch (e) {
       // Ignora errori
     }
@@ -810,21 +1000,25 @@
 
   function playSineTone(freq) {
     try {
-      const now = audioCtx.currentTime;
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(freq, now);
-
-      gain.gain.setValueAtTime(0.0001, now);
-      gain.gain.exponentialRampToValueAtTime(0.065, now + 0.04);
-      gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
-
-      osc.connect(gain);
-      gain.connect(getAudioOutputNode());
-
-      osc.start(now);
-      osc.stop(now + 0.6);
+      const filterHz = freq * CHIME_CONFIG.RIPPLE_FILTER_MULT;
+      triggerSoftFilteredNote(
+        freq,
+        CHIME_CONFIG.RIPPLE_PEAK_GAIN,
+        CHIME_CONFIG.RIPPLE_ATTACK_SEC,
+        CHIME_CONFIG.RIPPLE_DECAY_SEC,
+        CHIME_CONFIG.RIPPLE_STOP_SEC,
+        filterHz,
+        0
+      );
+      triggerSoftFilteredNote(
+        freq * VOICE_HARMONICS.OCTAVE_RATIO,
+        CHIME_CONFIG.RIPPLE_PEAK_GAIN * CHIME_CONFIG.RIPPLE_OCTAVE_RATIO,
+        CHIME_CONFIG.RIPPLE_ATTACK_SEC,
+        CHIME_CONFIG.RIPPLE_DECAY_SEC,
+        CHIME_CONFIG.RIPPLE_STOP_SEC,
+        filterHz,
+        0
+      );
     } catch (e) {
       // Ignora errori
     }
@@ -1254,14 +1448,11 @@
         if (state.portalOpen || state.audioMuted || isHoverAudioSuppressed) {
           // Quando si è in una pagina interna, l'audio è spento o durante la propagazione di ritorno alla home,
           // i cerchi della Home non devono produrre suoni di passaggio del mouse
-          voice.gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.04);
+          voice.currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
+          voice.gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
         } else {
           const combinedIntensity = Math.min(1.0, st.motionEnergy * 1.2 + (st.isHovered ? 0.4 : 0));
-          const targetVol = Math.max(0.0001, Math.pow(combinedIntensity, 1.3) * activeStyle.audio.maxVoiceGain);
-          const targetCutoff = activeStyle.audio.baseFilterCutoff + combinedIntensity * activeStyle.audio.filterModulationRange;
-
-          voice.gain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
-          voice.filter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
+          modulateHarmonicVoice(voice, combinedIntensity);
         }
       }
     });
@@ -1422,13 +1613,8 @@
 
     // Modulazione sonora armonica
     if (audioCtx && !state.audioMuted && audioNodes['back-home']) {
-      const voice = audioNodes['back-home'];
       const combinedIntensity = Math.min(1.0, backHomeState.motionEnergy * 1.2 + (backHomeState.isHovered ? 0.45 : 0));
-      const targetVol = Math.max(0.0001, Math.pow(combinedIntensity, 1.3) * activeStyle.audio.maxVoiceGain);
-      const targetCutoff = activeStyle.audio.baseFilterCutoff + combinedIntensity * activeStyle.audio.filterModulationRange;
-
-      voice.gain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
-      voice.filter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
+      modulateHarmonicVoice(audioNodes['back-home'], combinedIntensity);
     }
   }
 
@@ -1542,13 +1728,8 @@
 
     // Modulazione sonora armonica
     if (audioCtx && !state.audioMuted && audioNodes['portal-media']) {
-      const voice = audioNodes['portal-media'];
       const combinedIntensity = Math.min(1.0, mediaWaveState.motionEnergy * 1.2 + (mediaWaveState.isHovered ? 0.45 : 0));
-      const targetVol = Math.max(0.0001, Math.pow(combinedIntensity, 1.3) * activeStyle.audio.maxVoiceGain);
-      const targetCutoff = activeStyle.audio.baseFilterCutoff + combinedIntensity * activeStyle.audio.filterModulationRange;
-
-      voice.gain.gain.setTargetAtTime(targetVol, audioCtx.currentTime, 0.08);
-      voice.filter.frequency.setTargetAtTime(targetCutoff, audioCtx.currentTime, 0.08);
+      modulateHarmonicVoice(audioNodes['portal-media'], combinedIntensity);
     }
   }
 
@@ -2610,14 +2791,17 @@
       ensureAudioUnlocked();
       state.audioMuted = !state.audioMuted;
       updateAudioMuteUI();
-      if (state.audioMuted && audioCtx) {
-        CIRCLES_REGISTRY.forEach(function (c) {
-          if (audioNodes[c.id]) {
-            audioNodes[c.id].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
-          }
-        });
-        if (audioNodes['back-home']) audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
-        if (audioNodes['portal-media']) audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.05);
+
+      if (!audioCtx) return;
+
+      if (masterGainNode) {
+        const targetMaster = state.audioMuted ? VOICE_ENVELOPE.GAIN_FLOOR : activeStyle.audio.masterVolume;
+        const fadeTau = state.audioMuted ? VOICE_ENVELOPE.MUTE_FADE_SEC : VOICE_ENVELOPE.UNMUTE_FADE_SEC;
+        masterGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
+      }
+
+      if (state.audioMuted) {
+        silenceAllVoices(VOICE_ENVELOPE.MUTE_FADE_SEC);
       }
     }
 
