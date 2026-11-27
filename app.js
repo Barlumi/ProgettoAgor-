@@ -379,6 +379,7 @@
   const GALLERY_DESKTOP_GROUP_SIZE = 3;
   const GALLERY_DESKTOP_QUAD_THRESHOLD = 4;
   const LIGHTBOX_FADE_DELAY_MS = 60;
+  const INNERMOST_CIRCLE_IDS = Object.freeze(new Set(['lab-c1', 'part-c1', 'cred-c1']));
 
   // Stile attivo applicato: Stile Easy (Onda spettrale su fondo ossidiana)
   let activeStyle = STILE_EASY;
@@ -531,7 +532,12 @@
   // SINTESI ACUSTICA (Web Audio API)
   // -------------------------------------------------------------------------
   let audioCtx = null;
+  let masterGainNode = null;
   const audioNodes = {};
+
+  function getAudioOutputNode() {
+    return masterGainNode || audioCtx.destination;
+  }
 
   function initAudioContext() {
     if (audioCtx) return;
@@ -540,9 +546,9 @@
       if (!AudioContext) return;
       audioCtx = new AudioContext();
 
-      const masterGain = audioCtx.createGain();
-      masterGain.gain.setValueAtTime(0.75, audioCtx.currentTime);
-      masterGain.connect(audioCtx.destination);
+      masterGainNode = audioCtx.createGain();
+      masterGainNode.gain.setValueAtTime(activeStyle.audio.masterVolume, audioCtx.currentTime);
+      masterGainNode.connect(audioCtx.destination);
 
       CIRCLES_REGISTRY.forEach(function (c) {
         // Timbro e accordatura dal blocco di stile attivo ("Stile Easy")
@@ -587,7 +593,7 @@
       osc1.connect(filter);
       osc2.connect(filter);
       filter.connect(gainNode);
-      gainNode.connect(audioCtx.destination);
+      gainNode.connect(getAudioOutputNode());
 
       osc1.start();
       osc2.start();
@@ -724,7 +730,7 @@
 
       osc.connect(filter);
       filter.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(getAudioOutputNode());
 
       osc.start(now);
       osc.stop(now + 0.8);
@@ -749,7 +755,7 @@
         gain.gain.exponentialRampToValueAtTime(0.0001, now + i * 0.11 + 0.7);
 
         osc.connect(gain);
-        gain.connect(audioCtx.destination);
+        gain.connect(getAudioOutputNode());
 
         osc.start(now + i * 0.11);
         osc.stop(now + i * 0.11 + 0.75);
@@ -774,7 +780,7 @@
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.3);
 
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(getAudioOutputNode());
 
       osc.start(now);
       osc.stop(now + 0.32);
@@ -814,7 +820,7 @@
       gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.55);
 
       osc.connect(gain);
-      gain.connect(audioCtx.destination);
+      gain.connect(getAudioOutputNode());
 
       osc.start(now);
       osc.stop(now + 0.6);
@@ -969,9 +975,12 @@
         g.appendChild(textElem);
       }
 
-      // 4. Hit Proxy Trasparente da 34px (Hover e click istantanei e omogenei)
+      // 4. Hit Proxy Trasparente (esteso all'interno per gli anelli centrali)
       const hitProxy = document.createElementNS('http://www.w3.org/2000/svg', 'path');
-      hitProxy.setAttribute('class', 'circle-hit-proxy');
+      const hitProxyClass = INNERMOST_CIRCLE_IDS.has(c.id)
+        ? 'circle-hit-proxy circle-hit-proxy--innermost'
+        : 'circle-hit-proxy';
+      hitProxy.setAttribute('class', hitProxyClass);
       hitProxy.setAttribute('id', 'hit-' + c.id);
       g.appendChild(hitProxy);
 
@@ -1592,6 +1601,11 @@
   // GESTIONE DELLA PAGINA (ZOOM IN/OUT & NAVIGAZIONE AD ONDE)
   // -------------------------------------------------------------------------
   function openCircularPortal(sectionKey, phaseIndex, clickOrigin) {
+    // Segna subito il portale aperto per evitare il ripple introduttivo sullo sblocco audio
+    state.portalOpen = true;
+    state.activeSection = sectionKey;
+    state.introRippleAudioPlayed = true;
+
     revealAllCirclesImmediately();
     ensureAudioUnlocked();
     silenceAllVoices(0.02);
@@ -1654,8 +1668,6 @@
       portal.setAttribute('aria-hidden', 'false');
     }
 
-    state.portalOpen = true;
-    state.activeSection = sectionKey;
     updateHeaderActiveStates();
   }
 
@@ -2311,15 +2323,29 @@
   // -------------------------------------------------------------------------
   // GESTIONE EVENTI (HIT PROXY 34PX & CONTROLLI)
   // -------------------------------------------------------------------------
+  function activateCircleNavigation(c) {
+    ensureAudioUnlocked();
+    const coords = getCircleCoords(c);
+
+    if (c.system === 'laboratorio') {
+      openCircularPortal('laboratorio', c.phaseIndex, { x: coords.cx, y: coords.cy, id: c.id });
+      return;
+    }
+
+    if (DRAWER_DATA[c.system]) {
+      openCircularPortal(c.system, null, { x: coords.cx, y: coords.cy, id: c.id });
+    }
+  }
+
   function initEventHandlers() {
-    // Clic sui cerchi concentrici dell'SVG
+    // Clic ed hover sull'intero gruppo cerchio (inclusa l'etichetta curva)
     CIRCLES_REGISTRY.forEach(function (c) {
       const dom = circleDOM[c.id];
-      if (!dom) return;
+      if (!dom || !dom.group) return;
 
-      const hitProxy = dom.hitProxy;
+      const circleGroup = dom.group;
 
-      hitProxy.addEventListener('pointerenter', function () {
+      circleGroup.addEventListener('pointerenter', function () {
         ensureAudioUnlocked();
         if (performance.now() < state.suppressHoverAudioUntil) {
           return;
@@ -2328,27 +2354,20 @@
         state.circles[c.id].motionEnergy = 1.0;
       });
 
-      hitProxy.addEventListener('pointermove', function () {
+      circleGroup.addEventListener('pointermove', function () {
         if (performance.now() < state.suppressHoverAudioUntil) {
           return;
         }
         state.circles[c.id].motionEnergy = Math.min(1.0, state.circles[c.id].motionEnergy + 0.15);
       });
 
-      hitProxy.addEventListener('pointerleave', function () {
+      circleGroup.addEventListener('pointerleave', function () {
         state.circles[c.id].isHovered = false;
       });
 
-      hitProxy.addEventListener('click', function (e) {
+      circleGroup.addEventListener('click', function (e) {
         e.stopPropagation();
-        ensureAudioUnlocked();
-
-        const coords = getCircleCoords(c);
-        if (c.system === 'laboratorio') {
-          openCircularPortal('laboratorio', c.phaseIndex, { x: coords.cx, y: coords.cy, id: c.id });
-        } else if (DRAWER_DATA[c.system]) {
-          openCircularPortal(c.system, null, { x: coords.cx, y: coords.cy, id: c.id });
-        }
+        activateCircleNavigation(c);
       });
     });
 

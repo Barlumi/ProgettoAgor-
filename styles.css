@@ -379,6 +379,11 @@ html, body {
   pointer-events: stroke;
 }
 
+.circle-hit-proxy--innermost {
+  fill: transparent;
+  pointer-events: all;
+}
+
 /* Tracciato Visivo Principale (Gradiente Spettrale) */
 .wave-single-circle {
   fill: none;
@@ -431,7 +436,8 @@ html, body {
   letter-spacing: 0.2em;
   text-transform: uppercase;
   fill: var(--text-bright);
-  pointer-events: none;
+  pointer-events: auto;
+  cursor: pointer;
   dominant-baseline: central;
   alignment-baseline: central;
   transition: fill 0.25s ease, filter 0.25s ease;
@@ -2153,9 +2159,9 @@ html, body {
     letter-spacing: 0.14em;
   }
 
-  /* Hit proxy SVG calibrato per il tocco delle dita sui cerchi */
+  /* Hit proxy SVG calibrato per non sovrapporsi agli anelli vicini su mobile */
   .circle-hit-proxy {
-    stroke-width: 48px;
+    stroke-width: 30px;
   }
 
   /* Risalto visivo immediato durante lo Scroll Sonoro */
