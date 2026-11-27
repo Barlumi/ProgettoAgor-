@@ -1964,8 +1964,8 @@ html, body {
   .portal-full-view {
     margin: 0 auto;
     box-sizing: border-box;
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
+    padding-left: 7.5rem;
+    padding-right: 2rem;
   }
 
   .portal-text-column {
@@ -2020,11 +2020,6 @@ html, body {
     max-width: 340px;
   }
 
-  .portal-full-view {
-    padding-left: 1.5rem;
-    padding-right: 1.5rem;
-  }
-
   .partner-circular-grid {
     grid-template-columns: repeat(2, 1fr);
     gap: 2rem 1.25rem;
@@ -2062,11 +2057,11 @@ html, body {
     width: 100%;
   }
 
-  /* Logo AGORÀ: occupa pienamente 1/3 dell'header a sinistra, visibile e generoso */
+  /* Logo AGORÀ: proporzionato a sinistra con sottotitolo leggibile */
   .header-logo {
-    width: 36%;
-    max-width: 36%;
-    flex: 0 0 36%;
+    width: auto;
+    max-width: min(48%, 210px);
+    flex: 0 0 auto;
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -2103,11 +2098,28 @@ html, body {
     position: relative;
     width: 100%;
     height: 100vh;
+    height: 100dvh;
     min-height: 100vh;
+    min-height: 100dvh;
     overflow-y: auto !important;
     overflow-x: hidden !important;
     -webkit-overflow-scrolling: touch;
     display: block !important;
+    scrollbar-width: thin;
+    scrollbar-color: rgba(56, 189, 248, 0.25) transparent;
+  }
+
+  .interactive-stage::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .interactive-stage::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  .interactive-stage::-webkit-scrollbar-thumb {
+    background: rgba(56, 189, 248, 0.25);
+    border-radius: 3px;
   }
 
   .soundscape-canvas-container {
@@ -2164,9 +2176,16 @@ html, body {
     filter: drop-shadow(0 0 8px rgba(56, 189, 248, 0.8)) !important;
   }
 
-  /* Widget "Torna alla Home" posizionato in alto a sinistra sotto al logo */
+  .circular-portal-overlay {
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  /* Widget "Torna alla Home" posizionato in alto a sinistra sotto al logo (scorre con la pagina) */
   .portal-back-home-widget {
-    top: 4.8rem;
+    position: absolute;
+    top: 4.75rem;
     bottom: auto;
     left: 1rem;
     transform: none;
@@ -2191,18 +2210,22 @@ html, body {
 
   .portal-standard-layout {
     justify-content: flex-start;
-    padding: 8.5rem 1.15rem 4.5rem 1.15rem;
-    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 9.5rem 1.15rem 4.5rem 1.15rem;
+    overflow-y: visible;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
   }
 
   .portal-standard-layout.gallery-mode {
     justify-content: flex-start;
-    padding: 8.5rem 1rem 4.5rem 1rem;
-    overflow-y: auto;
+    height: auto;
+    min-height: 100vh;
+    min-height: 100dvh;
+    padding: 9.5rem 1rem 4.5rem 1rem;
+    overflow-y: visible;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
   }
 
   .portal-split-view {
@@ -2528,21 +2551,21 @@ html, body {
   }
 
   .header-logo {
-    width: 38%;
-    max-width: 38%;
-    flex: 0 0 38%;
+    width: auto;
+    max-width: min(50%, 195px);
+    flex: 0 0 auto;
   }
 
   .header-logo-img {
-    max-height: 42px;
+    max-height: 46px;
   }
 
-  .portal-standard-layout {
+  .portal-standard-layout,
+  .portal-standard-layout.gallery-mode {
     justify-content: flex-start;
-    padding: 8rem 0.85rem 4.5rem 0.85rem;
-    overflow-y: auto;
+    padding: 9rem 0.85rem 4.5rem 0.85rem;
+    overflow-y: visible;
     overflow-x: hidden;
-    -webkit-overflow-scrolling: touch;
   }
 
   .portal-circle-media-wrapper {

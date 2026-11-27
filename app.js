@@ -1579,6 +1579,15 @@
     });
   }
 
+  // Riporta in cima lo scroll dell'overlay quando si cambia sezione o fase
+  function resetPortalScrollPosition() {
+    const portal = document.getElementById('circularPortal');
+    const layout = document.getElementById('portalStandardLayout');
+
+    if (portal) portal.scrollTop = 0;
+    if (layout) layout.scrollTop = 0;
+  }
+
   // -------------------------------------------------------------------------
   // GESTIONE DELLA PAGINA (ZOOM IN/OUT & NAVIGAZIONE AD ONDE)
   // -------------------------------------------------------------------------
@@ -1586,6 +1595,7 @@
     revealAllCirclesImmediately();
     ensureAudioUnlocked();
     silenceAllVoices(0.02);
+    resetPortalScrollPosition();
 
     const isMob = isMobileViewport();
     const refW = isMob ? 600 : 1600;
@@ -1696,6 +1706,8 @@
     if (index < 0) index = LAB_PHASES.length - 1;
     if (index >= LAB_PHASES.length) index = 0;
 
+    resetPortalScrollPosition();
+
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
     }
@@ -1775,6 +1787,8 @@
   }
 
   function renderPortalSection(sectionKey) {
+    resetPortalScrollPosition();
+
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
     }
