@@ -118,6 +118,12 @@ html, body {
   filter: drop-shadow(0 0 24px rgba(56, 189, 248, 0.8));
 }
 
+.header-logo:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 6px;
+  border-radius: 6px;
+}
+
 .logo-mark {
   font-family: var(--font-title);
   font-size: 1.65rem;
@@ -353,6 +359,10 @@ html, body {
   transition: opacity 0.38s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
+.circle-item:focus-visible {
+  outline: none;
+}
+
 /* Stato iniziale al primissimo caricamento della home: nascosto dal nulla */
 .circle-item.initial-hidden {
   opacity: 0 !important;
@@ -411,6 +421,7 @@ html, body {
 }
 
 .circle-item:hover .wave-single-circle, 
+.circle-item:focus-visible .wave-single-circle,
 .wave-single-circle.active,
 .circle-item.intro-pulse .wave-single-circle {
   stroke: url(#gradWaveActive);
@@ -419,11 +430,13 @@ html, body {
 }
 
 .circle-item:hover .wave-harmonic-strand.strand-inner,
+.circle-item:focus-visible .wave-harmonic-strand.strand-inner,
 .circle-item.intro-pulse .wave-harmonic-strand.strand-inner {
   stroke: rgba(251, 191, 36, 0.75);
 }
 
 .circle-item:hover .wave-harmonic-strand.strand-outer,
+.circle-item:focus-visible .wave-harmonic-strand.strand-outer,
 .circle-item.intro-pulse .wave-harmonic-strand.strand-outer {
   stroke: rgba(56, 189, 248, 0.85);
 }
@@ -449,6 +462,7 @@ html, body {
 }
 
 .circle-item:hover .wave-path-text,
+.circle-item:focus-visible .wave-path-text,
 .circle-item.intro-pulse .wave-path-text {
   fill: #ffffff;
   font-weight: 700;
@@ -497,6 +511,12 @@ html, body {
 
 .portal-back-home-widget:hover {
   transform: translateY(-50%) scale(1.06);
+}
+
+.portal-back-home-widget:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 4px;
+  border-radius: 50%;
 }
 
 .back-home-svg {

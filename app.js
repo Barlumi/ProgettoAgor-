@@ -380,6 +380,7 @@
   const GALLERY_DESKTOP_QUAD_THRESHOLD = 4;
   const LIGHTBOX_FADE_DELAY_MS = 60;
   const INNERMOST_CIRCLE_IDS = Object.freeze(new Set(['lab-c1', 'part-c1', 'cred-c1']));
+  const DIALOG_FOCUS_SELECTOR = 'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
 
   // Stile attivo applicato: Stile Easy (Onda spettrale su fondo ossidiana)
   let activeStyle = STILE_EASY;
@@ -932,6 +933,9 @@
       g.setAttribute('id', 'item-' + c.id);
       g.setAttribute('data-id', c.id);
       g.setAttribute('data-system', c.system);
+      g.setAttribute('role', 'button');
+      g.setAttribute('tabindex', '0');
+      if (c.labelText) g.setAttribute('aria-label', c.labelText);
       if (c.isPhase) g.setAttribute('data-phase-index', c.phaseIndex);
 
       // 1. Filamenti Armonici Secondari (Texture a nastro spettrale come da moodboard)
@@ -1882,6 +1886,7 @@
         card.className = 'gallery-trio-card';
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
+        card.setAttribute('aria-label', 'Ingrandisci foto: ' + item.title);
         card.setAttribute('title', 'Ingrandisci foto: ' + item.title);
 
         card.addEventListener('click', function () {
@@ -2190,10 +2195,37 @@
     });
   }
 
+  let lastDrawerTrigger = null;
+  let lastLightboxTrigger = null;
+
+  // Mantiene la navigazione da tastiera confinata dentro modale o drawer aperti
+  function trapDialogFocus(event, containerElem) {
+    if (event.key !== 'Tab' || !containerElem) return;
+
+    const focusables = Array.from(containerElem.querySelectorAll(DIALOG_FOCUS_SELECTOR));
+    if (focusables.length === 0) return;
+
+    const first = focusables[0];
+    const last = focusables[focusables.length - 1];
+
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+      return;
+    }
+
+    if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
+  }
+
   function openMobileNavDrawer() {
     const drawer = document.getElementById('mobileNavDrawer');
     const toggle = document.getElementById('btnMobileMenuToggle');
     if (!drawer) return;
+
+    lastDrawerTrigger = document.activeElement;
     drawer.classList.add('open');
     drawer.setAttribute('aria-hidden', 'false');
     if (toggle) {
@@ -2201,12 +2233,16 @@
       toggle.setAttribute('aria-expanded', 'true');
     }
     document.body.style.overflow = 'hidden';
+
+    const closeBtn = document.getElementById('btnMobileDrawerClose');
+    if (closeBtn) closeBtn.focus();
   }
 
   function closeMobileNavDrawer() {
     const drawer = document.getElementById('mobileNavDrawer');
     const toggle = document.getElementById('btnMobileMenuToggle');
     if (!drawer) return;
+
     drawer.classList.remove('open');
     drawer.setAttribute('aria-hidden', 'true');
     if (toggle) {
@@ -2214,6 +2250,11 @@
       toggle.setAttribute('aria-expanded', 'false');
     }
     document.body.style.overflow = '';
+
+    if (lastDrawerTrigger && typeof lastDrawerTrigger.focus === 'function') {
+      lastDrawerTrigger.focus();
+      lastDrawerTrigger = null;
+    }
   }
 
   // -------------------------------------------------------------------------
@@ -2227,6 +2268,7 @@
     if (typeof index !== 'number' || index < 0) index = 0;
     if (index >= total) index = total - 1;
 
+    lastLightboxTrigger = document.activeElement;
     state.currentLightboxIndex = index;
     state.galleryLightboxOpen = true;
 
@@ -2239,6 +2281,9 @@
       modal.classList.add('active');
       modal.setAttribute('aria-hidden', 'false');
     }
+
+    const closeBtn = document.getElementById('btnLightboxClose');
+    if (closeBtn) closeBtn.focus();
 
     playPhaseStepSound();
   }
@@ -2256,6 +2301,11 @@
           modal.style.display = 'none';
         }
       }, 320);
+    }
+
+    if (lastLightboxTrigger && typeof lastLightboxTrigger.focus === 'function') {
+      lastLightboxTrigger.focus();
+      lastLightboxTrigger = null;
     }
 
     playPhaseStepSound();
@@ -2337,6 +2387,17 @@
     }
   }
 
+  // Attiva elementi non-button (role="button") anche con Invio e Spazio
+  function bindButtonKeyActivation(element, handler) {
+    if (!element) return;
+    element.addEventListener('keydown', function (e) {
+      if (e.key !== 'Enter' && e.key !== ' ') return;
+      e.preventDefault();
+      e.stopPropagation();
+      handler();
+    });
+  }
+
   function initEventHandlers() {
     // Clic ed hover sull'intero gruppo cerchio (inclusa l'etichetta curva)
     CIRCLES_REGISTRY.forEach(function (c) {
@@ -2367,6 +2428,10 @@
 
       circleGroup.addEventListener('click', function (e) {
         e.stopPropagation();
+        activateCircleNavigation(c);
+      });
+
+      bindButtonKeyActivation(circleGroup, function () {
         activateCircleNavigation(c);
       });
     });
@@ -2404,17 +2469,30 @@
     });
 
     // Click sul Logo AGORA: deve sempre riportare alla home
-    document.getElementById('navBtnLogo').addEventListener('click', function () {
-      ensureAudioUnlocked();
-      if (state.portalOpen) {
-        closeCircularPortal();
-      }
-    });
+    const logoBtn = document.getElementById('navBtnLogo');
+    if (logoBtn) {
+      logoBtn.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        if (state.portalOpen) {
+          closeCircularPortal();
+        }
+      });
+      bindButtonKeyActivation(logoBtn, function () {
+        ensureAudioUnlocked();
+        if (state.portalOpen) {
+          closeCircularPortal();
+        }
+      });
+    }
 
     // Widget Cerchio "Torna alla Home"
     const backWidget = document.getElementById('btnBackHomeWidget');
     if (backWidget) {
       backWidget.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        closeCircularPortal();
+      });
+      bindButtonKeyActivation(backWidget, function () {
         ensureAudioUnlocked();
         closeCircularPortal();
       });
@@ -2475,9 +2553,12 @@
       });
     }
 
-    // Tasto Escape e frecce per navigazione e chiusura schermata (supporta sia pagina che lightbox)
+    // Tasto Escape, Tab trap e frecce per navigazione e chiusura modali/pagine
     window.addEventListener('keydown', function (e) {
       if (state.galleryLightboxOpen) {
+        const lightboxModal = document.getElementById('galleryLightboxModal');
+        trapDialogFocus(e, lightboxModal);
+
         if (e.key === 'Escape') {
           e.preventDefault();
           closeGalleryLightbox();
@@ -2487,6 +2568,16 @@
         } else if (e.key === 'ArrowRight') {
           e.preventDefault();
           navigateGalleryLightbox(1);
+        }
+        return;
+      }
+
+      const drawer = document.getElementById('mobileNavDrawer');
+      if (drawer && drawer.classList.contains('open')) {
+        trapDialogFocus(e, drawer);
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeMobileNavDrawer();
         }
         return;
       }
