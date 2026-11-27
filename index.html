@@ -230,6 +230,15 @@
               <a class="phase-specs-link" id="phaseSpecsLink" href="#" target="_blank" rel="noopener noreferrer"></a>
             </section>
 
+            <!-- Dietro le Quinte: Assemblaggio & Video (visibile nella Fase 5) -->
+            <section class="phase-media-strip" id="phaseMediaStrip" aria-label="Dietro le quinte: assemblaggio e video della sala immersiva" style="display: none;">
+              <div class="phase-media-strip-header">
+                <span class="phase-media-strip-tag">Dietro le quinte · Tresigallo</span>
+                <span class="phase-media-strip-count" id="phaseMediaStripCount"></span>
+              </div>
+              <div class="phase-media-strip-grid" id="phaseMediaStripGrid"></div>
+            </section>
+
             <!-- Navigazione tra le fasi con frecce pulite senza cerchi né ombre -->
             <div class="portal-phase-nav" id="portalPhaseNav">
               <button type="button" class="btn-phase-wave btn-nav-prev" id="btnPhasePrev" title="Fase Precedente" aria-label="Fase Precedente">
@@ -288,6 +297,13 @@
                 </svg>
                 <span>Esplora modello 3D</span>
               </button>
+
+              <button type="button" class="portal-media-action-btn" id="btnPhaseMakingOf" style="display: none;">
+                <svg class="portal-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                </svg>
+                <span id="btnPhaseMakingOfLabel">Foto & Video</span>
+              </button>
             </div>
 
             <p class="portal-media-caption" id="portalMediaCaption"></p>
@@ -344,6 +360,7 @@
       <div class="gallery-lightbox-stage">
         <div class="gallery-lightbox-frame">
           <img src="" alt="" class="gallery-lightbox-image" id="galleryLightboxImg">
+          <video class="gallery-lightbox-video" id="galleryLightboxVideo" controls playsinline preload="metadata" style="display: none;"></video>
         </div>
 
         <div class="gallery-lightbox-banner">

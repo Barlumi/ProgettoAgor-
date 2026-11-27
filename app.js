@@ -20,6 +20,26 @@
     SPHERICAL_HARMONICS: '60.5% 50%'
   });
 
+  // Tipologie multimediali e categorie filtro della Gallery
+  const MEDIA_TYPE = Object.freeze({
+    IMAGE: 'image',
+    VIDEO: 'video'
+  });
+
+  const GALLERY_CATEGORY = Object.freeze({
+    ALL: 'all',
+    SQUARES: 'squares',
+    TRESIGALLO: 'tresigallo',
+    VIDEOS: 'videos'
+  });
+
+  const GALLERY_CATEGORY_FILTERS = Object.freeze([
+    Object.freeze({ id: GALLERY_CATEGORY.ALL, label: 'Tutti' }),
+    Object.freeze({ id: GALLERY_CATEGORY.SQUARES, label: 'Piazze & Rilievi' }),
+    Object.freeze({ id: GALLERY_CATEGORY.TRESIGALLO, label: 'Sala Tresigallo' }),
+    Object.freeze({ id: GALLERY_CATEGORY.VIDEOS, label: 'Video' })
+  ]);
+
   // -------------------------------------------------------------------------
   // DATI DETTAGLIATI PROGETTO AGORÀ (CIRI-EC Università di Bologna)
   // -------------------------------------------------------------------------
@@ -91,7 +111,116 @@
         { label: 'Video & Software', value: '4× Optoma 4K400STx · Mac Studio, OpenCV, mpv' }
       ],
       specsLinkUrl: 'https://adrianofarina.it/projects/2026/09/tresigallo/',
-      specsLinkLabel: 'Documentazione tecnica completa (adrianofarina.it) ↗'
+      specsLinkLabel: 'Documentazione tecnica completa (adrianofarina.it) ↗',
+      mediaGallery: [
+        {
+          title: 'Progetto CAD 3D Ottagono',
+          shortLabel: 'Progetto 3D',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/cad_ottagono.jpg',
+          caption: 'Modello CAD Blender dell\'ottagono da 6 m: struttura portante, barre WFS, 4 proiettori e diffusori Ambisonics.',
+          featured: true
+        },
+        {
+          title: 'Profilati Bosch Rexroth (160 kg)',
+          shortLabel: 'Profilati 40mm',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/profilati_trasporto.jpg',
+          caption: 'Travi modulari in alluminio estruso Bosch Rexroth da 40 mm pronte per il trasporto e il montaggio a Tresigallo.',
+          featured: false
+        },
+        {
+          title: 'Piastre Base Zincate 40×40',
+          shortLabel: 'Piastre base',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/piastra_base.jpg',
+          caption: 'Giunto di ancoraggio a terra con piastra base in acciaio galvanizzato Bosch Rexroth e tasselli M8.',
+          featured: false
+        },
+        {
+          title: 'Erezione Struttura Ottagonale',
+          shortLabel: 'Telaio 6 m',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/telaio_ottagono.jpg',
+          caption: 'Montaggio dello scheletro ottagonale da 6 m di diametro e 3,8 m di altezza all\'interno dell\'Urban Center "Sogni".',
+          featured: true
+        },
+        {
+          title: 'Montaggio Barre WFS 128 Canali',
+          shortLabel: 'Montaggio WFS',
+          mediaType: MEDIA_TYPE.VIDEO,
+          image: 'assets/videos/montaggio_wfs_poster.jpg',
+          videoSrc: 'assets/videos/montaggio_wfs.mp4',
+          caption: 'Installazione in quota della cornice modulare e delle soundbar per la Wave Field Synthesis a 128 canali.',
+          featured: true
+        },
+        {
+          title: 'Banco Test Array WFS in Laboratorio',
+          shortLabel: 'Banco WFS',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/test_wfs_hub.jpg',
+          caption: 'Premontaggio e collaudo dei moduli di altoparlanti WFS prima dell\'installazione a Tresigallo.',
+          featured: false
+        },
+        {
+          title: 'Teli di Proiezione & Soundbar WFS',
+          shortLabel: 'Teli & WFS',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/schermi_wfs_alto.jpg',
+          caption: 'Vista dall\'alto dell\'anello continuo dei pannelli di proiezione e dell\'anello inferiore di trasduttori WFS.',
+          featured: true
+        },
+        {
+          title: 'Calibrazione Proiettori Optoma 4K',
+          shortLabel: 'Warp OpenCV',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/calibrazione_proiezione.jpg',
+          caption: 'Allineamento prospettico tramite griglia di calibrazione OpenCV e quattro proiettori a ottica corta Optoma 4K400STx.',
+          featured: false
+        },
+        {
+          title: 'Proiezione Panoramica 360° Attiva',
+          shortLabel: 'Video 360°',
+          mediaType: MEDIA_TYPE.VIDEO,
+          image: 'assets/videos/proiezione_360_poster.jpg',
+          videoSrc: 'assets/videos/proiezione_360.mp4',
+          caption: 'Prova dinamica della proiezione immersiva a 360° lungo i teli ottagonali della sala con audio spazializzato.',
+          featured: true
+        },
+        {
+          title: 'Sala Agorà Pronta per l\'Apertura',
+          shortLabel: 'Sala pronta',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/sala_pronta.jpg',
+          caption: 'Vista d\'insieme dell\'ottagono completo con sedute, diffusori Ambisonics su 3 anelli e barre WFS perimetrali.',
+          featured: false
+        },
+        {
+          title: 'Giornata Inaugurale a Tresigallo',
+          shortLabel: 'Inaugurazione',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/inaugurazione_pubblico.jpg',
+          caption: 'Il pubblico e le istituzioni all\'interno della sala immersiva durante l\'inaugurazione all\'Urban Center "Sogni".',
+          featured: false
+        },
+        {
+          title: 'Pubblico Immerso nella Piazza 360°',
+          shortLabel: 'Esperienza live',
+          mediaType: MEDIA_TYPE.VIDEO,
+          image: 'assets/videos/inaugurazione_sala_poster.jpg',
+          videoSrc: 'assets/videos/inaugurazione_sala.mp4',
+          caption: 'Visitatori immersi nella ricostruzione audiovisiva della piazza storica durante la prima dimostrazione pubblica.',
+          featured: true
+        },
+        {
+          title: 'Sessione d\'Ascolto Collettiva',
+          shortLabel: 'Ascolto 3D',
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/ascolto_collettivo.jpg',
+          caption: 'Fruizione condivisa inclusiva dentro il cerchio immersivo della Città del \'900 senza barriere motorie.',
+          featured: false
+        }
+      ]
     }
   ];
 
@@ -233,99 +362,262 @@
         {
           title: 'Rimini, Piazza Cavour',
           caption: 'Sorgente acustica omnidirezionale a dodecaedro posizionata in Piazza Cavour per la misura della risposta all\'impulso (ESS).',
-          image: 'assets/gallery/image12.jpg'
+          image: 'assets/gallery/image12.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Faenza, Piazza del Popolo',
           caption: 'Il gruppo di ricerca CIRI-EC dell\'Università di Bologna con la sorgente omnidirezionale a dodecaedro affacciato su Piazza del Popolo.',
-          image: 'assets/gallery/image13.jpg'
+          image: 'assets/gallery/image13.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Tresigallo, Piazza della Repubblica',
           caption: 'Postazione di acquisizione con microfono sferico Eigenmike em64, telecamera 360° e microfono di riferimento presso la fontana monumentale.',
-          image: 'assets/gallery/image14.jpg'
+          image: 'assets/gallery/image14.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Faenza, Teatro Masini',
           caption: 'Misura delle risposte all\'impulso 3D (IR 3D) dai palchi verso il palcoscenico con microfono sferico Eigenmike em64, telecamera 360° e testa binaurale.',
-          image: 'assets/gallery/image15.jpg'
+          image: 'assets/gallery/image15.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Rimini, Piazza Cavour (Ripresa 360°)',
           caption: 'Scatto fotografico panoramico equirettangolare a 360° abbinato all\'acquisizione audio multicanale.',
-          image: 'assets/gallery/image16.jpg'
+          image: 'assets/gallery/image16.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Il Team di Misura al Teatro Masini',
           caption: 'I ricercatori di CIRI-EC (UniBo), CIDEA (UniPr) e Gruppo C.S.A. durante le sessioni sperimentali a Faenza.',
-          image: 'assets/gallery/image17.jpg'
+          image: 'assets/gallery/image17.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Sorgente a Dodecaedro sul Cavalletto',
           caption: 'Dettaglio della sorgente sonora omnidirezionale a dodecaedro su cavalletto in Piazza Cavour (Rimini, 2024).',
-          image: 'assets/gallery/image27.jpg'
+          image: 'assets/gallery/image27.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Misura MIMO in Teatro (SIPARIO)',
           caption: 'Sorgente sferica a 32 altoparlanti e microfono Eigenmike sul palco nei teatri storici dell\'Emilia-Romagna.',
-          image: 'assets/gallery/image23.jpg'
+          image: 'assets/gallery/image23.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Sorgente Sferica a 32 Trasduttori',
           caption: 'Diffusore sferico multicanale a 32 trasduttori controllati singolarmente per misure acustiche MIMO.',
-          image: 'assets/gallery/image24.jpg'
+          image: 'assets/gallery/image24.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Rilievo Aerofotogrammetrico con Drone',
           caption: 'Scansione volumetrica e fotogrammetrica con drone all\'interno del Teatro Comunale Pavarotti di Modena.',
-          image: 'assets/gallery/image26.jpg'
+          image: 'assets/gallery/image26.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Armoniche Sferiche fino al 3° Ordine',
           caption: 'Rappresentazione spaziale dei 16 canali Ambix (ACN/SN3D) dall\'ordine 0 (W) all\'ordine 3 (Q, O, M, K, L, N, P).',
           image: 'assets/gallery/image28.jpg',
-          imagePosition: IMAGE_POSITION.SPHERICAL_HARMONICS
+          imagePosition: IMAGE_POSITION.SPHERICAL_HARMONICS,
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Mappa Acustica 3D a Colori (Parma)',
           caption: 'Mappa di intensità e provenienza direzionale del paesaggio sonoro 3D sovrapposta a immagine 360 (Farina et al., Urban Science 2025).',
-          image: 'assets/gallery/image29.jpg'
+          image: 'assets/gallery/image29.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Profili di Loudness nel Tempo (sone)',
           caption: 'Analisi psicoacustica comparata tra Piazza Garibaldi (forte variabilità), Piazza Duomo (silenziosa) e Piazzale Pilotta.',
-          image: 'assets/gallery/image30.jpg'
+          image: 'assets/gallery/image30.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Piazza Cavour come Sala da Concerto',
           caption: 'Postazione di acquisizione in Piazza Cavour con Eigenmike em64, telecamera 360° e testa binaurale (decadimento misurato ≈ 1,6 s, analogo a una sala d\'opera media).',
-          image: 'assets/gallery/image31.jpg'
+          image: 'assets/gallery/image31.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Comacchio, Piazza Trepponti',
           caption: 'Prima caratterizzazione acustica dei ponti monumentali: sweep ESS su 9 posizioni con T30 tra 1,4 s e 1,9 s.',
-          image: 'assets/gallery/image32.jpg'
+          image: 'assets/gallery/image32.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Sala Immersiva WFS di Tresigallo (Edificio Sogni)',
           caption: 'Allestimento della sala d\'ascolto con array circolare di diffusori Wave Field Synthesis e sistema di videoproiezione a 360°.',
-          image: 'assets/gallery/tresigallo_wfs_room.jpg'
+          image: 'assets/gallery/tresigallo_wfs_room.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Mappa delle Prime Riflessioni (Trepponti)',
           caption: 'Mappa panoramica delle prime riflessioni (0–80 ms) elaborata dalla sonda a 64 capsule a Comacchio.',
-          image: 'assets/gallery/image33.jpg'
+          image: 'assets/gallery/image33.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Flusso di Modellazione VR 6DoF',
           caption: 'Schema della catena: Rilievo Visivo (fotogrammetria) + Rilievo Acustico (IR HOA) → Ambiente Audiovisivo Immersivo a 6DoF.',
           image: 'assets/gallery/image34.jpg',
-          imageFit: 'contain'
+          imageFit: 'contain',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Piazzale San Francesco in Unreal Engine',
           caption: 'Ricostruzione 3D e navigazione libera a 6 gradi di libertà con auralizzazione in tempo reale di un brano da Il Trovatore.',
-          image: 'assets/gallery/image35.jpg'
+          image: 'assets/gallery/image35.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Kit Completo di Acquisizione in Piazza',
+          caption: 'Configurazione operativa in Piazza Cavour: Eigenmike em64, Insta360 8K, testa artificiale KU 100, Sennheiser Ambeo, ECM-8000 e Zoom F8.',
+          image: 'assets/gallery/kit_acquisizione_rimini.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Catena Hardware MIMO & Dante',
+          caption: 'Architettura di misura multicanale: PC e switch PoE su rete Dante, scheda RME Digiface Dante, amplificatore 32 ch Classe D e sorgente sferica.',
+          image: 'assets/gallery/catena_dante_mimo.jpg',
+          imageFit: 'contain',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Spettrogramma Exponential Sine Sweep',
+          caption: 'Analisi tempo-frequenza di uno sweep esponenziale da 20 Hz a 20 kHz e distorsioni armoniche separate nella deconvoluzione di Farina.',
+          image: 'assets/gallery/spettrogramma_ess.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Chitarra Live in Piazza della Repubblica (Video)',
+          caption: 'Esecuzione di una sorgente sonora reale (chitarra classica) davanti alla fontana di Tresigallo per validare la localizzazione 3D.',
+          image: 'assets/videos/chitarra_tresigallo_poster.jpg',
+          videoSrc: 'assets/videos/chitarra_tresigallo.mp4',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.VIDEO
+        },
+        {
+          title: 'Modello CAD 3D della Sala Ottagonale',
+          caption: 'Progetto tridimensionale in Blender dell\'ottagono da 6 m all\'Urban Center "Sogni" con coni di proiezione e diffusori.',
+          image: 'assets/tresigallo/cad_ottagono.jpg',
+          imageFit: 'contain',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Profilati Bosch Rexroth da 40 mm',
+          caption: 'Trasporto dei profilati strutturali in alluminio estruso Bosch Rexroth (160 kg complessivi) verso il cantiere di Tresigallo.',
+          image: 'assets/tresigallo/profilati_trasporto.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Piastre Base Zincate in Acciaio',
+          caption: 'Assemblaggio delle piastre base Bosch Rexroth 40×40 (galvanizzate, fissaggio M8) per l\'ancoraggio dei montanti dell\'ottagono.',
+          image: 'assets/tresigallo/piastra_base.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Erezione del Telaio Ottagonale (6 × 3,8 m)',
+          caption: 'Montaggio su trabattello della struttura portante smontabile nella sala principale dell\'edificio razionalista "Sogni".',
+          image: 'assets/tresigallo/telaio_ottagono.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Montaggio in Quota delle Barre WFS (Video)',
+          caption: 'Installazione della cornice superiore e delle barre per l\'array Wave Field Synthesis a 128 canali nella sala di Tresigallo.',
+          image: 'assets/videos/montaggio_wfs_poster.jpg',
+          videoSrc: 'assets/videos/montaggio_wfs.mp4',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.VIDEO
+        },
+        {
+          title: 'Banco Test Array WFS al Creative Hub',
+          caption: 'Premontaggio e verifica acustica dei moduli di soundbar WFS e cablaggi audio prima del trasferimento in sala.',
+          image: 'assets/tresigallo/test_wfs_hub.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Vista dall\'Alto: Teli & Anello WFS',
+          caption: 'Allestimento dall\'interno con gli schermi bianchi a 360° e il perimetro continuo delle soundbar Wave Field Synthesis.',
+          image: 'assets/tresigallo/schermi_wfs_alto.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Calibrazione Proiettori Optoma 4K400STx',
+          caption: 'Fase di taratura ottica e warp prospettico con OpenCV sui quattro proiettori a ottica corta sincronizzati da Mac Studio.',
+          image: 'assets/tresigallo/calibrazione_proiezione.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Proiezione Panoramica 360° Attiva (Video)',
+          caption: 'Test completo di proiezione avvolgente a 360° e restituzione spaziale del paesaggio sonoro dentro l\'ottagono di Tresigallo.',
+          image: 'assets/videos/proiezione_360_poster.jpg',
+          videoSrc: 'assets/videos/proiezione_360.mp4',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.VIDEO
+        },
+        {
+          title: 'Sala Immersiva Agorà Completata',
+          caption: 'Configurazione finale della sala con accessibilità priva di barriere, 24 diffusori Ambisonics su 3 anelli più zenit e array WFS.',
+          image: 'assets/tresigallo/sala_pronta.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Inaugurazione all\'Urban Center "Sogni"',
+          caption: 'Il pubblico e gli ospiti all\'interno della sala immersiva di Tresigallo durante l\'apertura ufficiale al pubblico.',
+          image: 'assets/tresigallo/inaugurazione_pubblico.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Visitatori Dentro la Piazza 360° (Video)',
+          caption: 'Esperienza dal vivo durante l\'inaugurazione: i cittadini esplorano la piazza storica immersi tra suono 3D e video panoramico.',
+          image: 'assets/videos/inaugurazione_sala_poster.jpg',
+          videoSrc: 'assets/videos/inaugurazione_sala.mp4',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.VIDEO
+        },
+        {
+          title: 'Fruizione Inclusiva e Ascolto Condiviso',
+          caption: 'Gruppi di visitatori seduti all\'interno dell\'ottagono di Tresigallo durante le dimostrazioni acustiche e visive.',
+          image: 'assets/tresigallo/ascolto_collettivo.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
+          mediaType: MEDIA_TYPE.IMAGE
         }
       ]
     }
@@ -422,12 +714,15 @@
 
   const LIGHTBOX_SOURCE = Object.freeze({
     GALLERY: 'gallery',
-    PHASE: 'phase'
+    PHASE: 'phase',
+    PHASE_MEDIA: 'phase_media'
   });
 
   const LIGHTBOX_TAG = Object.freeze({
     GALLERY: 'Archivio Sperimentale',
-    PHASE: 'Laboratorio Virtuale'
+    PHASE: 'Laboratorio Virtuale',
+    PHASE_MEDIA: 'Sala Immersiva · Tresigallo',
+    VIDEO: 'Video Sperimentale'
   });
 
   const ROOM_3D_BLANK_URL = 'about:blank';
@@ -593,9 +888,11 @@
     activeSection: 'laboratorio',
     currentPhaseIndex: 0,
     currentGalleryTrioIndex: 0,
+    galleryCategory: GALLERY_CATEGORY.ALL,
     galleryLightboxOpen: false,
     lightboxSource: LIGHTBOX_SOURCE.GALLERY,
     lightboxPhaseIndex: 0,
+    lightboxPhaseMediaIndex: 0,
     currentLightboxIndex: 0,
     room3dOpen: false,
     portalOpen: false,
@@ -3215,6 +3512,7 @@
     } else {
       if (sectionKey === 'gallery') {
         state.currentGalleryTrioIndex = 0;
+        state.galleryCategory = GALLERY_CATEGORY.ALL;
       }
       renderPortalSection(sectionKey);
     }
@@ -3239,6 +3537,7 @@
     }
     stopEssDemoPlayback();
     stopShExplorerAnimation();
+    stopLightboxVideo();
     silenceAllVoices(0.02);
     playReturnChime();
     galleryCirclesRegistry.length = 0;
@@ -3341,10 +3640,21 @@
       syncEssWidgetVisibility(phaseData);
       syncShExplorerVisibility(phaseData);
       syncPhaseSpecsCard(phaseData);
+      syncPhaseMediaStrip(phaseData);
 
       const btnRoom3D = document.getElementById('btnPhaseRoom3D');
       if (btnRoom3D) {
         btnRoom3D.style.display = phaseData.model3dUrl ? 'inline-flex' : 'none';
+      }
+
+      const btnMakingOf = document.getElementById('btnPhaseMakingOf');
+      const btnMakingOfLbl = document.getElementById('btnPhaseMakingOfLabel');
+      const phaseMediaCount = Array.isArray(phaseData.mediaGallery) ? phaseData.mediaGallery.length : 0;
+      if (btnMakingOf) {
+        btnMakingOf.style.display = phaseMediaCount > 0 ? 'inline-flex' : 'none';
+      }
+      if (btnMakingOfLbl && phaseMediaCount > 0) {
+        btnMakingOfLbl.textContent = `Foto & Video (${phaseMediaCount})`;
       }
     }
 
@@ -3370,6 +3680,84 @@
       } else {
         dom.pathVis.classList.remove('active');
       }
+    });
+  }
+
+  // Aggiorna la striscia multimediale (assemblaggio e video) nella Fase 5
+  function syncPhaseMediaStrip(phaseData) {
+    const strip = document.getElementById('phaseMediaStrip');
+    const grid = document.getElementById('phaseMediaStripGrid');
+    const countEl = document.getElementById('phaseMediaStripCount');
+    if (!strip || !grid) return;
+
+    const allItems = phaseData && Array.isArray(phaseData.mediaGallery) ? phaseData.mediaGallery : [];
+    const hasMedia = allItems.length > 0;
+    grid.innerHTML = '';
+    strip.style.display = hasMedia ? 'flex' : 'none';
+
+    if (!hasMedia) return;
+
+    const videoCount = allItems.filter(function (entry) {
+      return entry.mediaType === MEDIA_TYPE.VIDEO;
+    }).length;
+    if (countEl) {
+      countEl.textContent = `${allItems.length - videoCount} foto · ${videoCount} video`;
+    }
+
+    const featuredItems = allItems.filter(function (entry) {
+      return entry.featured;
+    });
+    const tiles = featuredItems.length > 0 ? featuredItems : allItems.slice(0, 6);
+
+    tiles.forEach(function (entry) {
+      const fullIndex = allItems.indexOf(entry);
+      const tileBtn = document.createElement('button');
+      tileBtn.type = 'button';
+      tileBtn.className = 'phase-media-tile';
+      tileBtn.setAttribute('aria-label', `${entry.title}`);
+      tileBtn.setAttribute('title', entry.title);
+
+      const thumb = document.createElement('img');
+      thumb.className = 'phase-media-tile-img';
+      thumb.src = entry.image;
+      thumb.alt = entry.title;
+      thumb.loading = 'lazy';
+      tileBtn.appendChild(thumb);
+
+      if (entry.mediaType === MEDIA_TYPE.VIDEO) {
+        const playBadge = document.createElement('span');
+        playBadge.className = 'media-play-badge';
+        playBadge.textContent = '▶ Video';
+        tileBtn.appendChild(playBadge);
+      }
+
+      const labelEl = document.createElement('span');
+      labelEl.className = 'phase-media-tile-label';
+      labelEl.textContent = entry.shortLabel || entry.title;
+      tileBtn.appendChild(labelEl);
+
+      tileBtn.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        openPhaseMediaLightbox(fullIndex);
+      });
+
+      grid.appendChild(tileBtn);
+    });
+  }
+
+  // Filtra gli elementi della Gallery per categoria o tipologia video
+  function getFilteredGalleryItems(items, category) {
+    if (!Array.isArray(items)) return [];
+    if (category === GALLERY_CATEGORY.ALL) return items;
+
+    if (category === GALLERY_CATEGORY.VIDEOS) {
+      return items.filter(function (entry) {
+        return entry.mediaType === MEDIA_TYPE.VIDEO;
+      });
+    }
+
+    return items.filter(function (entry) {
+      return entry.category === category;
     });
   }
 
@@ -3435,6 +3823,9 @@
     const specsCard = document.getElementById('phaseSpecsCard');
     if (specsCard) specsCard.style.display = 'none';
 
+    const mediaStrip = document.getElementById('phaseMediaStrip');
+    if (mediaStrip) mediaStrip.style.display = 'none';
+
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
     }
@@ -3490,12 +3881,43 @@
       return trios;
     }
 
-    // Render del Trio attivo
+    // Render del Trio attivo con barra filtri multimediale
     function renderGalleryTrioStage() {
       bodyElem.innerHTML = '';
       galleryCirclesRegistry.length = 0;
 
-      const trios = getGalleryTrios(data.items);
+      const filterBar = document.createElement('div');
+      filterBar.className = 'gallery-filter-bar';
+      filterBar.setAttribute('role', 'group');
+      filterBar.setAttribute('aria-label', 'Filtra contenuti gallery');
+
+      GALLERY_CATEGORY_FILTERS.forEach(function (flt) {
+        const count = getFilteredGalleryItems(data.items, flt.id).length;
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'gallery-filter-btn';
+        btn.setAttribute('data-gallery-filter', flt.id);
+        const isActive = state.galleryCategory === flt.id;
+        btn.classList.toggle('active', isActive);
+        btn.setAttribute('aria-pressed', isActive ? 'true' : 'false');
+        btn.textContent = `${flt.label} (${count})`;
+
+        btn.addEventListener('click', function () {
+          ensureAudioUnlocked();
+          if (state.galleryCategory === flt.id) return;
+          state.galleryCategory = flt.id;
+          state.currentGalleryTrioIndex = 0;
+          playPhaseStepSound();
+          renderGalleryTrioStage();
+        });
+
+        filterBar.appendChild(btn);
+      });
+
+      bodyElem.appendChild(filterBar);
+
+      const filteredItems = getFilteredGalleryItems(data.items, state.galleryCategory);
+      const trios = getGalleryTrios(filteredItems);
       if (trios.length === 0) return;
 
       if (state.currentGalleryTrioIndex < 0) state.currentGalleryTrioIndex = trios.length - 1;
@@ -3511,24 +3933,25 @@
       }
 
       currentTrio.forEach(function (item) {
-        const globalIdx = data.items.indexOf(item);
+        const filteredIdx = filteredItems.indexOf(item);
         const card = document.createElement('div');
         card.className = 'gallery-trio-card';
         card.setAttribute('role', 'button');
         card.setAttribute('tabindex', '0');
-        card.setAttribute('aria-label', 'Ingrandisci foto: ' + item.title);
-        card.setAttribute('title', 'Ingrandisci foto: ' + item.title);
+        const actionLabel = item.mediaType === MEDIA_TYPE.VIDEO ? 'Riproduci video: ' : 'Ingrandisci foto: ';
+        card.setAttribute('aria-label', actionLabel + item.title);
+        card.setAttribute('title', actionLabel + item.title);
 
         card.addEventListener('click', function () {
           ensureAudioUnlocked();
-          openGalleryLightbox(globalIdx);
+          openGalleryLightbox(filteredIdx);
         });
 
         card.addEventListener('keydown', function (e) {
           if (e.key === 'Enter' || e.key === ' ') {
             e.preventDefault();
             ensureAudioUnlocked();
-            openGalleryLightbox(globalIdx);
+            openGalleryLightbox(filteredIdx);
           }
         });
 
@@ -3548,6 +3971,14 @@
         img.alt = item.title;
         img.loading = 'lazy';
         mask.appendChild(img);
+
+        if (item.mediaType === MEDIA_TYPE.VIDEO) {
+          const badge = document.createElement('span');
+          badge.className = 'gallery-video-badge';
+          badge.textContent = '▶ Video';
+          mask.appendChild(badge);
+        }
+
         mediaWrap.appendChild(mask);
 
         // SVG cerchio d'onda proporzionato 215x215 con filamenti armonici identico alla Home
@@ -3909,11 +4340,26 @@
     playPhaseStepSound();
   }
 
+  // Arresta e scarica l'eventuale video in riproduzione nel lightbox
+  function stopLightboxVideo() {
+    const videoElem = document.getElementById('galleryLightboxVideo');
+    if (!videoElem) return;
+    if (!videoElem.paused) {
+      videoElem.pause();
+    }
+    if (videoElem.getAttribute('src')) {
+      videoElem.removeAttribute('src');
+      videoElem.load();
+    }
+    videoElem.style.display = 'none';
+  }
+
   function openGalleryLightbox(index) {
     const galleryData = DRAWER_DATA.gallery;
-    if (!galleryData || !Array.isArray(galleryData.items) || galleryData.items.length === 0) return;
+    const filteredItems = getFilteredGalleryItems(galleryData ? galleryData.items : [], state.galleryCategory);
+    if (filteredItems.length === 0) return;
 
-    const total = galleryData.items.length;
+    const total = filteredItems.length;
     if (typeof index !== 'number' || index < 0) index = 0;
     if (index >= total) index = total - 1;
 
@@ -3941,9 +4387,28 @@
     showLightboxModal();
   }
 
+  // Apre il lightbox multimediale (foto e video assemblaggio) della Fase 5
+  function openPhaseMediaLightbox(itemIndex) {
+    const phase = LAB_PHASES[state.currentPhaseIndex];
+    const items = phase && Array.isArray(phase.mediaGallery) ? phase.mediaGallery : [];
+    if (items.length === 0) return;
+
+    const total = items.length;
+    if (typeof itemIndex !== 'number' || itemIndex < 0) itemIndex = 0;
+    if (itemIndex >= total) itemIndex = total - 1;
+
+    lastLightboxTrigger = document.activeElement;
+    state.lightboxSource = LIGHTBOX_SOURCE.PHASE_MEDIA;
+    state.lightboxPhaseMediaIndex = itemIndex;
+    state.galleryLightboxOpen = true;
+
+    showLightboxModal();
+  }
+
   function closeGalleryLightbox() {
     if (!state.galleryLightboxOpen) return;
     state.galleryLightboxOpen = false;
+    stopLightboxVideo();
 
     const modal = document.getElementById('galleryLightboxModal');
     if (modal) {
@@ -3976,10 +4441,23 @@
       return;
     }
 
-    const galleryData = DRAWER_DATA.gallery;
-    if (!galleryData || !Array.isArray(galleryData.items) || galleryData.items.length === 0) return;
+    if (state.lightboxSource === LIGHTBOX_SOURCE.PHASE_MEDIA) {
+      const activePhase = LAB_PHASES[state.currentPhaseIndex];
+      const mediaItems = activePhase && Array.isArray(activePhase.mediaGallery) ? activePhase.mediaGallery : [];
+      if (mediaItems.length === 0) return;
+      let nextMediaIdx = (state.lightboxPhaseMediaIndex + delta) % mediaItems.length;
+      if (nextMediaIdx < 0) nextMediaIdx += mediaItems.length;
+      state.lightboxPhaseMediaIndex = nextMediaIdx;
+      renderGalleryLightbox();
+      playPhaseStepSound();
+      return;
+    }
 
-    const total = galleryData.items.length;
+    const galleryData = DRAWER_DATA.gallery;
+    const filteredItems = getFilteredGalleryItems(galleryData ? galleryData.items : [], state.galleryCategory);
+    if (filteredItems.length === 0) return;
+
+    const total = filteredItems.length;
     let nextIdx = (state.currentLightboxIndex + delta) % total;
     if (nextIdx < 0) nextIdx += total;
 
@@ -3991,42 +4469,66 @@
   let lightboxFadeTimer = null;
 
   function renderGalleryLightbox() {
-    const isPhaseSource = state.lightboxSource === LIGHTBOX_SOURCE.PHASE;
+    stopLightboxVideo();
+
     let item = null;
     let counterText = '';
     let tagText = LIGHTBOX_TAG.GALLERY;
 
-    if (isPhaseSource) {
+    if (state.lightboxSource === LIGHTBOX_SOURCE.PHASE) {
       const phase = LAB_PHASES[state.lightboxPhaseIndex];
       if (!phase) return;
       item = {
         image: phase.image,
+        mediaType: MEDIA_TYPE.IMAGE,
         title: phase.title,
         caption: phase.imageCaption || ''
       };
       counterText = `Fase ${state.lightboxPhaseIndex + 1} di ${LAB_PHASES.length}`;
       tagText = LIGHTBOX_TAG.PHASE;
+    } else if (state.lightboxSource === LIGHTBOX_SOURCE.PHASE_MEDIA) {
+      const activePhase = LAB_PHASES[state.currentPhaseIndex];
+      const mediaItems = activePhase && Array.isArray(activePhase.mediaGallery) ? activePhase.mediaGallery : [];
+      item = mediaItems[state.lightboxPhaseMediaIndex];
+      if (!item) return;
+      counterText = `Media ${state.lightboxPhaseMediaIndex + 1} di ${mediaItems.length}`;
+      tagText = item.mediaType === MEDIA_TYPE.VIDEO ? LIGHTBOX_TAG.VIDEO : LIGHTBOX_TAG.PHASE_MEDIA;
     } else {
       const galleryData = DRAWER_DATA.gallery;
-      if (!galleryData || !Array.isArray(galleryData.items)) return;
-      item = galleryData.items[state.currentLightboxIndex];
+      const filteredItems = getFilteredGalleryItems(galleryData ? galleryData.items : [], state.galleryCategory);
+      item = filteredItems[state.currentLightboxIndex];
       if (!item) return;
-      counterText = `Foto ${state.currentLightboxIndex + 1} di ${galleryData.items.length}`;
+      const prefix = item.mediaType === MEDIA_TYPE.VIDEO ? 'Video' : 'Foto';
+      counterText = `${prefix} ${state.currentLightboxIndex + 1} di ${filteredItems.length}`;
+      tagText = item.mediaType === MEDIA_TYPE.VIDEO ? LIGHTBOX_TAG.VIDEO : LIGHTBOX_TAG.GALLERY;
     }
 
     const imgElem = document.getElementById('galleryLightboxImg');
+    const videoElem = document.getElementById('galleryLightboxVideo');
     const counterElem = document.getElementById('lightboxCounter');
     const tagElem = document.getElementById('lightboxTag');
     const titleElem = document.getElementById('lightboxTitle');
     const captionElem = document.getElementById('lightboxCaption');
 
-    // Aggiorna l'immagine evitando timer obsoleti su cambi rapidi
-    if (imgElem) {
-      if (lightboxFadeTimer) {
-        clearTimeout(lightboxFadeTimer);
-        lightboxFadeTimer = null;
-      }
+    if (lightboxFadeTimer) {
+      clearTimeout(lightboxFadeTimer);
+      lightboxFadeTimer = null;
+    }
 
+    if (item.mediaType === MEDIA_TYPE.VIDEO && item.videoSrc && videoElem) {
+      if (imgElem) {
+        imgElem.style.display = 'none';
+      }
+      videoElem.style.display = 'block';
+      videoElem.poster = item.image || '';
+      videoElem.src = item.videoSrc;
+      videoElem.setAttribute('aria-label', item.title);
+      silenceAllVoices(VOICE_ENVELOPE.SILENCE_FADE_SEC);
+    } else if (imgElem) {
+      if (videoElem) {
+        videoElem.style.display = 'none';
+      }
+      imgElem.style.display = 'block';
       imgElem.style.opacity = '0.35';
       imgElem.style.transform = 'scale(0.97)';
       imgElem.src = item.image;
@@ -4567,6 +5069,22 @@
         const activePhase = LAB_PHASES[state.currentPhaseIndex];
         if (!activePhase || !activePhase.model3dUrl) return;
         openRoom3dModal(activePhase.model3dUrl, activePhase.model3dTitle);
+      });
+    }
+
+    const btnPhaseMakingOf = document.getElementById('btnPhaseMakingOf');
+    if (btnPhaseMakingOf) {
+      btnPhaseMakingOf.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        openPhaseMediaLightbox(0);
+      });
+    }
+
+    const galleryLightboxVideo = document.getElementById('galleryLightboxVideo');
+    if (galleryLightboxVideo) {
+      galleryLightboxVideo.addEventListener('play', function () {
+        stopEssDemoPlayback();
+        silenceAllVoices(VOICE_ENVELOPE.SILENCE_FADE_SEC);
       });
     }
 
