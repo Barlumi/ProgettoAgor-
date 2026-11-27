@@ -604,7 +604,8 @@ html, body {
 }
 
 .portal-text-body.has-ess-demo,
-.portal-text-body.has-phase-specs {
+.portal-text-body.has-phase-specs,
+.portal-text-body.has-sh-explorer {
   min-height: auto;
   margin-bottom: 0.9rem;
 }
@@ -783,6 +784,375 @@ html, body {
   color: #94a3b8;
 }
 
+/* Esploratore Interattivo Armoniche Sferiche 3D (Fase 3) */
+.sh-explorer-widget {
+  width: 100%;
+  margin-bottom: 1.15rem;
+  padding: 0.85rem 1rem;
+  border-radius: 12px;
+  background: rgba(6, 12, 24, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.45);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  box-sizing: border-box;
+}
+
+.sh-explorer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.sh-explorer-tag {
+  font-family: var(--font-title);
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--color-cyan);
+}
+
+.sh-mode-tabs {
+  display: inline-flex;
+  gap: 0.35rem;
+}
+
+.sh-mode-btn {
+  min-height: 30px;
+  padding: 0.28rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.08);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  color: #cbd5e1;
+  font-family: var(--font-body);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.sh-mode-btn:hover,
+.sh-mode-btn:focus-visible {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  color: #f8fafc;
+  outline: none;
+}
+
+.sh-mode-btn.active {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: #fbbf24;
+  color: #fef3c7;
+}
+
+.sh-canvas-stage {
+  position: relative;
+  width: 100%;
+  height: 210px;
+  border-radius: 10px;
+  background: radial-gradient(circle at 50% 45%, rgba(15, 23, 42, 0.95), rgba(3, 7, 18, 0.98));
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.sh-canvas {
+  width: 100%;
+  height: 100%;
+  display: block;
+  cursor: grab;
+  touch-action: none;
+}
+
+.sh-canvas.is-dragging {
+  cursor: grabbing;
+}
+
+.sh-canvas-badge {
+  position: absolute;
+  top: 0.5rem;
+  left: 0.65rem;
+  padding: 0.18rem 0.52rem;
+  border-radius: 999px;
+  background: rgba(3, 7, 18, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.28);
+  font-family: var(--font-body);
+  font-size: 0.69rem;
+  font-weight: 600;
+  color: #e2e8f0;
+  pointer-events: none;
+}
+
+.sh-canvas-legend {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.65rem;
+  display: flex;
+  gap: 0.45rem;
+  pointer-events: none;
+}
+
+.sh-legend-chip {
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 600;
+  padding: 0.14rem 0.42rem;
+  border-radius: 999px;
+  background: rgba(3, 7, 18, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sh-legend-chip--pos {
+  color: #fb923c;
+  border-color: rgba(249, 115, 22, 0.38);
+}
+
+.sh-legend-chip--neg {
+  color: #38bdf8;
+  border-color: rgba(56, 189, 248, 0.38);
+}
+
+.sh-canvas-hint {
+  position: absolute;
+  bottom: 0.42rem;
+  right: 0.65rem;
+  font-family: var(--font-body);
+  font-size: 0.64rem;
+  color: #64748b;
+  pointer-events: none;
+}
+
+.sh-pyramid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.32rem;
+}
+
+.sh-pyramid-row {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.3rem;
+}
+
+.sh-row-order {
+  font-family: var(--font-title);
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: #64748b;
+  letter-spacing: 0.06em;
+  min-width: 1.5rem;
+  text-align: right;
+  margin-right: 0.2rem;
+}
+
+.sh-harmonic-btn {
+  min-width: 34px;
+  height: 28px;
+  padding: 0 0.42rem;
+  border-radius: 7px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  color: #cbd5e1;
+  font-family: var(--font-title);
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease, transform 0.15s ease;
+}
+
+.sh-harmonic-btn:hover,
+.sh-harmonic-btn:focus-visible {
+  background: rgba(56, 189, 248, 0.2);
+  border-color: #38bdf8;
+  color: #f8fafc;
+  outline: none;
+}
+
+.sh-harmonic-btn.active {
+  background: rgba(56, 189, 248, 0.28);
+  border-color: #38bdf8;
+  color: #ffffff;
+  box-shadow: 0 0 12px rgba(56, 189, 248, 0.35);
+}
+
+.sh-synth-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 0.55rem;
+}
+
+.sh-order-row {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.35rem;
+}
+
+.sh-order-btn {
+  min-height: 30px;
+  padding: 0.28rem 0.4rem;
+  border-radius: 8px;
+  background: rgba(15, 23, 42, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  color: #cbd5e1;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.sh-order-btn:hover,
+.sh-order-btn:focus-visible {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: #38bdf8;
+  color: #f8fafc;
+  outline: none;
+}
+
+.sh-order-btn.active {
+  background: rgba(245, 158, 11, 0.22);
+  border-color: #fbbf24;
+  color: #fef3c7;
+}
+
+.sh-sliders-row {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.65rem;
+}
+
+.sh-slider-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.sh-slider-label {
+  display: flex;
+  justify-content: space-between;
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  font-weight: 600;
+  color: #94a3b8;
+}
+
+.sh-slider-val {
+  color: #38bdf8;
+  font-variant-numeric: tabular-nums;
+}
+
+.sh-slider-input {
+  width: 100%;
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+.sh-weights-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 0.28rem;
+}
+
+.sh-weights-title {
+  font-family: var(--font-body);
+  font-size: 0.66rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #64748b;
+}
+
+.sh-weights-bars {
+  display: grid;
+  grid-template-columns: repeat(16, minmax(0, 1fr));
+  gap: 2px;
+  align-items: center;
+  padding: 0.3rem 0.35rem;
+  border-radius: 8px;
+  background: rgba(3, 7, 18, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.sh-weight-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  transition: opacity 0.2s ease;
+}
+
+.sh-weight-col.is-inactive {
+  opacity: 0.22;
+}
+
+.sh-weight-track {
+  position: relative;
+  width: 100%;
+  height: 28px;
+  border-radius: 3px;
+  background: rgba(148, 163, 184, 0.08);
+  overflow: hidden;
+}
+
+.sh-weight-mid {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 50%;
+  height: 1px;
+  background: rgba(148, 163, 184, 0.28);
+}
+
+.sh-weight-fill {
+  position: absolute;
+  left: 1px;
+  right: 1px;
+  border-radius: 2px;
+  transition: top 0.14s ease, height 0.14s ease, background 0.14s ease;
+}
+
+.sh-weight-fill.is-pos {
+  background: linear-gradient(180deg, #fbbf24, #ea580c);
+}
+
+.sh-weight-fill.is-neg {
+  background: linear-gradient(180deg, #0ea5e9, #38bdf8);
+}
+
+.sh-weight-lbl {
+  font-family: var(--font-title);
+  font-size: 0.56rem;
+  font-weight: 700;
+  color: #94a3b8;
+  line-height: 1;
+}
+
+.sh-info-bar {
+  display: flex;
+  flex-direction: column;
+  gap: 0.18rem;
+  padding-top: 0.35rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sh-info-formula {
+  font-family: var(--font-body);
+  font-size: 0.74rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.sh-info-desc {
+  font-family: var(--font-body);
+  font-size: 0.73rem;
+  line-height: 1.42;
+  color: #94a3b8;
+}
+
 /* Colonna Destra: Immagine Più Grande con Cornice d'Onda Distaccata (Padding) */
 .portal-media-column {
   width: 460px;
@@ -790,7 +1160,7 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: flex-start;
+  justify-content: center;
   min-height: 520px;
 }
 
@@ -2604,6 +2974,25 @@ html, body {
     font-size: 0.76rem;
   }
 
+  .sh-explorer-widget {
+    padding: 0.75rem 0.85rem;
+  }
+
+  .sh-canvas-stage {
+    height: 195px;
+  }
+
+  .sh-harmonic-btn {
+    min-width: 30px;
+    height: 34px;
+    font-size: 0.72rem;
+  }
+
+  .sh-mode-btn,
+  .sh-order-btn {
+    min-height: 36px;
+  }
+
   .portal-media-expand-badge {
     right: 22px;
     bottom: 22px;
@@ -2892,6 +3281,10 @@ html, body {
   }
 
   .phase-specs-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sh-sliders-row {
     grid-template-columns: 1fr;
   }
 

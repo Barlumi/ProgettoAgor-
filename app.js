@@ -14,6 +14,12 @@
 (function () {
   'use strict';
 
+  // Posizionamenti predefiniti per ritagli circolari decentrati
+  const IMAGE_POSITION = Object.freeze({
+    DEFAULT: '50% 50%',
+    SPHERICAL_HARMONICS: '60.5% 50%'
+  });
+
   // -------------------------------------------------------------------------
   // DATI DETTAGLIATI PROGETTO AGORÀ (CIRI-EC Università di Bologna)
   // -------------------------------------------------------------------------
@@ -50,7 +56,9 @@
         'Da questi dati si ricavano mappe di intensità acustica (Loudness) sovrapposte alle immagini a 360°, individuando la direzione di provenienza dei suoni e l\'energia delle riflessioni su facciate e portici.'
       ],
       image: 'assets/gallery/image28.jpg',
-      imageCaption: 'Mappa acustica in formato AmbiX: scomposizione in armoniche sferiche e intensità del suono nello spazio 3D.'
+      imageCaption: 'Mappa acustica in formato AmbiX: scomposizione in armoniche sferiche e intensità del suono nello spazio 3D.',
+      imagePosition: IMAGE_POSITION.SPHERICAL_HARMONICS,
+      hasShExplorer: true
     },
     {
       num: 4,
@@ -275,7 +283,8 @@
         {
           title: 'Armoniche Sferiche fino al 3° Ordine',
           caption: 'Rappresentazione spaziale dei 16 canali Ambix (ACN/SN3D) dall\'ordine 0 (W) all\'ordine 3 (Q, O, M, K, L, N, P).',
-          image: 'assets/gallery/image28.jpg'
+          image: 'assets/gallery/image28.jpg',
+          imagePosition: IMAGE_POSITION.SPHERICAL_HARMONICS
         },
         {
           title: 'Mappa Acustica 3D a Colori (Parma)',
@@ -1592,6 +1601,803 @@
   }
 
   // -------------------------------------------------------------------------
+  // ESPLORATORE INTERATTIVO ARMONICHE SFERICHE HOA / AMBIX (FASE 3)
+  // Visualizza le 16 armoniche reali SN3D (ACN 0-15) e la sintesi direzionale
+  // -------------------------------------------------------------------------
+  const SH_MODE = Object.freeze({
+    BASIS: 'basis',
+    SYNTHESIS: 'synthesis'
+  });
+
+  const SH_ANIM_STATE = Object.freeze({
+    STOPPED: 'stopped',
+    RUNNING: 'running'
+  });
+
+  const SH_AXIS_STYLE = Object.freeze({
+    REFERENCE: 'reference',
+    TARGET: 'target'
+  });
+
+  const SH_MAX_ORDER = 3;
+  const SH_CHANNELS_TOTAL = 16;
+
+  const SH_CONFIG = Object.freeze({
+    GRID_THETA_STEPS: 22,
+    GRID_PHI_STEPS: 40,
+    DEFAULT_ACN: 7,
+    DEFAULT_ORDER: 3,
+    DEFAULT_AZIMUTH_DEG: 0,
+    DEFAULT_ELEVATION_DEG: 20,
+    DEFAULT_YAW_RAD: 0.72,
+    DEFAULT_PITCH_RAD: 0.36,
+    MIN_PITCH_RAD: -1.35,
+    MAX_PITCH_RAD: 1.35,
+    AUTO_SPIN_RAD_PER_SEC: 0.32,
+    DRAG_SENSITIVITY: 0.0085,
+    BALLOON_RADIUS_FRACTION: 0.38,
+    SYNTH_RADIUS_FRACTION: 0.42,
+    AXIS_LENGTH_SCALE: 1.18,
+    TARGET_LENGTH_SCALE: 1.26,
+    CAMERA_FOV: 3.2,
+    CAMERA_DEPTH_FACTOR: 0.42,
+    QUAD_MIN_RADIUS: 0.003,
+    CANVAS_MIN_WIDTH: 260,
+    CANVAS_DEFAULT_HEIGHT: 210,
+    TWO_PI: Math.PI * 2,
+    DEG_TO_RAD: Math.PI / 180,
+    REDUCED_MOTION_QUERY: '(prefers-reduced-motion: reduce)'
+  });
+
+  const SH_HARMONICS = Object.freeze([
+    Object.freeze({ acn: 0, order: 0, degree: 0, letter: 'W', label: 'Y₀⁰', formula: 'Y₀⁰ = 1', desc: 'Ordine 0 · Componente omnidirezionale: cattura la pressione acustica totale da tutte le direzioni.' }),
+    Object.freeze({ acn: 1, order: 1, degree: -1, letter: 'Y', label: 'Y₁⁻¹', formula: 'Y₁⁻¹ = sen(φ)·cos(θ) = y', desc: 'Ordine 1 · Dipolo laterale Sinistra–Destra lungo l\'asse Y.' }),
+    Object.freeze({ acn: 2, order: 1, degree: 0, letter: 'Z', label: 'Y₁⁰', formula: 'Y₁⁰ = sen(θ) = z', desc: 'Ordine 1 · Dipolo verticale Alto–Basso lungo l\'asse Z (elevazione).' }),
+    Object.freeze({ acn: 3, order: 1, degree: 1, letter: 'X', label: 'Y₁⁺¹', formula: 'Y₁⁺¹ = cos(φ)·cos(θ) = x', desc: 'Ordine 1 · Dipolo frontale Avanti–Dietro lungo l\'asse X.' }),
+    Object.freeze({ acn: 4, order: 2, degree: -2, letter: 'V', label: 'Y₂⁻²', formula: 'Y₂⁻² = (√3 / 2)·cos²(θ)·sen(2φ)', desc: 'Ordine 2 · Quadrifoglio sul piano orizzontale XY a 45° dagli assi.' }),
+    Object.freeze({ acn: 5, order: 2, degree: -1, letter: 'T', label: 'Y₂⁻¹', formula: 'Y₂⁻¹ = √3·sen(θ)·cos(θ)·sen(φ)', desc: 'Ordine 2 · Lobi inclinati sul piano verticale laterale YZ.' }),
+    Object.freeze({ acn: 6, order: 2, degree: 0, letter: 'R', label: 'Y₂⁰', formula: 'Y₂⁰ = ½·(3·sen²(θ) − 1)', desc: 'Ordine 2 · Armonica zonale a doppia polarità (lobi ai poli Z e anello equatoriale).' }),
+    Object.freeze({ acn: 7, order: 2, degree: 1, letter: 'S', label: 'Y₂⁺¹', formula: 'Y₂⁺¹ = √3·sen(θ)·cos(θ)·cos(φ)', desc: 'Ordine 2 · Lobi inclinati sul piano verticale frontale XZ.' }),
+    Object.freeze({ acn: 8, order: 2, degree: 2, letter: 'U', label: 'Y₂⁺²', formula: 'Y₂⁺² = (√3 / 2)·cos²(θ)·cos(2φ)', desc: 'Ordine 2 · Quadrifoglio allineato lungo gli assi orizzontali X e Y.' }),
+    Object.freeze({ acn: 9, order: 3, degree: -3, letter: 'Q', label: 'Y₃⁻³', formula: 'Y₃⁻³ = √(5/8)·cos³(θ)·sen(3φ)', desc: 'Ordine 3 · Esapolo azimutale sul piano orizzontale (6 lobi alternati).' }),
+    Object.freeze({ acn: 10, order: 3, degree: -2, letter: 'O', label: 'Y₃⁻²', formula: 'Y₃⁻² = (√15 / 2)·sen(θ)·cos²(θ)·sen(2φ)', desc: 'Ordine 3 · Otto lobi tridimensionali ruotati tra i piani diagonali e l\'elevazione.' }),
+    Object.freeze({ acn: 11, order: 3, degree: -1, letter: 'M', label: 'Y₃⁻¹', formula: 'Y₃⁻¹ = √(3/8)·cos(θ)·(5·sen²(θ) − 1)·sen(φ)', desc: 'Ordine 3 · Struttura tesseralizzata lungo Y con fascia intermedia opposta.' }),
+    Object.freeze({ acn: 12, order: 3, degree: 0, letter: 'K', label: 'Y₃⁰', formula: 'Y₃⁰ = ½·sen(θ)·(5·sen²(θ) − 3)', desc: 'Ordine 3 · Armonica zonale a tre bande verticali lungo l\'asse Z.' }),
+    Object.freeze({ acn: 13, order: 3, degree: 1, letter: 'L', label: 'Y₃⁺¹', formula: 'Y₃⁺¹ = √(3/8)·cos(θ)·(5·sen²(θ) − 1)·cos(φ)', desc: 'Ordine 3 · Struttura tesseralizzata lungo X per affinare la provenienza frontale.' }),
+    Object.freeze({ acn: 14, order: 3, degree: 2, letter: 'N', label: 'Y₃⁺²', formula: 'Y₃⁺² = (√15 / 2)·sen(θ)·cos²(θ)·cos(2φ)', desc: 'Ordine 3 · Otto lobi tridimensionali simmetrici attorno agli assi X e Y.' }),
+    Object.freeze({ acn: 15, order: 3, degree: 3, letter: 'P', label: 'Y₃⁺³', formula: 'Y₃⁺³ = √(5/8)·cos³(θ)·cos(3φ)', desc: 'Ordine 3 · Esapolo azimutale con lobo principale lungo l\'asse X.' })
+  ]);
+
+  const SH_ORDER_SPECS = Object.freeze([
+    Object.freeze({ order: 0, channels: 1, label: 'O0 · 1 ch', desc: 'Ordine 0 (1 canale): pattern omnidirezionale privo di selettività spaziale.' }),
+    Object.freeze({ order: 1, channels: 4, label: 'O1 · 4 ch', desc: 'Ordine 1 (4 canali): pattern cardioide ampio per localizzazione iniziale.' }),
+    Object.freeze({ order: 2, channels: 9, label: 'O2 · 9 ch', desc: 'Ordine 2 (9 canali): lobo iperdirettivo intermedio che separa facciate e portici.' }),
+    Object.freeze({ order: 3, channels: 16, label: 'O3 · 16 ch', desc: 'Ordine 3 (16 canali AmbiX): massima selettività spaziale delle 64 capsule dell\'Eigenmike em64.' })
+  ]);
+
+  const SQRT_3 = Math.sqrt(3);
+  const SQRT_3_HALF = SQRT_3 * 0.5;
+  const SQRT_15_HALF = Math.sqrt(15) * 0.5;
+  const SQRT_5_8 = Math.sqrt(5 / 8);
+  const SQRT_3_8 = Math.sqrt(3 / 8);
+
+  const shExplorerState = {
+    initialized: false,
+    visible: false,
+    mode: SH_MODE.BASIS,
+    selectedAcn: SH_CONFIG.DEFAULT_ACN,
+    synthOrder: SH_CONFIG.DEFAULT_ORDER,
+    azimuthDeg: SH_CONFIG.DEFAULT_AZIMUTH_DEG,
+    elevationDeg: SH_CONFIG.DEFAULT_ELEVATION_DEG,
+    yawRad: SH_CONFIG.DEFAULT_YAW_RAD,
+    pitchRad: SH_CONFIG.DEFAULT_PITCH_RAD,
+    animState: SH_ANIM_STATE.STOPPED,
+    rafId: null,
+    lastFrameMs: 0,
+    isDragging: false,
+    activePointerId: null,
+    dragLastX: 0,
+    dragLastY: 0,
+    trigGrid: null
+  };
+
+  // Valuta un'armonica sferica reale AmbiX (ACN 0-15, normalizzazione SN3D, senza fase Condon-Shortley)
+  function evalSphericalHarmonicSn3d(acn, phi, theta) {
+    const cosT = Math.cos(theta);
+    const sinT = Math.sin(theta);
+    const cosP = Math.cos(phi);
+    const sinP = Math.sin(phi);
+    const cosT2 = cosT * cosT;
+    const sinT2 = sinT * sinT;
+
+    switch (acn) {
+      case 0: return 1;
+      case 1: return cosT * sinP;
+      case 2: return sinT;
+      case 3: return cosT * cosP;
+      case 4: return SQRT_3_HALF * cosT2 * Math.sin(2 * phi);
+      case 5: return SQRT_3 * sinT * cosT * sinP;
+      case 6: return 0.5 * (3 * sinT2 - 1);
+      case 7: return SQRT_3 * sinT * cosT * cosP;
+      case 8: return SQRT_3_HALF * cosT2 * Math.cos(2 * phi);
+      case 9: return SQRT_5_8 * cosT2 * cosT * Math.sin(3 * phi);
+      case 10: return SQRT_15_HALF * sinT * cosT2 * Math.sin(2 * phi);
+      case 11: return SQRT_3_8 * cosT * (5 * sinT2 - 1) * sinP;
+      case 12: return 0.5 * sinT * (5 * sinT2 - 3);
+      case 13: return SQRT_3_8 * cosT * (5 * sinT2 - 1) * cosP;
+      case 14: return SQRT_15_HALF * sinT * cosT2 * Math.cos(2 * phi);
+      case 15: return SQRT_5_8 * cosT2 * cosT * Math.cos(3 * phi);
+      default: return 0;
+    }
+  }
+
+  // Calcola i 16 pesi AmbiX SN3D per un'onda piana proveniente da (azRad, elRad)
+  function computeAmbiXWeights(azRad, elRad) {
+    const weights = new Float32Array(SH_CHANNELS_TOTAL);
+    for (let acn = 0; acn < SH_CHANNELS_TOTAL; acn += 1) {
+      weights[acn] = evalSphericalHarmonicSn3d(acn, azRad, elRad);
+    }
+    return weights;
+  }
+
+  // Sintetizza il fascio direzionale HOA troncato all'ordine N (somma ponderata (2n + 1) / (N + 1)^2)
+  function evalBeamSynthesis(maxOrder, weights, phi, theta) {
+    const channelLimit = (maxOrder + 1) * (maxOrder + 1);
+    const normFactor = 1 / channelLimit;
+    let total = 0;
+
+    for (let acn = 0; acn < channelLimit; acn += 1) {
+      const order = SH_HARMONICS[acn].order;
+      const orderWeight = 2 * order + 1;
+      total += orderWeight * weights[acn] * evalSphericalHarmonicSn3d(acn, phi, theta);
+    }
+
+    return total * normFactor;
+  }
+
+  // Precalcola la griglia angolare (theta, phi) per mantenere il rendering 3D leggero
+  function buildShTrigGrid() {
+    if (shExplorerState.trigGrid) return shExplorerState.trigGrid;
+
+    const tSteps = SH_CONFIG.GRID_THETA_STEPS;
+    const pSteps = SH_CONFIG.GRID_PHI_STEPS;
+    const rows = tSteps + 1;
+    const cols = pSteps + 1;
+    const phiArr = new Float32Array(cols);
+    const cosPhi = new Float32Array(cols);
+    const sinPhi = new Float32Array(cols);
+    const thetaArr = new Float32Array(rows);
+    const cosTheta = new Float32Array(rows);
+    const sinTheta = new Float32Array(rows);
+
+    for (let j = 0; j < cols; j += 1) {
+      const phi = (j / pSteps) * SH_CONFIG.TWO_PI;
+      phiArr[j] = phi;
+      cosPhi[j] = Math.cos(phi);
+      sinPhi[j] = Math.sin(phi);
+    }
+
+    for (let i = 0; i < rows; i += 1) {
+      const theta = (0.5 - i / tSteps) * Math.PI;
+      thetaArr[i] = theta;
+      cosTheta[i] = Math.cos(theta);
+      sinTheta[i] = Math.sin(theta);
+    }
+
+    shExplorerState.trigGrid = {
+      rows: rows,
+      cols: cols,
+      tSteps: tSteps,
+      pSteps: pSteps,
+      phi: phiArr,
+      cosPhi: cosPhi,
+      sinPhi: sinPhi,
+      theta: thetaArr,
+      cosTheta: cosTheta,
+      sinTheta: sinTheta
+    };
+
+    return shExplorerState.trigGrid;
+  }
+
+  // Proietta un punto 3D nello spazio camera right-handed coerente con la figura AmbiX
+  function projectShPoint(px, py, pz, cam, halfW, halfH, scalePx) {
+    const rightVal = px * cam.rx + py * cam.ry;
+    const upVal = px * cam.ux + py * cam.uy + pz * cam.uz;
+    const depthVal = px * cam.fx + py * cam.fy + pz * cam.fz;
+    const persp = SH_CONFIG.CAMERA_FOV / (SH_CONFIG.CAMERA_FOV - depthVal * SH_CONFIG.CAMERA_DEPTH_FACTOR);
+
+    return {
+      x: halfW + rightVal * scalePx * persp,
+      y: halfH - upVal * scalePx * persp,
+      depth: depthVal,
+      persp: persp
+    };
+  }
+
+  // Disegna un asse 3D di riferimento (X/Y/Z) oppure il vettore bersaglio della sintesi
+  function drawShAxisLine(ctx2d, px, py, pz, label, axisStyle, cam, halfW, halfH, scalePx) {
+    const origin = projectShPoint(0, 0, 0, cam, halfW, halfH, scalePx);
+    const tip = projectShPoint(px, py, pz, cam, halfW, halfH, scalePx);
+
+    ctx2d.save();
+    if (axisStyle === SH_AXIS_STYLE.TARGET) {
+      ctx2d.strokeStyle = '#fbbf24';
+      ctx2d.lineWidth = 2.1;
+      ctx2d.beginPath();
+      ctx2d.moveTo(origin.x, origin.y);
+      ctx2d.lineTo(tip.x, tip.y);
+      ctx2d.stroke();
+
+      ctx2d.fillStyle = '#fde68a';
+      ctx2d.beginPath();
+      ctx2d.arc(tip.x, tip.y, 4, 0, SH_CONFIG.TWO_PI);
+      ctx2d.fill();
+    } else {
+      ctx2d.strokeStyle = 'rgba(148, 163, 184, 0.34)';
+      ctx2d.lineWidth = 1;
+      ctx2d.beginPath();
+      ctx2d.moveTo(origin.x, origin.y);
+      ctx2d.lineTo(tip.x, tip.y);
+      ctx2d.stroke();
+
+      ctx2d.fillStyle = 'rgba(203, 213, 225, 0.72)';
+      ctx2d.font = '600 10px Inter, system-ui, sans-serif';
+      ctx2d.fillText(label, tip.x + 4, tip.y + 3);
+    }
+    ctx2d.restore();
+  }
+
+  // Restituisce il colore ombreggiato del pannello in base al segno del lobo e alla luce
+  function computeShFacetFill(valSign, nx, ny, nz, cam) {
+    const lightCamX = -0.36;
+    const lightCamY = 0.56;
+    const lightCamZ = 0.74;
+
+    const camNx = nx * cam.rx + ny * cam.ry;
+    const camNy = nx * cam.ux + ny * cam.uy + nz * cam.uz;
+    const camNz = nx * cam.fx + ny * cam.fy + nz * cam.fz;
+    const diffuse = Math.max(0, Math.abs(camNx * lightCamX + camNy * lightCamY + camNz * lightCamZ));
+    const shade = 0.34 + 0.66 * diffuse;
+
+    if (valSign >= 0) {
+      const r = Math.round(130 + 125 * shade);
+      const g = Math.round(35 + 115 * shade * shade);
+      const b = Math.round(12 + 34 * Math.pow(shade, 3));
+      return `rgb(${r}, ${g}, ${b})`;
+    }
+
+    const r = Math.round(10 + 52 * Math.pow(shade, 2));
+    const g = Math.round(62 + 138 * shade);
+    const b = Math.round(145 + 108 * shade);
+    return `rgb(${r}, ${g}, ${b})`;
+  }
+
+  // Campiona i quad 3D del pallone polare (singola armonica o fascio sintetizzato)
+  function computeShSurfaceQuads(weights, cam, halfW, halfH, scalePx) {
+    const grid = buildShTrigGrid();
+    const rows = grid.rows;
+    const cols = grid.cols;
+    const sx = new Float32Array(rows * cols);
+    const sy = new Float32Array(rows * cols);
+    const sDepth = new Float32Array(rows * cols);
+    const wx = new Float32Array(rows * cols);
+    const wy = new Float32Array(rows * cols);
+    const wz = new Float32Array(rows * cols);
+    const sVal = new Float32Array(rows * cols);
+
+    const isSynthesis = shExplorerState.mode === SH_MODE.SYNTHESIS;
+
+    for (let i = 0; i < rows; i += 1) {
+      const theta = grid.theta[i];
+      const cosT = grid.cosTheta[i];
+      const sinT = grid.sinTheta[i];
+
+      for (let j = 0; j < cols; j += 1) {
+        const idx = i * cols + j;
+        const phi = grid.phi[j];
+        const val = isSynthesis
+          ? evalBeamSynthesis(shExplorerState.synthOrder, weights, phi, theta)
+          : evalSphericalHarmonicSn3d(shExplorerState.selectedAcn, phi, theta);
+
+        const radius = Math.abs(val);
+        const px = radius * cosT * grid.cosPhi[j];
+        const py = radius * cosT * grid.sinPhi[j];
+        const pz = radius * sinT;
+
+        const proj = projectShPoint(px, py, pz, cam, halfW, halfH, scalePx);
+        sx[idx] = proj.x;
+        sy[idx] = proj.y;
+        sDepth[idx] = proj.depth;
+        wx[idx] = px;
+        wy[idx] = py;
+        wz[idx] = pz;
+        sVal[idx] = val;
+      }
+    }
+
+    const quads = [];
+    for (let i = 0; i < grid.tSteps; i += 1) {
+      for (let j = 0; j < grid.pSteps; j += 1) {
+        const a = i * cols + j;
+        const b = a + 1;
+        const c = (i + 1) * cols + j + 1;
+        const d = (i + 1) * cols + j;
+
+        const maxR = Math.max(Math.abs(sVal[a]), Math.abs(sVal[b]), Math.abs(sVal[c]), Math.abs(sVal[d]));
+        if (maxR < SH_CONFIG.QUAD_MIN_RADIUS) continue;
+
+        const ux = wx[c] - wx[a];
+        const uy = wy[c] - wy[a];
+        const uz = wz[c] - wz[a];
+        const vx = wx[d] - wx[b];
+        const vy = wy[d] - wy[b];
+        const vz = wz[d] - wz[b];
+        let nx = uy * vz - uz * vy;
+        let ny = uz * vx - ux * vz;
+        let nz = ux * vy - uy * vx;
+        const nLen = Math.hypot(nx, ny, nz) || 1;
+        nx /= nLen;
+        ny /= nLen;
+        nz /= nLen;
+
+        const avgVal = (sVal[a] + sVal[b] + sVal[c] + sVal[d]) * 0.25;
+        const avgDepth = (sDepth[a] + sDepth[b] + sDepth[c] + sDepth[d]) * 0.25;
+
+        quads.push({
+          ax: sx[a], ay: sy[a],
+          bx: sx[b], by: sy[b],
+          cx: sx[c], cy: sy[c],
+          dx: sx[d], dy: sy[d],
+          depth: avgDepth,
+          fill: computeShFacetFill(avgVal, nx, ny, nz, cam)
+        });
+      }
+    }
+
+    quads.sort(function (q1, q2) {
+      return q1.depth - q2.depth;
+    });
+
+    return quads;
+  }
+
+  // Renderizza la vista 3D dell'esploratore nel canvas della Fase 3
+  function renderShCanvas() {
+    if (!shExplorerState.visible) return;
+
+    const canvas = document.getElementById('shCanvas');
+    if (!canvas) return;
+    const ctx2d = canvas.getContext('2d');
+    if (!ctx2d) return;
+
+    const rect = canvas.getBoundingClientRect();
+    const cssWidth = Math.max(SH_CONFIG.CANVAS_MIN_WIDTH, rect.width || canvas.clientWidth || 440);
+    const cssHeight = Math.max(SH_CONFIG.CANVAS_DEFAULT_HEIGHT, rect.height || canvas.clientHeight || SH_CONFIG.CANVAS_DEFAULT_HEIGHT);
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const targetW = Math.round(cssWidth * dpr);
+    const targetH = Math.round(cssHeight * dpr);
+
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
+    }
+
+    ctx2d.save();
+    ctx2d.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx2d.clearRect(0, 0, cssWidth, cssHeight);
+
+    const cosP = Math.cos(shExplorerState.pitchRad);
+    const sinP = Math.sin(shExplorerState.pitchRad);
+    const cosY = Math.cos(shExplorerState.yawRad);
+    const sinY = Math.sin(shExplorerState.yawRad);
+
+    const cam = {
+      fx: cosP * cosY,
+      fy: cosP * sinY,
+      fz: sinP,
+      rx: -sinY,
+      ry: cosY,
+      ux: -sinP * cosY,
+      uy: -sinP * sinY,
+      uz: cosP
+    };
+
+    const halfW = cssWidth * 0.5;
+    const halfH = cssHeight * 0.52;
+    const radiusFrac = shExplorerState.mode === SH_MODE.SYNTHESIS
+      ? SH_CONFIG.SYNTH_RADIUS_FRACTION
+      : SH_CONFIG.BALLOON_RADIUS_FRACTION;
+    const scalePx = Math.min(cssWidth, cssHeight) * radiusFrac;
+
+    const azRad = shExplorerState.azimuthDeg * SH_CONFIG.DEG_TO_RAD;
+    const elRad = shExplorerState.elevationDeg * SH_CONFIG.DEG_TO_RAD;
+    const weights = shExplorerState.mode === SH_MODE.SYNTHESIS
+      ? computeAmbiXWeights(azRad, elRad)
+      : null;
+
+    const axisLen = SH_CONFIG.AXIS_LENGTH_SCALE;
+    drawShAxisLine(ctx2d, axisLen, 0, 0, 'X', SH_AXIS_STYLE.REFERENCE, cam, halfW, halfH, scalePx);
+    drawShAxisLine(ctx2d, 0, axisLen, 0, 'Y', SH_AXIS_STYLE.REFERENCE, cam, halfW, halfH, scalePx);
+    drawShAxisLine(ctx2d, 0, 0, axisLen, 'Z', SH_AXIS_STYLE.REFERENCE, cam, halfW, halfH, scalePx);
+
+    const quads = computeShSurfaceQuads(weights, cam, halfW, halfH, scalePx);
+    for (let i = 0; i < quads.length; i += 1) {
+      const q = quads[i];
+      ctx2d.fillStyle = q.fill;
+      ctx2d.strokeStyle = 'rgba(2, 6, 23, 0.22)';
+      ctx2d.lineWidth = 0.4;
+      ctx2d.beginPath();
+      ctx2d.moveTo(q.ax, q.ay);
+      ctx2d.lineTo(q.bx, q.by);
+      ctx2d.lineTo(q.cx, q.cy);
+      ctx2d.lineTo(q.dx, q.dy);
+      ctx2d.closePath();
+      ctx2d.fill();
+      ctx2d.stroke();
+    }
+
+    if (shExplorerState.mode === SH_MODE.SYNTHESIS) {
+      const tx = SH_CONFIG.TARGET_LENGTH_SCALE * Math.cos(elRad) * Math.cos(azRad);
+      const ty = SH_CONFIG.TARGET_LENGTH_SCALE * Math.cos(elRad) * Math.sin(azRad);
+      const tz = SH_CONFIG.TARGET_LENGTH_SCALE * Math.sin(elRad);
+      drawShAxisLine(ctx2d, tx, ty, tz, '', SH_AXIS_STYLE.TARGET, cam, halfW, halfH, scalePx);
+    }
+
+    ctx2d.restore();
+  }
+
+  function stopShExplorerAnimation() {
+    shExplorerState.animState = SH_ANIM_STATE.STOPPED;
+    shExplorerState.visible = false;
+    if (shExplorerState.rafId) {
+      cancelAnimationFrame(shExplorerState.rafId);
+      shExplorerState.rafId = null;
+    }
+  }
+
+  function startShExplorerAnimation() {
+    if (!shExplorerState.visible) return;
+    if (shExplorerState.animState === SH_ANIM_STATE.RUNNING) return;
+
+    const prefersReducedMotion = window.matchMedia && window.matchMedia(SH_CONFIG.REDUCED_MOTION_QUERY).matches;
+    if (prefersReducedMotion) {
+      renderShCanvas();
+      return;
+    }
+
+    shExplorerState.animState = SH_ANIM_STATE.RUNNING;
+    shExplorerState.lastFrameMs = performance.now();
+
+    function stepShFrame(nowMs) {
+      if (!shExplorerState.visible || shExplorerState.animState !== SH_ANIM_STATE.RUNNING) {
+        shExplorerState.rafId = null;
+        return;
+      }
+
+      const dtSec = Math.min(0.05, Math.max(0, (nowMs - shExplorerState.lastFrameMs) / 1000));
+      shExplorerState.lastFrameMs = nowMs;
+
+      if (!shExplorerState.isDragging) {
+        shExplorerState.yawRad += dtSec * SH_CONFIG.AUTO_SPIN_RAD_PER_SEC;
+      }
+
+      renderShCanvas();
+      shExplorerState.rafId = requestAnimationFrame(stepShFrame);
+    }
+
+    shExplorerState.rafId = requestAnimationFrame(stepShFrame);
+  }
+
+  // Costruisce la piramide dei 16 bottoni AmbiX (ordini 0..3)
+  function buildShPyramidUi() {
+    const pyramidEl = document.getElementById('shPyramid');
+    if (!pyramidEl) return;
+
+    pyramidEl.innerHTML = '';
+    for (let order = 0; order <= SH_MAX_ORDER; order += 1) {
+      const row = document.createElement('div');
+      row.className = 'sh-pyramid-row';
+
+      const rowLabel = document.createElement('span');
+      rowLabel.className = 'sh-row-order';
+      rowLabel.textContent = `O${order}`;
+      row.appendChild(rowLabel);
+
+      for (let acn = 0; acn < SH_CHANNELS_TOTAL; acn += 1) {
+        const spec = SH_HARMONICS[acn];
+        if (spec.order !== order) continue;
+
+        const btn = document.createElement('button');
+        btn.type = 'button';
+        btn.className = 'sh-harmonic-btn';
+        btn.setAttribute('data-acn', String(spec.acn));
+        btn.setAttribute('title', `ACN ${spec.acn} · ${spec.label} (${spec.letter})`);
+        btn.textContent = spec.letter;
+        row.appendChild(btn);
+      }
+
+      pyramidEl.appendChild(row);
+    }
+  }
+
+  function buildShOrderButtonsUi() {
+    const container = document.getElementById('shOrderButtons');
+    if (!container) return;
+
+    container.innerHTML = '';
+    SH_ORDER_SPECS.forEach(function (spec) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'sh-order-btn';
+      btn.setAttribute('data-order', String(spec.order));
+      btn.textContent = spec.label;
+      container.appendChild(btn);
+    });
+  }
+
+  function buildShWeightsUi() {
+    const container = document.getElementById('shWeightsBars');
+    if (!container) return;
+
+    container.innerHTML = '';
+    for (let acn = 0; acn < SH_CHANNELS_TOTAL; acn += 1) {
+      const spec = SH_HARMONICS[acn];
+      const col = document.createElement('div');
+      col.className = 'sh-weight-col';
+      col.setAttribute('data-acn', String(acn));
+      col.setAttribute('title', `ACN ${acn} (${spec.letter})`);
+
+      const track = document.createElement('div');
+      track.className = 'sh-weight-track';
+
+      const mid = document.createElement('div');
+      mid.className = 'sh-weight-mid';
+
+      const fill = document.createElement('div');
+      fill.className = 'sh-weight-fill';
+
+      track.appendChild(mid);
+      track.appendChild(fill);
+
+      const lbl = document.createElement('span');
+      lbl.className = 'sh-weight-lbl';
+      lbl.textContent = spec.letter;
+
+      col.appendChild(track);
+      col.appendChild(lbl);
+      container.appendChild(col);
+    }
+  }
+
+  function updateShExplorerUi() {
+    const widget = document.getElementById('shExplorerWidget');
+    const btnBasis = document.getElementById('btnShModeBasis');
+    const btnSynth = document.getElementById('btnShModeSynth');
+    const basisPanel = document.getElementById('shBasisPanel');
+    const synthPanel = document.getElementById('shSynthPanel');
+    const badgeEl = document.getElementById('shCanvasBadge');
+    const formulaEl = document.getElementById('shInfoFormula');
+    const descEl = document.getElementById('shInfoDesc');
+    const azValEl = document.getElementById('shAzimuthVal');
+    const elValEl = document.getElementById('shElevationVal');
+
+    const isSynth = shExplorerState.mode === SH_MODE.SYNTHESIS;
+
+    if (widget) {
+      widget.setAttribute('data-sh-mode', shExplorerState.mode);
+      widget.setAttribute('data-sh-acn', String(shExplorerState.selectedAcn));
+      widget.setAttribute('data-sh-order', String(shExplorerState.synthOrder));
+    }
+
+    if (btnBasis) {
+      btnBasis.classList.toggle('active', !isSynth);
+      btnBasis.setAttribute('aria-selected', !isSynth ? 'true' : 'false');
+    }
+    if (btnSynth) {
+      btnSynth.classList.toggle('active', isSynth);
+      btnSynth.setAttribute('aria-selected', isSynth ? 'true' : 'false');
+    }
+    if (basisPanel) basisPanel.style.display = isSynth ? 'none' : 'block';
+    if (synthPanel) synthPanel.style.display = isSynth ? 'flex' : 'none';
+
+    const harmBtns = document.querySelectorAll('#shPyramid .sh-harmonic-btn');
+    harmBtns.forEach(function (btn) {
+      const btnAcn = Number(btn.getAttribute('data-acn'));
+      const isSelected = btnAcn === shExplorerState.selectedAcn;
+      btn.classList.toggle('active', isSelected);
+      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    });
+
+    const orderBtns = document.querySelectorAll('#shOrderButtons .sh-order-btn');
+    orderBtns.forEach(function (btn) {
+      const btnOrder = Number(btn.getAttribute('data-order'));
+      const isSelected = btnOrder === shExplorerState.synthOrder;
+      btn.classList.toggle('active', isSelected);
+      btn.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    });
+
+    if (azValEl) azValEl.textContent = `${shExplorerState.azimuthDeg}°`;
+    if (elValEl) elValEl.textContent = `${shExplorerState.elevationDeg}°`;
+
+    if (!isSynth) {
+      const activeHarm = SH_HARMONICS[shExplorerState.selectedAcn] || SH_HARMONICS[0];
+      if (badgeEl) badgeEl.textContent = `ACN ${activeHarm.acn} · ${activeHarm.label} (${activeHarm.letter})`;
+      if (formulaEl) formulaEl.textContent = `${activeHarm.formula}  ·  Ordine ${activeHarm.order}`;
+      if (descEl) descEl.textContent = activeHarm.desc;
+      return;
+    }
+
+    const orderSpec = SH_ORDER_SPECS[shExplorerState.synthOrder] || SH_ORDER_SPECS[SH_MAX_ORDER];
+    const weights = computeAmbiXWeights(
+      shExplorerState.azimuthDeg * SH_CONFIG.DEG_TO_RAD,
+      shExplorerState.elevationDeg * SH_CONFIG.DEG_TO_RAD
+    );
+    const activeChannels = orderSpec.channels;
+
+    const cols = document.querySelectorAll('#shWeightsBars .sh-weight-col');
+    cols.forEach(function (col) {
+      const acn = Number(col.getAttribute('data-acn'));
+      col.classList.toggle('is-inactive', acn >= activeChannels);
+      const fill = col.querySelector('.sh-weight-fill');
+      if (!fill) return;
+
+      const w = weights[acn];
+      const magPct = Math.min(50, Math.abs(w) * 50);
+      fill.classList.toggle('is-pos', w >= 0);
+      fill.classList.toggle('is-neg', w < 0);
+      if (w >= 0) {
+        fill.style.top = `${50 - magPct}%`;
+        fill.style.height = `${Math.max(1.5, magPct)}%`;
+      } else {
+        fill.style.top = '50%';
+        fill.style.height = `${Math.max(1.5, magPct)}%`;
+      }
+    });
+
+    if (badgeEl) badgeEl.textContent = `Ordine ${orderSpec.order} · ${activeChannels} ch · φ=${shExplorerState.azimuthDeg}° θ=${shExplorerState.elevationDeg}°`;
+    if (formulaEl) formulaEl.textContent = `B_${orderSpec.order}(φ, θ) = (1 / ${activeChannels}) · Σ (2n + 1) Yₙᵐ(φ₀, θ₀) Yₙᵐ(φ, θ)`;
+    if (descEl) descEl.textContent = orderSpec.desc;
+  }
+
+  function setShMode(mode) {
+    shExplorerState.mode = mode;
+    updateShExplorerUi();
+    renderShCanvas();
+  }
+
+  function syncShExplorerVisibility(phaseData) {
+    const widget = document.getElementById('shExplorerWidget');
+    const bodyElem = document.getElementById('portalBodyText');
+    const showExplorer = Boolean(phaseData && phaseData.hasShExplorer);
+
+    if (bodyElem) {
+      bodyElem.classList.toggle('has-sh-explorer', showExplorer);
+    }
+
+    if (!widget) return;
+
+    if (!showExplorer) {
+      widget.style.display = 'none';
+      stopShExplorerAnimation();
+      return;
+    }
+
+    if (!shExplorerState.initialized) {
+      buildShPyramidUi();
+      buildShOrderButtonsUi();
+      buildShWeightsUi();
+      shExplorerState.initialized = true;
+    }
+
+    widget.style.display = 'flex';
+    shExplorerState.visible = true;
+    updateShExplorerUi();
+
+    requestAnimationFrame(function () {
+      renderShCanvas();
+      startShExplorerAnimation();
+    });
+  }
+
+  function bindShExplorerEvents() {
+    const btnBasis = document.getElementById('btnShModeBasis');
+    const btnSynth = document.getElementById('btnShModeSynth');
+    const pyramidEl = document.getElementById('shPyramid');
+    const orderBtnsEl = document.getElementById('shOrderButtons');
+    const azSlider = document.getElementById('shAzimuthSlider');
+    const elSlider = document.getElementById('shElevationSlider');
+    const canvas = document.getElementById('shCanvas');
+
+    if (btnBasis) {
+      btnBasis.addEventListener('click', function () {
+        setShMode(SH_MODE.BASIS);
+      });
+    }
+
+    if (btnSynth) {
+      btnSynth.addEventListener('click', function () {
+        setShMode(SH_MODE.SYNTHESIS);
+      });
+    }
+
+    if (pyramidEl) {
+      pyramidEl.addEventListener('click', function (e) {
+        const btn = e.target.closest('.sh-harmonic-btn');
+        if (!btn) return;
+        shExplorerState.selectedAcn = Number(btn.getAttribute('data-acn'));
+        updateShExplorerUi();
+        renderShCanvas();
+      });
+    }
+
+    if (orderBtnsEl) {
+      orderBtnsEl.addEventListener('click', function (e) {
+        const btn = e.target.closest('.sh-order-btn');
+        if (!btn) return;
+        shExplorerState.synthOrder = Number(btn.getAttribute('data-order'));
+        updateShExplorerUi();
+        renderShCanvas();
+      });
+    }
+
+    if (azSlider) {
+      azSlider.addEventListener('input', function () {
+        shExplorerState.azimuthDeg = Number(azSlider.value);
+        updateShExplorerUi();
+        renderShCanvas();
+      });
+    }
+
+    if (elSlider) {
+      elSlider.addEventListener('input', function () {
+        shExplorerState.elevationDeg = Number(elSlider.value);
+        updateShExplorerUi();
+        renderShCanvas();
+      });
+    }
+
+    if (canvas) {
+      canvas.addEventListener('pointerdown', function (e) {
+        shExplorerState.isDragging = true;
+        shExplorerState.activePointerId = e.pointerId;
+        shExplorerState.dragLastX = e.clientX;
+        shExplorerState.dragLastY = e.clientY;
+        canvas.classList.add('is-dragging');
+        if (typeof canvas.setPointerCapture === 'function') {
+          try {
+            canvas.setPointerCapture(e.pointerId);
+          } catch (_) {}
+        }
+      });
+
+      canvas.addEventListener('pointermove', function (e) {
+        if (!shExplorerState.isDragging || e.pointerId !== shExplorerState.activePointerId) return;
+        const dx = e.clientX - shExplorerState.dragLastX;
+        const dy = e.clientY - shExplorerState.dragLastY;
+        shExplorerState.dragLastX = e.clientX;
+        shExplorerState.dragLastY = e.clientY;
+        shExplorerState.yawRad -= dx * SH_CONFIG.DRAG_SENSITIVITY;
+        shExplorerState.pitchRad = Math.max(
+          SH_CONFIG.MIN_PITCH_RAD,
+          Math.min(SH_CONFIG.MAX_PITCH_RAD, shExplorerState.pitchRad + dy * SH_CONFIG.DRAG_SENSITIVITY)
+        );
+        renderShCanvas();
+      });
+
+      function endCanvasDrag(e) {
+        if (!shExplorerState.isDragging || e.pointerId !== shExplorerState.activePointerId) return;
+        shExplorerState.isDragging = false;
+        shExplorerState.activePointerId = null;
+        canvas.classList.remove('is-dragging');
+      }
+
+      canvas.addEventListener('pointerup', endCanvasDrag);
+      canvas.addEventListener('pointercancel', endCanvasDrag);
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // CALCOLO GEOMETRICO: CERCHIO APERTO CON RESPIRO LATERALE PER IL TESTO
   // -------------------------------------------------------------------------
   function computeCircleGapArc(c) {
@@ -2432,6 +3238,7 @@
       closeRoom3dModal();
     }
     stopEssDemoPlayback();
+    stopShExplorerAnimation();
     silenceAllVoices(0.02);
     playReturnChime();
     galleryCirclesRegistry.length = 0;
@@ -2476,6 +3283,7 @@
 
     resetPortalScrollPosition();
     stopEssDemoPlayback();
+    stopShExplorerAnimation();
 
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
@@ -2521,6 +3329,7 @@
       if (imgElem) {
         imgElem.src = phaseData.image;
         imgElem.alt = phaseData.title;
+        imgElem.style.objectPosition = phaseData.imagePosition || IMAGE_POSITION.DEFAULT;
         imgElem.style.opacity = '1';
       }
 
@@ -2530,6 +3339,7 @@
       }
 
       syncEssWidgetVisibility(phaseData);
+      syncShExplorerVisibility(phaseData);
       syncPhaseSpecsCard(phaseData);
 
       const btnRoom3D = document.getElementById('btnPhaseRoom3D');
@@ -2617,6 +3427,10 @@
 
     const essWidget = document.getElementById('essDemoWidget');
     if (essWidget) essWidget.style.display = 'none';
+
+    const shWidget = document.getElementById('shExplorerWidget');
+    if (shWidget) shWidget.style.display = 'none';
+    stopShExplorerAnimation();
 
     const specsCard = document.getElementById('phaseSpecsCard');
     if (specsCard) specsCard.style.display = 'none';
@@ -2729,6 +3543,7 @@
         if (item.imageFit === IMAGE_FIT.CONTAIN) {
           img.classList.add('gallery-trio-img--contain');
         }
+        img.style.objectPosition = item.imagePosition || IMAGE_POSITION.DEFAULT;
         img.src = item.image;
         img.alt = item.title;
         img.loading = 'lazy';
@@ -3237,6 +4052,7 @@
     if (!url) return;
 
     stopEssDemoPlayback();
+    stopShExplorerAnimation();
     silenceAllVoices(VOICE_ENVELOPE.SILENCE_FADE_SEC);
 
     lastRoom3dTrigger = document.activeElement;
@@ -3719,6 +4535,9 @@
         triggerEssAction(ESS_SIGNAL_TYPE.DELTA);
       });
     }
+
+    // Controlli esploratore interattivo delle armoniche sferiche in Fase 3
+    bindShExplorerEvents();
 
     // Azioni media delle fasi: espansione immagine a schermo intero e modello 3D Fase 5
     const phaseMediaWrapper = document.getElementById('portalCircleMediaWrapper');

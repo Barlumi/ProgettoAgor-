@@ -167,6 +167,63 @@
               </div>
             </section>
 
+            <!-- Esploratore Interattivo Armoniche Sferiche 3D (visibile nella Fase 3) -->
+            <section class="sh-explorer-widget" id="shExplorerWidget" aria-label="Esploratore interattivo delle armoniche sferiche" style="display: none;">
+              <div class="sh-explorer-header">
+                <span class="sh-explorer-tag">Esploratore HOA · AmbiX</span>
+                <div class="sh-mode-tabs" role="tablist" aria-label="Modalità esplorazione armoniche sferiche">
+                  <button type="button" class="sh-mode-btn active" id="btnShModeBasis" role="tab" aria-selected="true">Singola Armonica</button>
+                  <button type="button" class="sh-mode-btn" id="btnShModeSynth" role="tab" aria-selected="false">Sintesi 3D</button>
+                </div>
+              </div>
+
+              <div class="sh-canvas-stage">
+                <canvas id="shCanvas" class="sh-canvas" width="480" height="220" aria-label="Visualizzazione 3D interattiva delle armoniche sferiche"></canvas>
+                <span class="sh-canvas-badge" id="shCanvasBadge">ACN 7 · Y₂⁺¹ (S)</span>
+                <div class="sh-canvas-legend" aria-hidden="true">
+                  <span class="sh-legend-chip sh-legend-chip--pos">+ Fase</span>
+                  <span class="sh-legend-chip sh-legend-chip--neg">− Fase</span>
+                </div>
+                <span class="sh-canvas-hint">Trascina per ruotare</span>
+              </div>
+
+              <div class="sh-basis-panel" id="shBasisPanel">
+                <div class="sh-pyramid" id="shPyramid" role="group" aria-label="Selezione armonica sferica ACN 0-15"></div>
+              </div>
+
+              <div class="sh-synth-panel" id="shSynthPanel" style="display: none;">
+                <div class="sh-order-row" id="shOrderButtons" role="group" aria-label="Ordine Ambisonics"></div>
+
+                <div class="sh-sliders-row">
+                  <label class="sh-slider-field" for="shAzimuthSlider">
+                    <span class="sh-slider-label">
+                      <span>Azimut φ</span>
+                      <span class="sh-slider-val" id="shAzimuthVal">0°</span>
+                    </span>
+                    <input type="range" class="sh-slider-input" id="shAzimuthSlider" min="-180" max="180" step="5" value="0">
+                  </label>
+
+                  <label class="sh-slider-field" for="shElevationSlider">
+                    <span class="sh-slider-label">
+                      <span>Elevazione θ</span>
+                      <span class="sh-slider-val" id="shElevationVal">20°</span>
+                    </span>
+                    <input type="range" class="sh-slider-input" id="shElevationSlider" min="-90" max="90" step="5" value="20">
+                  </label>
+                </div>
+
+                <div class="sh-weights-wrap">
+                  <div class="sh-weights-title">Pesi AmbiX (ACN 0–15 · SN3D)</div>
+                  <div class="sh-weights-bars" id="shWeightsBars" aria-label="Coefficienti dei 16 canali AmbiX"></div>
+                </div>
+              </div>
+
+              <div class="sh-info-bar">
+                <div class="sh-info-formula" id="shInfoFormula"></div>
+                <div class="sh-info-desc" id="shInfoDesc" aria-live="polite"></div>
+              </div>
+            </section>
+
             <!-- Scheda Tecnica Fase (visibile quando la fase definisce specifiche tecniche) -->
             <section class="phase-specs-card" id="phaseSpecsCard" aria-label="Specifiche tecniche della sala immersiva" style="display: none;">
               <div class="phase-specs-grid" id="phaseSpecsGrid"></div>
