@@ -72,7 +72,9 @@
         'A Tresigallo, nell\'edificio "Sogni", è stata realizzata una sala immersiva con sistema WFS (Wave Field Synthesis), 32 altoparlanti e proiezione a 360°. L\'ambiente consente anche a persone con disabilità motorie di accedere all\'esperienza acustica e visiva delle piazze storiche.'
       ],
       image: 'assets/gallery/tresigallo_wfs_room.jpg',
-      imageCaption: 'Sala d\'ascolto WFS a Tresigallo: 32 altoparlanti e proiezione a 360° per la fruizione accessibile del patrimonio sonoro.'
+      imageCaption: 'Sala d\'ascolto WFS a Tresigallo: 32 altoparlanti e proiezione a 360° per la fruizione accessibile del patrimonio sonoro.',
+      model3dUrl: 'https://e-muse.it/tresigallo',
+      model3dTitle: 'Sala Immersiva WFS — Tresigallo'
     }
   ];
 
@@ -400,6 +402,18 @@
     ACTIVE: 'active'
   });
 
+  const LIGHTBOX_SOURCE = Object.freeze({
+    GALLERY: 'gallery',
+    PHASE: 'phase'
+  });
+
+  const LIGHTBOX_TAG = Object.freeze({
+    GALLERY: 'Archivio Sperimentale',
+    PHASE: 'Laboratorio Virtuale'
+  });
+
+  const ROOM_3D_BLANK_URL = 'about:blank';
+
   const ESS_SIGNAL_TYPE = Object.freeze({
     SWEEP: 'sweep',
     INVERSE: 'inverse',
@@ -562,7 +576,10 @@
     currentPhaseIndex: 0,
     currentGalleryTrioIndex: 0,
     galleryLightboxOpen: false,
+    lightboxSource: LIGHTBOX_SOURCE.GALLERY,
+    lightboxPhaseIndex: 0,
     currentLightboxIndex: 0,
+    room3dOpen: false,
     portalOpen: false,
     audioMuted: false,
     suppressHoverAudioUntil: 0,
@@ -2402,6 +2419,9 @@
     if (state.galleryLightboxOpen) {
       closeGalleryLightbox();
     }
+    if (state.room3dOpen) {
+      closeRoom3dModal();
+    }
     stopEssDemoPlayback();
     silenceAllVoices(0.02);
     playReturnChime();
@@ -2501,6 +2521,11 @@
       }
 
       syncEssWidgetVisibility(phaseData);
+
+      const btnRoom3D = document.getElementById('btnPhaseRoom3D');
+      if (btnRoom3D) {
+        btnRoom3D.style.display = phaseData.model3dUrl ? 'inline-flex' : 'none';
+      }
     }
 
     if (state.portalOpen && titleElem && titleElem.textContent) {
@@ -2927,6 +2952,7 @@
 
   let lastDrawerTrigger = null;
   let lastLightboxTrigger = null;
+  let lastRoom3dTrigger = null;
 
   // Mantiene la navigazione da tastiera confinata dentro modale o drawer aperti
   function trapDialogFocus(event, containerElem) {
@@ -2988,20 +3014,9 @@
   }
 
   // -------------------------------------------------------------------------
-  // GESTIONE LIGHTBOX GALLERY (BANNER SOVRAIMPRESSO CON FRECCE MODERNISTE)
+  // GESTIONE LIGHTBOX (GALLERY & IMMAGINI FASI DEL LABORATORIO)
   // -------------------------------------------------------------------------
-  function openGalleryLightbox(index) {
-    const galleryData = DRAWER_DATA.gallery;
-    if (!galleryData || !Array.isArray(galleryData.items) || galleryData.items.length === 0) return;
-
-    const total = galleryData.items.length;
-    if (typeof index !== 'number' || index < 0) index = 0;
-    if (index >= total) index = total - 1;
-
-    lastLightboxTrigger = document.activeElement;
-    state.currentLightboxIndex = index;
-    state.galleryLightboxOpen = true;
-
+  function showLightboxModal() {
     renderGalleryLightbox();
 
     const modal = document.getElementById('galleryLightboxModal');
@@ -3016,6 +3031,38 @@
     if (closeBtn) closeBtn.focus();
 
     playPhaseStepSound();
+  }
+
+  function openGalleryLightbox(index) {
+    const galleryData = DRAWER_DATA.gallery;
+    if (!galleryData || !Array.isArray(galleryData.items) || galleryData.items.length === 0) return;
+
+    const total = galleryData.items.length;
+    if (typeof index !== 'number' || index < 0) index = 0;
+    if (index >= total) index = total - 1;
+
+    lastLightboxTrigger = document.activeElement;
+    state.lightboxSource = LIGHTBOX_SOURCE.GALLERY;
+    state.currentLightboxIndex = index;
+    state.galleryLightboxOpen = true;
+
+    showLightboxModal();
+  }
+
+  // Apre il lightbox a schermo intero partendo dall'immagine circolare della fase attiva
+  function openPhaseLightbox(phaseIndex) {
+    if (!Array.isArray(LAB_PHASES) || LAB_PHASES.length === 0) return;
+
+    const total = LAB_PHASES.length;
+    if (typeof phaseIndex !== 'number' || phaseIndex < 0) phaseIndex = 0;
+    if (phaseIndex >= total) phaseIndex = total - 1;
+
+    lastLightboxTrigger = document.activeElement;
+    state.lightboxSource = LIGHTBOX_SOURCE.PHASE;
+    state.lightboxPhaseIndex = phaseIndex;
+    state.galleryLightboxOpen = true;
+
+    showLightboxModal();
   }
 
   function closeGalleryLightbox() {
@@ -3042,6 +3089,17 @@
   }
 
   function navigateGalleryLightbox(delta) {
+    if (state.lightboxSource === LIGHTBOX_SOURCE.PHASE) {
+      const totalPhases = LAB_PHASES.length;
+      if (totalPhases === 0) return;
+      let nextPhase = (state.lightboxPhaseIndex + delta) % totalPhases;
+      if (nextPhase < 0) nextPhase += totalPhases;
+      state.lightboxPhaseIndex = nextPhase;
+      renderGalleryLightbox();
+      playPhaseStepSound();
+      return;
+    }
+
     const galleryData = DRAWER_DATA.gallery;
     if (!galleryData || !Array.isArray(galleryData.items) || galleryData.items.length === 0) return;
 
@@ -3057,14 +3115,32 @@
   let lightboxFadeTimer = null;
 
   function renderGalleryLightbox() {
-    const galleryData = DRAWER_DATA.gallery;
-    if (!galleryData || !Array.isArray(galleryData.items)) return;
+    const isPhaseSource = state.lightboxSource === LIGHTBOX_SOURCE.PHASE;
+    let item = null;
+    let counterText = '';
+    let tagText = LIGHTBOX_TAG.GALLERY;
 
-    const item = galleryData.items[state.currentLightboxIndex];
-    if (!item) return;
+    if (isPhaseSource) {
+      const phase = LAB_PHASES[state.lightboxPhaseIndex];
+      if (!phase) return;
+      item = {
+        image: phase.image,
+        title: phase.title,
+        caption: phase.imageCaption || ''
+      };
+      counterText = `Fase ${state.lightboxPhaseIndex + 1} di ${LAB_PHASES.length}`;
+      tagText = LIGHTBOX_TAG.PHASE;
+    } else {
+      const galleryData = DRAWER_DATA.gallery;
+      if (!galleryData || !Array.isArray(galleryData.items)) return;
+      item = galleryData.items[state.currentLightboxIndex];
+      if (!item) return;
+      counterText = `Foto ${state.currentLightboxIndex + 1} di ${galleryData.items.length}`;
+    }
 
     const imgElem = document.getElementById('galleryLightboxImg');
     const counterElem = document.getElementById('lightboxCounter');
+    const tagElem = document.getElementById('lightboxTag');
     const titleElem = document.getElementById('lightboxTitle');
     const captionElem = document.getElementById('lightboxCaption');
 
@@ -3087,17 +3163,76 @@
       }, LIGHTBOX_FADE_DELAY_MS);
     }
 
-    if (counterElem) {
-      counterElem.textContent = `Foto ${state.currentLightboxIndex + 1} di ${galleryData.items.length}`;
+    if (counterElem) counterElem.textContent = counterText;
+    if (tagElem) tagElem.textContent = tagText;
+    if (titleElem) titleElem.textContent = item.title;
+    if (captionElem) captionElem.textContent = item.caption;
+  }
+
+  // -------------------------------------------------------------------------
+  // MODALE MODELLO 3D SALA IMMERSIVA TRESIGALLO
+  // -------------------------------------------------------------------------
+  function openRoom3dModal(url, title) {
+    if (!url) return;
+
+    stopEssDemoPlayback();
+    silenceAllVoices(VOICE_ENVELOPE.SILENCE_FADE_SEC);
+
+    lastRoom3dTrigger = document.activeElement;
+    state.room3dOpen = true;
+
+    const modal = document.getElementById('room3dModal');
+    const titleEl = document.getElementById('room3dTitle');
+    const extLink = document.getElementById('room3dExternalLink');
+    const loadingEl = document.getElementById('room3dLoading');
+    const iframe = document.getElementById('room3dIframe');
+
+    if (titleEl && title) titleEl.textContent = title;
+    if (extLink) extLink.href = url;
+    if (loadingEl) loadingEl.classList.remove('loaded');
+    if (iframe) iframe.src = url;
+
+    if (modal) {
+      modal.style.display = 'flex';
+      void modal.offsetWidth;
+      modal.classList.add('active');
+      modal.setAttribute('aria-hidden', 'false');
     }
 
-    if (titleElem) {
-      titleElem.textContent = item.title;
+    const closeBtn = document.getElementById('btnRoom3dClose');
+    if (closeBtn) closeBtn.focus();
+
+    playPhaseStepSound();
+  }
+
+  function closeRoom3dModal() {
+    if (!state.room3dOpen) return;
+    state.room3dOpen = false;
+
+    const modal = document.getElementById('room3dModal');
+    const iframe = document.getElementById('room3dIframe');
+
+    if (modal) {
+      modal.classList.remove('active');
+      modal.setAttribute('aria-hidden', 'true');
+      setTimeout(function () {
+        if (!state.room3dOpen) {
+          modal.style.display = 'none';
+        }
+      }, 320);
     }
 
-    if (captionElem) {
-      captionElem.textContent = item.caption;
+    // Scarica il contesto WebGL remoto alla chiusura per liberare risorse
+    if (iframe) {
+      iframe.src = ROOM_3D_BLANK_URL;
     }
+
+    if (lastRoom3dTrigger && typeof lastRoom3dTrigger.focus === 'function') {
+      lastRoom3dTrigger.focus();
+      lastRoom3dTrigger = null;
+    }
+
+    playPhaseStepSound();
   }
 
   // -------------------------------------------------------------------------
@@ -3524,6 +3659,63 @@
       });
     }
 
+    // Azioni media delle fasi: espansione immagine a schermo intero e modello 3D Fase 5
+    const phaseMediaWrapper = document.getElementById('portalCircleMediaWrapper');
+    if (phaseMediaWrapper) {
+      phaseMediaWrapper.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        openPhaseLightbox(state.currentPhaseIndex);
+      });
+      bindButtonKeyActivation(phaseMediaWrapper, function () {
+        ensureAudioUnlocked();
+        openPhaseLightbox(state.currentPhaseIndex);
+      });
+    }
+
+    const btnPhaseFullscreen = document.getElementById('btnPhaseMediaFullscreen');
+    if (btnPhaseFullscreen) {
+      btnPhaseFullscreen.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        openPhaseLightbox(state.currentPhaseIndex);
+      });
+    }
+
+    const btnPhaseRoom3D = document.getElementById('btnPhaseRoom3D');
+    if (btnPhaseRoom3D) {
+      btnPhaseRoom3D.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        const activePhase = LAB_PHASES[state.currentPhaseIndex];
+        if (!activePhase || !activePhase.model3dUrl) return;
+        openRoom3dModal(activePhase.model3dUrl, activePhase.model3dTitle);
+      });
+    }
+
+    const btnRoom3dClose = document.getElementById('btnRoom3dClose');
+    const room3dBackdrop = document.getElementById('room3dBackdrop');
+    const room3dIframe = document.getElementById('room3dIframe');
+
+    if (btnRoom3dClose) {
+      btnRoom3dClose.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeRoom3dModal();
+      });
+    }
+
+    if (room3dBackdrop) {
+      room3dBackdrop.addEventListener('click', function (e) {
+        e.stopPropagation();
+        closeRoom3dModal();
+      });
+    }
+
+    if (room3dIframe) {
+      room3dIframe.addEventListener('load', function () {
+        if (!state.room3dOpen) return;
+        const loadingEl = document.getElementById('room3dLoading');
+        if (loadingEl) loadingEl.classList.add('loaded');
+      });
+    }
+
     // Eventi del Lightbox Banner Gallery (Apertura a pieno schermo)
     const btnLbClose = document.getElementById('btnLightboxClose');
     const lbBackdrop = document.getElementById('galleryLightboxBackdrop');
@@ -3562,6 +3754,17 @@
 
     // Tasto Escape, Tab trap e frecce per navigazione e chiusura modali/pagine
     window.addEventListener('keydown', function (e) {
+      if (state.room3dOpen) {
+        const roomModal = document.getElementById('room3dModal');
+        trapDialogFocus(e, roomModal);
+
+        if (e.key === 'Escape') {
+          e.preventDefault();
+          closeRoom3dModal();
+        }
+        return;
+      }
+
       if (state.galleryLightboxOpen) {
         const lightboxModal = document.getElementById('galleryLightboxModal');
         trapDialogFocus(e, lightboxModal);

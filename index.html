@@ -187,7 +187,7 @@
 
           <!-- Colonna Destra: Immagine Inscritta in Cerchio Più Grande con Cornice d'Onda Distaccata -->
           <div class="portal-media-column" id="portalMediaColumn">
-            <div class="portal-circle-media-wrapper" id="portalCircleMediaWrapper">
+            <div class="portal-circle-media-wrapper" id="portalCircleMediaWrapper" role="button" tabindex="0" title="Espandi immagine a schermo intero" aria-label="Espandi immagine a schermo intero">
               <div class="portal-circle-img-mask">
                 <img src="assets/gallery/image12.jpg" alt="Dettaglio fase" class="portal-circle-img" id="portalCircleImg">
               </div>
@@ -195,7 +195,38 @@
               <svg class="portal-circle-wave-overlay" id="portalCircleWaveSvg" viewBox="0 0 440 440">
                 <g id="portalMediaWaveGroup"></g>
               </svg>
+              <span class="portal-media-expand-badge" aria-hidden="true">
+                <svg class="portal-action-icon" viewBox="0 0 24 24">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                  <line x1="21" y1="3" x2="14" y2="10"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+              </span>
             </div>
+
+            <div class="portal-media-actions">
+              <button type="button" class="portal-media-action-btn" id="btnPhaseMediaFullscreen">
+                <svg class="portal-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <polyline points="15 3 21 3 21 9"></polyline>
+                  <polyline points="9 21 3 21 3 15"></polyline>
+                  <line x1="21" y1="3" x2="14" y2="10"></line>
+                  <line x1="3" y1="21" x2="10" y2="14"></line>
+                </svg>
+                <span>Schermo intero</span>
+              </button>
+
+              <button type="button" class="portal-media-action-btn portal-media-action-btn--accent" id="btnPhaseRoom3D" style="display: none;">
+                <svg class="portal-action-icon" viewBox="0 0 24 24" aria-hidden="true">
+                  <path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"></path>
+                  <polyline points="12 12 20 7.5"></polyline>
+                  <polyline points="12 12 12 21"></polyline>
+                  <polyline points="12 12 4 7.5"></polyline>
+                </svg>
+                <span>Esplora modello 3D</span>
+              </button>
+            </div>
+
             <p class="portal-media-caption" id="portalMediaCaption"></p>
           </div>
 
@@ -255,13 +286,44 @@
         <div class="gallery-lightbox-banner">
           <div class="lightbox-banner-header">
             <span class="lightbox-badge-index" id="lightboxCounter">Foto 1 di 19</span>
-            <span class="lightbox-badge-tag">Archivio Sperimentale</span>
+            <span class="lightbox-badge-tag" id="lightboxTag">Archivio Sperimentale</span>
           </div>
           <h2 class="lightbox-banner-title" id="lightboxTitle">Titolo</h2>
           <p class="lightbox-banner-caption" id="lightboxCaption">Descrizione</p>
         </div>
       </div>
 
+    </div>
+  </div>
+
+  <!-- ================================================================= -->
+  <!-- MODALE MODELLO 3D SALA IMMERSIVA TRESIGALLO (FASE 5)              -->
+  <!-- ================================================================= -->
+  <div class="room3d-modal" id="room3dModal" role="dialog" aria-modal="true" aria-label="Modello 3D della Sala Immersiva di Tresigallo" aria-hidden="true" style="display: none;">
+    <div class="room3d-backdrop" id="room3dBackdrop"></div>
+
+    <div class="room3d-container" id="room3dContainer">
+      <div class="room3d-header">
+        <div class="room3d-title-group">
+          <span class="room3d-tag">Modello 3D Interattivo</span>
+          <h2 class="room3d-title" id="room3dTitle">Sala Immersiva WFS — Tresigallo</h2>
+        </div>
+
+        <div class="room3d-header-actions">
+          <a class="room3d-external-link" id="room3dExternalLink" href="https://e-muse.it/tresigallo" target="_blank" rel="noopener noreferrer">Apri su e-muse.it ↗</a>
+          <button type="button" class="btn-room3d-close" id="btnRoom3dClose" title="Chiudi (Esc)" aria-label="Chiudi modello 3D">
+            <svg class="lightbox-icon-close" viewBox="0 0 24 24" aria-hidden="true">
+              <line x1="4" y1="4" x2="20" y2="20" />
+              <line x1="20" y1="4" x2="4" y2="20" />
+            </svg>
+          </button>
+        </div>
+      </div>
+
+      <div class="room3d-stage">
+        <div class="room3d-loading" id="room3dLoading">Caricamento modello 3D…</div>
+        <iframe id="room3dIframe" class="room3d-iframe" src="about:blank" title="Modello 3D della Sala Immersiva di Tresigallo" allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
+      </div>
     </div>
   </div>
 
