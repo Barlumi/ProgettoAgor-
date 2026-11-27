@@ -708,6 +708,10 @@ html, body {
   flex-wrap: nowrap; /* Sempre sulla stessa linea */
 }
 
+.gallery-trio-stage.gallery-quad {
+  gap: 1.25rem;
+}
+
 .gallery-trio-card {
   display: flex;
   flex-direction: column;
@@ -715,9 +719,21 @@ html, body {
   text-align: center;
   width: 225px;
   max-width: 240px;
+  min-height: 325px;
+  padding: 0.35rem;
+  border-radius: 12px;
   flex-shrink: 0;
   cursor: pointer;
   transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.gallery-trio-stage.gallery-quad .gallery-trio-card {
+  width: 206px;
+}
+
+.gallery-trio-card:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 6px;
 }
 
 .gallery-trio-card:hover {
@@ -739,6 +755,11 @@ html, body {
   justify-content: center;
 }
 
+.gallery-trio-stage.gallery-quad .gallery-trio-media-wrap {
+  width: 194px;
+  height: 194px;
+}
+
 .gallery-trio-img-mask {
   position: absolute;
   inset: 15px; /* Spazio per cornice d'onda luminosa e risonante */
@@ -755,6 +776,12 @@ html, body {
   object-fit: cover;
   display: block;
   transition: transform 0.4s ease;
+}
+
+.gallery-trio-img--contain {
+  object-fit: contain;
+  padding: 12px;
+  background: #030712;
 }
 
 .gallery-trio-card:hover .gallery-trio-img {
@@ -2300,32 +2327,25 @@ html, body {
     line-height: 1.65;
   }
 
-  /* Galleria Mobile: 1 singola immagine alla volta, grande e chiara */
+  /* Galleria Mobile: 1 singola immagine alla volta, centrata e chiara */
   .gallery-trio-stage {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
-    overflow-x: auto;
-    -webkit-overflow-scrolling: touch;
-    scroll-snap-type: x mandatory;
-    gap: 1.5rem;
-    padding: 0.5rem 0 1.5rem 0;
-    margin: 1.5rem 0;
+    justify-content: center;
+    overflow-x: visible;
+    gap: 0;
+    padding: 0.5rem 0 1rem 0;
+    margin: 1rem 0;
     width: 100%;
-    scrollbar-width: none;
-    -ms-overflow-style: none;
-  }
-
-  .gallery-trio-stage::-webkit-scrollbar {
-    display: none;
   }
 
   .gallery-trio-card {
-    flex: 0 0 100%;
+    flex: 0 0 auto;
     width: 100%;
     max-width: 320px;
+    min-height: auto;
     margin: 0 auto;
-    scroll-snap-align: center;
   }
 
   .gallery-trio-media-wrap {
@@ -2385,25 +2405,29 @@ html, body {
     text-align: center;
   }
 
-  /* Modal Lightbox su Mobile: controlli esterni all'immagine, ad alto contrasto cyan */
+  /* Modal Lightbox su Mobile: griglia pulita con foto visibile e frecce laterali in basso */
   .gallery-lightbox-container {
     width: 95vw;
     max-height: 94vh;
-    padding: 0.85rem 0.5rem 1.25rem 0.5rem;
+    padding: 0.85rem 0.75rem 1.25rem 0.75rem;
     border-radius: 18px;
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto auto auto;
     align-items: center;
+    row-gap: 0.5rem;
     position: relative;
     box-sizing: border-box;
   }
 
   .btn-lightbox-close {
+    grid-column: 2;
+    grid-row: 1;
+    justify-self: end;
     position: relative;
     top: auto;
     right: auto;
-    align-self: flex-end;
-    margin-bottom: 0.4rem;
+    margin-bottom: 0;
     width: 44px;
     height: 44px;
     min-width: 44px;
@@ -2416,19 +2440,28 @@ html, body {
   }
 
   .gallery-lightbox-stage {
+    grid-column: 1 / -1;
+    grid-row: 2;
     display: flex;
-    flex-direction: row;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
     width: 100%;
-    gap: 0.4rem;
+    gap: 0.65rem;
   }
 
   .gallery-lightbox-frame {
-    flex: 1;
+    flex: none;
+    width: 100%;
     max-height: 46vh;
     border-radius: 12px;
     overflow: hidden;
+  }
+
+  .gallery-lightbox-image {
+    max-width: 100%;
+    max-height: 46vh;
+    width: auto;
+    height: auto;
   }
 
   .btn-lightbox-arrow {
@@ -2437,15 +2470,33 @@ html, body {
     left: auto;
     right: auto;
     transform: none;
-    width: 40px;
+    grid-row: 3;
+    width: 44px;
     height: 48px;
     background: none;
     border: none;
     box-shadow: none;
     color: #38bdf8;
-    flex-shrink: 0;
     cursor: pointer;
     padding: 0;
+  }
+
+  .btn-lightbox-prev {
+    grid-column: 1;
+    justify-self: start;
+  }
+
+  .btn-lightbox-next {
+    grid-column: 2;
+    justify-self: end;
+  }
+
+  .btn-lightbox-prev:hover {
+    transform: translateX(-4px);
+  }
+
+  .btn-lightbox-next:hover {
+    transform: translateX(4px);
   }
 
   .lightbox-arrow-svg {
@@ -2553,6 +2604,10 @@ html, body {
   }
 
   .gallery-lightbox-frame {
+    max-height: 42vh;
+  }
+
+  .gallery-lightbox-image {
     max-height: 42vh;
   }
 }

@@ -298,7 +298,8 @@
         {
           title: 'Flusso di Modellazione VR 6DoF',
           caption: 'Schema della catena: Rilievo Visivo (fotogrammetria) + Rilievo Acustico (IR HOA) → Ambiente Audiovisivo Immersivo a 6DoF.',
-          image: 'assets/gallery/image34.jpg'
+          image: 'assets/gallery/image34.jpg',
+          imageFit: 'contain'
         },
         {
           title: 'Piazzale San Francesco in Unreal Engine',
@@ -368,6 +369,16 @@
       }
     }
   };
+
+  // Modalità di adattamento immagine nella gallery (evita stringhe sparse)
+  const IMAGE_FIT = Object.freeze({
+    COVER: 'cover',
+    CONTAIN: 'contain'
+  });
+
+  const GALLERY_DESKTOP_GROUP_SIZE = 3;
+  const GALLERY_DESKTOP_QUAD_THRESHOLD = 4;
+  const LIGHTBOX_FADE_DELAY_MS = 60;
 
   // Stile attivo applicato: Stile Easy (Onda spettrale su fondo ossidiana)
   let activeStyle = STILE_EASY;
@@ -1793,19 +1804,29 @@
     if (layout) layout.classList.remove('gallery-mode');
     if (fullView) fullView.classList.remove('gallery-mode');
 
-    // Funzione di partizione degli elementi in trii (con ultimo gruppo da 4 o 5 se non multipli di 3)
+    // Partiziona le foto in gruppi da 1 su mobile o trii/quad su desktop
     function getGalleryTrios(items) {
+      if (isMobileViewport()) {
+        return items.map(function (item) {
+          return [item];
+        });
+      }
+
       const trios = [];
       let i = 0;
+
       while (i < items.length) {
         const remaining = items.length - i;
-        if (remaining === 4 || remaining === 5) {
+
+        if (remaining === GALLERY_DESKTOP_QUAD_THRESHOLD || remaining === GALLERY_DESKTOP_QUAD_THRESHOLD + 1) {
           trios.push(items.slice(i));
           break;
         }
-        trios.push(items.slice(i, i + 3));
-        i += 3;
+
+        trios.push(items.slice(i, i + GALLERY_DESKTOP_GROUP_SIZE));
+        i += GALLERY_DESKTOP_GROUP_SIZE;
       }
+
       return trios;
     }
 
@@ -1822,9 +1843,12 @@
 
       const currentTrio = trios[state.currentGalleryTrioIndex];
 
-      // Stage del Trio
+      // Stage del Trio (con classe compatta quando il gruppo finale ha 4+ foto)
       const stage = document.createElement('div');
       stage.className = 'gallery-trio-stage';
+      if (currentTrio.length >= GALLERY_DESKTOP_QUAD_THRESHOLD) {
+        stage.classList.add('gallery-quad');
+      }
 
       currentTrio.forEach(function (item) {
         const globalIdx = data.items.indexOf(item);
@@ -1855,6 +1879,9 @@
 
         const img = document.createElement('img');
         img.className = 'gallery-trio-img';
+        if (item.imageFit === IMAGE_FIT.CONTAIN) {
+          img.classList.add('gallery-trio-img--contain');
+        }
         img.src = item.image;
         img.alt = item.title;
         img.loading = 'lazy';
@@ -1955,7 +1982,8 @@
 
       const counter = document.createElement('span');
       counter.className = 'gallery-trio-counter';
-      counter.textContent = `Serie ${state.currentGalleryTrioIndex + 1} di ${trios.length}`;
+      const counterPrefix = isMobileViewport() ? 'Foto' : 'Serie';
+      counter.textContent = `${counterPrefix} ${state.currentGalleryTrioIndex + 1} di ${trios.length}`;
 
       const btnNext = document.createElement('button');
       btnNext.type = 'button';
@@ -2220,6 +2248,8 @@
     playPhaseStepSound();
   }
 
+  let lightboxFadeTimer = null;
+
   function renderGalleryLightbox() {
     const galleryData = DRAWER_DATA.gallery;
     if (!galleryData || !Array.isArray(galleryData.items)) return;
@@ -2232,15 +2262,23 @@
     const titleElem = document.getElementById('lightboxTitle');
     const captionElem = document.getElementById('lightboxCaption');
 
+    // Aggiorna l'immagine evitando timer obsoleti su cambi rapidi
     if (imgElem) {
+      if (lightboxFadeTimer) {
+        clearTimeout(lightboxFadeTimer);
+        lightboxFadeTimer = null;
+      }
+
       imgElem.style.opacity = '0.35';
       imgElem.style.transform = 'scale(0.97)';
       imgElem.src = item.image;
       imgElem.alt = item.title;
-      setTimeout(function () {
+
+      lightboxFadeTimer = setTimeout(function () {
         imgElem.style.opacity = '1';
         imgElem.style.transform = 'scale(1)';
-      }, 60);
+        lightboxFadeTimer = null;
+      }, LIGHTBOX_FADE_DELAY_MS);
     }
 
     if (counterElem) {
@@ -2622,13 +2660,18 @@
       }, { passive: true });
     }
 
-    // Resize listener per aggiornare reattivamente il layout dell'SVG quando si passa da desktop a mobile o viceversa
+    // Resize listener per aggiornare layout SVG e paginazione gallery al cambio breakpoint
     let lastIsMobile = isMobileViewport();
     window.addEventListener('resize', function () {
       const currentIsMobile = isMobileViewport();
-      if (currentIsMobile !== lastIsMobile) {
-        lastIsMobile = currentIsMobile;
-        updateSvgLayout();
+      if (currentIsMobile === lastIsMobile) return;
+
+      lastIsMobile = currentIsMobile;
+      updateSvgLayout();
+
+      if (state.portalOpen && state.activeSection === 'gallery') {
+        state.currentGalleryTrioIndex = 0;
+        renderPortalSection('gallery');
       }
     });
   }
