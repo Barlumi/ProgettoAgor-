@@ -145,6 +145,28 @@
               <!-- Paragrafi inseriti dinamicamente -->
             </div>
 
+            <!-- Laboratorio Interattivo ESS (visibile nella Fase 2) -->
+            <section class="ess-demo-widget" id="essDemoWidget" aria-label="Dimostrazione interattiva Exponential Sine Sweep" style="display: none;">
+              <div class="ess-demo-header">
+                <span class="ess-demo-tag">Laboratorio ESS</span>
+                <span class="ess-demo-formula" id="essSignalFormula">x(t) · Sweep 80 Hz → 8 kHz</span>
+              </div>
+
+              <div class="ess-canvas-wrap">
+                <canvas id="essWaveCanvas" class="ess-wave-canvas" width="480" height="86" aria-label="Forma d'onda segnale ESS e convoluzione"></canvas>
+              </div>
+
+              <div class="ess-demo-controls">
+                <button type="button" class="ess-control-btn" id="btnEssPlaySweep">▶ Riproduci ESS</button>
+                <button type="button" class="ess-control-btn" id="btnEssPlayInverse">↺ Filtro Inverso</button>
+                <button type="button" class="ess-control-btn ess-control-btn--accent" id="btnEssConvolve">✦ Convolvi → δ(t)</button>
+              </div>
+
+              <div class="ess-demo-status" id="essDemoStatus" aria-live="polite">
+                Premi un controllo per ascoltare lo sweep o calcolare la convoluzione reale.
+              </div>
+            </section>
+
             <!-- Navigazione tra le fasi con frecce pulite senza cerchi né ombre -->
             <div class="portal-phase-nav" id="portalPhaseNav">
               <button type="button" class="btn-phase-wave btn-nav-prev" id="btnPhasePrev" title="Fase Precedente" aria-label="Fase Precedente">

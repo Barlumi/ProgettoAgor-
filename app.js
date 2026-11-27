@@ -38,7 +38,8 @@
         'Attraverso il metodo ESS (Exponential Sine Sweep), una sorgente a dodecaedro emette uno sweep a frequenza crescente che permette di calcolare la Risposta all\'Impulso (IR 3D). Con l\'approccio multicanale MIMO si ricavano il tempo di riverberazione (T30 di circa 1,6 s a Rimini) e la direzione delle prime riflessioni.'
       ],
       image: 'assets/gallery/image31.jpg',
-      imageCaption: 'Misura acustica in Piazza Cavour a Rimini: calcolo della risposta all\'impulso e del tempo di riverberazione con sorgente a dodecaedro.'
+      imageCaption: 'Misura acustica in Piazza Cavour a Rimini: calcolo della risposta all\'impulso e del tempo di riverberazione con sorgente a dodecaedro.',
+      hasEssDemo: true
     },
     {
       num: 3,
@@ -399,6 +400,41 @@
     ACTIVE: 'active'
   });
 
+  const ESS_SIGNAL_TYPE = Object.freeze({
+    SWEEP: 'sweep',
+    INVERSE: 'inverse',
+    DELTA: 'delta'
+  });
+
+  const FFT_DIRECTION = Object.freeze({
+    FORWARD: 1,
+    INVERSE: -1
+  });
+
+  const ESS_CONFIG = Object.freeze({
+    F1_HZ: 80,
+    F2_HZ: 8000,
+    DURATION_SEC: 1.25,
+    FADE_SEC: 0.015,
+    FALLBACK_SAMPLE_RATE: 48000,
+    SWEEP_PLAYBACK_GAIN: 0.16,
+    DELTA_PLAYBACK_GAIN: 0.24,
+    DELTA_PLAYBACK_WINDOW_SEC: 0.28,
+    DELTA_PEAK_OFFSET_SEC: 0.04,
+    DELTA_VISUAL_HALF_WINDOW_SEC: 0.04,
+    SIDELOBE_GUARD_SEC: 0.002,
+    CANVAS_BG: '#030712'
+  });
+
+  const ESS_LABELS = Object.freeze({
+    SWEEP_FORMULA: 'x(t) · Sweep 80 Hz → 8 kHz (1,25 s)',
+    INVERSE_FORMULA: 'f(t) · Filtro inverso (−6 dB/ott)',
+    DELTA_FORMULA: 'x(t) * f(t) = δ(t) · Impulso di Dirac',
+    SWEEP_STATUS: 'Sweep esponenziale x(t): la frequenza cresce esponenzialmente nel tempo.',
+    INVERSE_STATUS: 'Filtro inverso f(t): sweep invertito nel tempo con inviluppo −6 dB/ottava.',
+    MUTED_SUFFIX: ' (audio silenziato)'
+  });
+
   // Stile attivo applicato: Stile Easy (Onda spettrale su fondo ossidiana)
   let activeStyle = STILE_EASY;
 
@@ -628,10 +664,16 @@
 
   let audioCtx = null;
   let masterGainNode = null;
+  let masterCompressorNode = null;
+  let essDryGainNode = null;
   const audioNodes = {};
 
   function getAudioOutputNode() {
     return masterGainNode || audioCtx.destination;
+  }
+
+  function getEssDryOutputNode() {
+    return essDryGainNode || masterCompressorNode || audioCtx.destination;
   }
 
   // Genera una risposta all'impulso stereo morbida per dare coda acustica naturale ai toni
@@ -708,8 +750,14 @@
         wetGain.connect(masterFilter);
       }
 
+      masterCompressorNode = compressor;
       masterFilter.connect(compressor);
       compressor.connect(audioCtx.destination);
+
+      // Ramo dry per segnali di laboratorio ESS senza riverbero artificiale
+      essDryGainNode = audioCtx.createGain();
+      essDryGainNode.gain.setValueAtTime(initialMaster, audioCtx.currentTime);
+      essDryGainNode.connect(compressor);
 
       CIRCLES_REGISTRY.forEach(function (c) {
         const freq = activeStyle.audio.frequencies[c.id] || AUDIO_BUS_CONFIG.DEFAULT_VOICE_FREQ;
@@ -1039,6 +1087,482 @@
     } catch (e) {
       // Ignora errori
     }
+  }
+
+  // -------------------------------------------------------------------------
+  // LABORATORIO INTERATTIVO ESS (Farina 2000: Sweep, Filtro Inverso, FFT)
+  // -------------------------------------------------------------------------
+  const essDemoState = {
+    activeSignal: ESS_SIGNAL_TYPE.SWEEP,
+    activeSource: null,
+    playheadRafId: null,
+    cache: new Map()
+  };
+
+  function nextPowerOfTwo(n) {
+    let size = 1;
+    while (size < n) size <<= 1;
+    return size;
+  }
+
+  // FFT iterativa Radix-2 Cooley-Tukey (direction = FFT_DIRECTION.FORWARD | INVERSE)
+  function fftRadix2(re, im, direction) {
+    const n = re.length;
+    let j = 0;
+
+    for (let i = 1; i < n; i++) {
+      let bit = n >> 1;
+      while (j & bit) {
+        j ^= bit;
+        bit >>= 1;
+      }
+      j ^= bit;
+
+      if (i < j) {
+        const tmpRe = re[i];
+        re[i] = re[j];
+        re[j] = tmpRe;
+
+        const tmpIm = im[i];
+        im[i] = im[j];
+        im[j] = tmpIm;
+      }
+    }
+
+    const sign = direction === FFT_DIRECTION.INVERSE ? 1 : -1;
+
+    for (let len = 2; len <= n; len <<= 1) {
+      const halfLen = len >> 1;
+      const angleStep = sign * ((2 * Math.PI) / len);
+      const wStepRe = Math.cos(angleStep);
+      const wStepIm = Math.sin(angleStep);
+
+      for (let start = 0; start < n; start += len) {
+        let wRe = 1;
+        let wIm = 0;
+
+        for (let k = 0; k < halfLen; k++) {
+          const evenIdx = start + k;
+          const oddIdx = evenIdx + halfLen;
+          const tRe = wRe * re[oddIdx] - wIm * im[oddIdx];
+          const tIm = wRe * im[oddIdx] + wIm * re[oddIdx];
+
+          re[oddIdx] = re[evenIdx] - tRe;
+          im[oddIdx] = im[evenIdx] - tIm;
+          re[evenIdx] += tRe;
+          im[evenIdx] += tIm;
+
+          const nextWRe = wRe * wStepRe - wIm * wStepIm;
+          wIm = wRe * wStepIm + wIm * wStepRe;
+          wRe = nextWRe;
+        }
+      }
+    }
+
+    if (direction === FFT_DIRECTION.INVERSE) {
+      const invN = 1 / n;
+      for (let i = 0; i < n; i++) {
+        re[i] *= invN;
+        im[i] *= invN;
+      }
+    }
+  }
+
+  // Esegue convoluzione lineare reale a * b nel dominio della frequenza tramite FFT
+  function convolveViaFft(sigA, sigB) {
+    const outLen = sigA.length + sigB.length - 1;
+    const fftSize = nextPowerOfTwo(outLen);
+
+    const aRe = new Float64Array(fftSize);
+    const aIm = new Float64Array(fftSize);
+    const bRe = new Float64Array(fftSize);
+    const bIm = new Float64Array(fftSize);
+
+    aRe.set(sigA);
+    bRe.set(sigB);
+
+    fftRadix2(aRe, aIm, FFT_DIRECTION.FORWARD);
+    fftRadix2(bRe, bIm, FFT_DIRECTION.FORWARD);
+
+    for (let i = 0; i < fftSize; i++) {
+      const prodRe = aRe[i] * bRe[i] - aIm[i] * bIm[i];
+      const prodIm = aRe[i] * bIm[i] + aIm[i] * bRe[i];
+      aRe[i] = prodRe;
+      aIm[i] = prodIm;
+    }
+
+    fftRadix2(aRe, aIm, FFT_DIRECTION.INVERSE);
+
+    const result = new Float32Array(outLen);
+    let maxAbs = 0;
+    let peakIndex = 0;
+
+    for (let i = 0; i < outLen; i++) {
+      const val = aRe[i];
+      result[i] = val;
+      const absVal = Math.abs(val);
+      if (absVal > maxAbs) {
+        maxAbs = absVal;
+        peakIndex = i;
+      }
+    }
+
+    if (maxAbs > 0) {
+      const invMax = 1 / maxAbs;
+      for (let i = 0; i < outLen; i++) {
+        result[i] *= invMax;
+      }
+    }
+
+    return { samples: result, peakIndex: peakIndex };
+  }
+
+  // Sintetizza sweep ESS x(t), filtro inverso f(t) a -6 dB/ott e convoluzione δ(t)
+  function generateEssBuffers(sampleRate) {
+    if (essDemoState.cache.has(sampleRate)) {
+      return essDemoState.cache.get(sampleRate);
+    }
+
+    const numSamples = Math.round(sampleRate * ESS_CONFIG.DURATION_SEC);
+    const fadeSamples = Math.min(Math.floor(numSamples / 4), Math.round(sampleRate * ESS_CONFIG.FADE_SEC));
+    const lnRatio = Math.log(ESS_CONFIG.F2_HZ / ESS_CONFIG.F1_HZ);
+    const k = (2 * Math.PI * ESS_CONFIG.F1_HZ * ESS_CONFIG.DURATION_SEC) / lnRatio;
+
+    const sweep = new Float32Array(numSamples);
+    const rawInverse = new Float32Array(numSamples);
+    const inverseDisplay = new Float32Array(numSamples);
+
+    for (let n = 0; n < numSamples; n++) {
+      const tNorm = n / (numSamples - 1);
+      let win = 1;
+      if (n < fadeSamples) {
+        win = 0.5 * (1 - Math.cos((Math.PI * n) / fadeSamples));
+      } else if (n >= numSamples - fadeSamples) {
+        const rem = numSamples - 1 - n;
+        win = 0.5 * (1 - Math.cos((Math.PI * rem) / fadeSamples));
+      }
+
+      const phase = k * (Math.exp(tNorm * lnRatio) - 1);
+      sweep[n] = win * Math.sin(phase);
+    }
+
+    // Filtro inverso: sweep invertito nel tempo con attenuazione -6 dB/ottava (Farina 2000)
+    let invPeak = 0;
+    for (let n = 0; n < numSamples; n++) {
+      const revVal = sweep[numSamples - 1 - n];
+      const decayWeight = Math.exp(-(n / (numSamples - 1)) * lnRatio);
+      const val = revVal * decayWeight;
+      rawInverse[n] = val;
+      const absVal = Math.abs(val);
+      if (absVal > invPeak) invPeak = absVal;
+    }
+
+    if (invPeak > 0) {
+      const invScale = 1 / invPeak;
+      for (let n = 0; n < numSamples; n++) {
+        inverseDisplay[n] = rawInverse[n] * invScale;
+      }
+    }
+
+    const conv = convolveViaFft(sweep, rawInverse);
+    const guardHalfSamples = Math.round(sampleRate * ESS_CONFIG.SIDELOBE_GUARD_SEC);
+    let sidelobeSqSum = 0;
+    let sidelobeCount = 0;
+
+    for (let i = 0; i < conv.samples.length; i++) {
+      if (Math.abs(i - conv.peakIndex) <= guardHalfSamples) continue;
+      sidelobeSqSum += conv.samples[i] * conv.samples[i];
+      sidelobeCount++;
+    }
+
+    const sidelobeRms = sidelobeCount > 0 ? Math.sqrt(sidelobeSqSum / sidelobeCount) : 1e-6;
+    const snrDb = 20 * Math.log10(1 / Math.max(1e-6, sidelobeRms));
+
+    // Finestra visiva centrata sul picco per mostrare nitidamente l'impulso di Dirac
+    const visHalf = Math.round(sampleRate * ESS_CONFIG.DELTA_VISUAL_HALF_WINDOW_SEC);
+    const visStart = Math.max(0, conv.peakIndex - visHalf);
+    const visEnd = Math.min(conv.samples.length, conv.peakIndex + visHalf + 1);
+    const deltaVisual = conv.samples.slice(visStart, visEnd);
+
+    // Finestra audio breve attorno all'impulso per riprodurre uno scatto secco e fedele
+    const playLen = Math.round(sampleRate * ESS_CONFIG.DELTA_PLAYBACK_WINDOW_SEC);
+    const playOffset = Math.round(sampleRate * ESS_CONFIG.DELTA_PEAK_OFFSET_SEC);
+    const deltaAudio = new Float32Array(playLen);
+    const srcStart = conv.peakIndex - playOffset;
+
+    for (let i = 0; i < playLen; i++) {
+      const srcIdx = srcStart + i;
+      if (srcIdx >= 0 && srcIdx < conv.samples.length) {
+        deltaAudio[i] = conv.samples[srcIdx];
+      }
+    }
+
+    const bundle = {
+      sampleRate: sampleRate,
+      sweep: sweep,
+      inverse: inverseDisplay,
+      deltaVisual: deltaVisual,
+      deltaAudio: deltaAudio,
+      deltaPeak: Math.abs(conv.samples[conv.peakIndex]),
+      snrDb: snrDb
+    };
+
+    essDemoState.cache.set(sampleRate, bundle);
+    return bundle;
+  }
+
+  function stopEssDemoPlayback() {
+    if (essDemoState.playheadRafId) {
+      cancelAnimationFrame(essDemoState.playheadRafId);
+      essDemoState.playheadRafId = null;
+    }
+
+    if (essDemoState.activeSource) {
+      try {
+        essDemoState.activeSource.stop();
+        essDemoState.activeSource.disconnect();
+      } catch (e) {}
+      essDemoState.activeSource = null;
+    }
+  }
+
+  // Disegna forma d'onda min/max ad alta nitidezza HiDPI sul canvas del widget ESS
+  function drawEssWaveform(signalType, samples, playProgress) {
+    const canvas = document.getElementById('essWaveCanvas');
+    if (!canvas || !samples || samples.length === 0) return;
+
+    const ctx2d = canvas.getContext('2d');
+    if (!ctx2d) return;
+
+    const dpr = Math.min(window.devicePixelRatio || 1, 2);
+    const cssWidth = canvas.clientWidth || 480;
+    const cssHeight = canvas.clientHeight || 86;
+    const targetW = Math.max(1, Math.round(cssWidth * dpr));
+    const targetH = Math.max(1, Math.round(cssHeight * dpr));
+
+    if (canvas.width !== targetW || canvas.height !== targetH) {
+      canvas.width = targetW;
+      canvas.height = targetH;
+    }
+
+    ctx2d.save();
+    ctx2d.scale(dpr, dpr);
+
+    ctx2d.fillStyle = ESS_CONFIG.CANVAS_BG;
+    ctx2d.fillRect(0, 0, cssWidth, cssHeight);
+
+    const midY = cssHeight / 2;
+
+    // Griglia discreta di riferimento
+    ctx2d.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+    ctx2d.lineWidth = 1;
+    ctx2d.beginPath();
+    ctx2d.moveTo(0, midY);
+    ctx2d.lineTo(cssWidth, midY);
+    ctx2d.stroke();
+
+    const grad = ctx2d.createLinearGradient(0, 0, cssWidth, 0);
+    if (signalType === ESS_SIGNAL_TYPE.DELTA) {
+      grad.addColorStop(0, '#38bdf8');
+      grad.addColorStop(0.5, '#fbbf24');
+      grad.addColorStop(1, '#38bdf8');
+    } else if (signalType === ESS_SIGNAL_TYPE.INVERSE) {
+      grad.addColorStop(0, '#fbbf24');
+      grad.addColorStop(0.45, '#22d3ee');
+      grad.addColorStop(1, '#38bdf8');
+    } else {
+      grad.addColorStop(0, '#38bdf8');
+      grad.addColorStop(0.6, '#22d3ee');
+      grad.addColorStop(1, '#f59e0b');
+    }
+
+    ctx2d.strokeStyle = grad;
+    ctx2d.lineWidth = signalType === ESS_SIGNAL_TYPE.DELTA ? 1.8 : 1.3;
+    ctx2d.beginPath();
+
+    const ampScale = cssHeight * 0.42;
+    const step = samples.length / cssWidth;
+
+    for (let x = 0; x < cssWidth; x++) {
+      const startIdx = Math.floor(x * step);
+      const endIdx = Math.min(samples.length, Math.max(startIdx + 1, Math.floor((x + 1) * step)));
+      let minVal = 1;
+      let maxVal = -1;
+
+      for (let i = startIdx; i < endIdx; i++) {
+        const v = samples[i];
+        if (v < minVal) minVal = v;
+        if (v > maxVal) maxVal = v;
+      }
+
+      const yTop = midY - maxVal * ampScale;
+      const yBot = midY - minVal * ampScale;
+      ctx2d.moveTo(x + 0.5, yTop);
+      ctx2d.lineTo(x + 0.5, Math.max(yTop + 1, yBot));
+    }
+    ctx2d.stroke();
+
+    if (typeof playProgress === 'number' && playProgress >= 0 && playProgress <= 1) {
+      const px = playProgress * cssWidth;
+      ctx2d.strokeStyle = 'rgba(255, 255, 255, 0.85)';
+      ctx2d.lineWidth = 1.5;
+      ctx2d.beginPath();
+      ctx2d.moveTo(px, 0);
+      ctx2d.lineTo(px, cssHeight);
+      ctx2d.stroke();
+    }
+
+    ctx2d.restore();
+  }
+
+  function updateEssWidgetUi(signalType, bundle) {
+    const widget = document.getElementById('essDemoWidget');
+    const formulaEl = document.getElementById('essSignalFormula');
+    const statusEl = document.getElementById('essDemoStatus');
+    const btnSweep = document.getElementById('btnEssPlaySweep');
+    const btnInv = document.getElementById('btnEssPlayInverse');
+    const btnConv = document.getElementById('btnEssConvolve');
+
+    if (widget) {
+      widget.classList.toggle('is-delta', signalType === ESS_SIGNAL_TYPE.DELTA);
+      widget.setAttribute('data-ess-mode', signalType);
+      if (signalType === ESS_SIGNAL_TYPE.DELTA) {
+        widget.setAttribute('data-delta-peak', bundle.deltaPeak.toFixed(2));
+        widget.setAttribute('data-delta-snr', bundle.snrDb.toFixed(1));
+      }
+    }
+
+    if (btnSweep) btnSweep.classList.toggle('active', signalType === ESS_SIGNAL_TYPE.SWEEP);
+    if (btnInv) btnInv.classList.toggle('active', signalType === ESS_SIGNAL_TYPE.INVERSE);
+    if (btnConv) btnConv.classList.toggle('active', signalType === ESS_SIGNAL_TYPE.DELTA);
+
+    const mutedSuffix = state.audioMuted ? ESS_LABELS.MUTED_SUFFIX : '';
+
+    if (signalType === ESS_SIGNAL_TYPE.DELTA) {
+      if (formulaEl) formulaEl.textContent = ESS_LABELS.DELTA_FORMULA;
+      if (statusEl) {
+        statusEl.textContent = `Convoluzione FFT completata: picco δ(t) = ${bundle.deltaPeak.toFixed(2)}, SNR ≈ ${bundle.snrDb.toFixed(1)} dB${mutedSuffix}.`;
+      }
+      return;
+    }
+
+    if (signalType === ESS_SIGNAL_TYPE.INVERSE) {
+      if (formulaEl) formulaEl.textContent = ESS_LABELS.INVERSE_FORMULA;
+      if (statusEl) statusEl.textContent = ESS_LABELS.INVERSE_STATUS + mutedSuffix;
+      return;
+    }
+
+    if (formulaEl) formulaEl.textContent = ESS_LABELS.SWEEP_FORMULA;
+    if (statusEl) statusEl.textContent = ESS_LABELS.SWEEP_STATUS + mutedSuffix;
+  }
+
+  function playEssAudioBuffer(signalType, audioSamples, visualSamples, sampleRate) {
+    if (state.audioMuted || !audioCtx || audioCtx.state !== 'running') {
+      drawEssWaveform(signalType, visualSamples, -1);
+      return;
+    }
+
+    const buffer = audioCtx.createBuffer(1, audioSamples.length, sampleRate);
+    buffer.copyToChannel(audioSamples, 0);
+
+    const src = audioCtx.createBufferSource();
+    src.buffer = buffer;
+
+    const gain = audioCtx.createGain();
+    const level = signalType === ESS_SIGNAL_TYPE.DELTA
+      ? ESS_CONFIG.DELTA_PLAYBACK_GAIN
+      : ESS_CONFIG.SWEEP_PLAYBACK_GAIN;
+    gain.gain.setValueAtTime(level, audioCtx.currentTime);
+
+    src.connect(gain);
+    gain.connect(getEssDryOutputNode());
+
+    const durationMs = (audioSamples.length / sampleRate) * 1000;
+    const startedAt = performance.now();
+    essDemoState.activeSource = src;
+
+    src.onended = function () {
+      if (essDemoState.activeSource === src) {
+        essDemoState.activeSource = null;
+      }
+      if (essDemoState.playheadRafId) {
+        cancelAnimationFrame(essDemoState.playheadRafId);
+        essDemoState.playheadRafId = null;
+      }
+      drawEssWaveform(signalType, visualSamples, -1);
+    };
+
+    src.start();
+
+    function stepPlayhead() {
+      const elapsed = performance.now() - startedAt;
+      const progress = Math.min(1, elapsed / Math.max(1, durationMs));
+      drawEssWaveform(signalType, visualSamples, progress);
+
+      if (progress < 1 && essDemoState.activeSource === src) {
+        essDemoState.playheadRafId = requestAnimationFrame(stepPlayhead);
+      }
+    }
+
+    essDemoState.playheadRafId = requestAnimationFrame(stepPlayhead);
+  }
+
+  function triggerEssAction(signalType) {
+    ensureAudioUnlocked();
+    stopEssDemoPlayback();
+
+    const sampleRate = audioCtx ? audioCtx.sampleRate : ESS_CONFIG.FALLBACK_SAMPLE_RATE;
+    const bundle = generateEssBuffers(sampleRate);
+    essDemoState.activeSignal = signalType;
+
+    let visualSamples = bundle.sweep;
+    let audioSamples = bundle.sweep;
+
+    if (signalType === ESS_SIGNAL_TYPE.INVERSE) {
+      visualSamples = bundle.inverse;
+      audioSamples = bundle.inverse;
+    } else if (signalType === ESS_SIGNAL_TYPE.DELTA) {
+      visualSamples = bundle.deltaVisual;
+      audioSamples = bundle.deltaAudio;
+    }
+
+    updateEssWidgetUi(signalType, bundle);
+    drawEssWaveform(signalType, visualSamples, -1);
+
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume().then(function () {
+        if (audioCtx.state === 'running' && essDemoState.activeSignal === signalType) {
+          playEssAudioBuffer(signalType, audioSamples, visualSamples, sampleRate);
+        }
+      }).catch(function () {});
+      return;
+    }
+
+    playEssAudioBuffer(signalType, audioSamples, visualSamples, sampleRate);
+  }
+
+  function syncEssWidgetVisibility(phaseData) {
+    const widget = document.getElementById('essDemoWidget');
+    const bodyElem = document.getElementById('portalBodyText');
+    const showEss = Boolean(phaseData && phaseData.hasEssDemo);
+
+    if (bodyElem) {
+      bodyElem.classList.toggle('has-ess-demo', showEss);
+    }
+
+    if (!widget) return;
+
+    widget.style.display = showEss ? 'flex' : 'none';
+    if (!showEss) return;
+
+    const sampleRate = audioCtx ? audioCtx.sampleRate : ESS_CONFIG.FALLBACK_SAMPLE_RATE;
+    const bundle = generateEssBuffers(sampleRate);
+    essDemoState.activeSignal = ESS_SIGNAL_TYPE.SWEEP;
+    updateEssWidgetUi(ESS_SIGNAL_TYPE.SWEEP, bundle);
+
+    requestAnimationFrame(function () {
+      drawEssWaveform(ESS_SIGNAL_TYPE.SWEEP, bundle.sweep, -1);
+    });
   }
 
   // -------------------------------------------------------------------------
@@ -1878,6 +2402,7 @@
     if (state.galleryLightboxOpen) {
       closeGalleryLightbox();
     }
+    stopEssDemoPlayback();
     silenceAllVoices(0.02);
     playReturnChime();
     galleryCirclesRegistry.length = 0;
@@ -1921,6 +2446,7 @@
     if (index >= LAB_PHASES.length) index = 0;
 
     resetPortalScrollPosition();
+    stopEssDemoPlayback();
 
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
@@ -1973,6 +2499,8 @@
         capElem.textContent = phaseData.imageCaption || '';
         capElem.style.opacity = '1';
       }
+
+      syncEssWidgetVisibility(phaseData);
     }
 
     if (state.portalOpen && titleElem && titleElem.textContent) {
@@ -2002,6 +2530,10 @@
 
   function renderPortalSection(sectionKey) {
     resetPortalScrollPosition();
+    stopEssDemoPlayback();
+
+    const essWidget = document.getElementById('essDemoWidget');
+    if (essWidget) essWidget.style.display = 'none';
 
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
@@ -2970,6 +3502,28 @@
       });
     }
 
+    // Controlli interattivi ESS in Fase 2
+    const btnEssSweep = document.getElementById('btnEssPlaySweep');
+    if (btnEssSweep) {
+      btnEssSweep.addEventListener('click', function () {
+        triggerEssAction(ESS_SIGNAL_TYPE.SWEEP);
+      });
+    }
+
+    const btnEssInverse = document.getElementById('btnEssPlayInverse');
+    if (btnEssInverse) {
+      btnEssInverse.addEventListener('click', function () {
+        triggerEssAction(ESS_SIGNAL_TYPE.INVERSE);
+      });
+    }
+
+    const btnEssConvolve = document.getElementById('btnEssConvolve');
+    if (btnEssConvolve) {
+      btnEssConvolve.addEventListener('click', function () {
+        triggerEssAction(ESS_SIGNAL_TYPE.DELTA);
+      });
+    }
+
     // Eventi del Lightbox Banner Gallery (Apertura a pieno schermo)
     const btnLbClose = document.getElementById('btnLightboxClose');
     const lbBackdrop = document.getElementById('galleryLightboxBackdrop');
@@ -3070,9 +3624,13 @@
         const targetMaster = state.audioMuted ? VOICE_ENVELOPE.GAIN_FLOOR : activeStyle.audio.masterVolume;
         const fadeTau = state.audioMuted ? VOICE_ENVELOPE.MUTE_FADE_SEC : VOICE_ENVELOPE.UNMUTE_FADE_SEC;
         masterGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
+        if (essDryGainNode) {
+          essDryGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
+        }
       }
 
       if (state.audioMuted) {
+        stopEssDemoPlayback();
         silenceAllVoices(VOICE_ENVELOPE.MUTE_FADE_SEC);
       }
     }
