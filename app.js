@@ -68,13 +68,22 @@
       tag: 'Fase 5',
       title: 'Fase 5: Restituzione Immersiva e Inclusione',
       body: [
-        'La riproduzione avviene in cuffia tramite filtri binaurali (HRTF) che ricostruiscono la spazialità per l\'ascolto individuale, oppure in sale d\'ascolto dedicate.',
-        'A Tresigallo, nell\'edificio "Sogni", è stata realizzata una sala immersiva con sistema WFS (Wave Field Synthesis), 32 altoparlanti e proiezione a 360°. L\'ambiente consente anche a persone con disabilità motorie di accedere all\'esperienza acustica e visiva delle piazze storiche.'
+        'Oltre all\'ascolto individuale in cuffia tramite filtri binaurali (HRTF), nell\'Urban Center "Sogni" di Tresigallo è stata realizzata la sala modulare Agorà Immersive Room: un ottagono da 6 m di diametro (lati da 2,5 m, altezza 3,8 m) in profilati Bosch Rexroth da 40 mm (160 kg) progettato per la fruizione inclusiva anche da parte di persone con disabilità motorie.',
+        'La diffusione sonora combina un array WFS (Wave Field Synthesis) a 128 canali con soundbar dedicate e amplificatori ZOTech, insieme a una cupola Ambisonics da 24 altoparlanti (3 anelli ottagonali da 8 più diffusore zenitale), pilotati da tracce master AmbiX di 3° ordine (16 canali) con AllRADecoder, WFSMixer e Plogue Bidule.',
+        'La proiezione ottagonale a 360° impiega 4 proiettori a ottica corta Optoma 4K400STx e un Mac Studio, gestiti da una pipeline open-source (Python + OpenCV per warp prospettico e keystone, 4 istanze mpv sincronizzate, blocco UUID dei display con displayplacer e Web UI Python).'
       ],
       image: 'assets/gallery/tresigallo_wfs_room.jpg',
-      imageCaption: 'Sala d\'ascolto WFS a Tresigallo: 32 altoparlanti e proiezione a 360° per la fruizione accessibile del patrimonio sonoro.',
+      imageCaption: 'Sala immersiva AGORÀ a Tresigallo (Urban Center "Sogni"): struttura ottagonale da 6 m con array WFS a 128 canali, 24 diffusori Ambisonics e proiezione 360° a 4 proiettori 4K.',
       model3dUrl: 'https://e-muse.it/tresigallo',
-      model3dTitle: 'Sala Immersiva WFS — Tresigallo'
+      model3dTitle: 'Sala Immersiva WFS — Tresigallo',
+      specs: [
+        { label: 'Struttura', value: 'Ottagono 6 × 3,8 m · Bosch Rexroth (160 kg)' },
+        { label: 'Audio WFS', value: 'Array 128 canali · Amplificatori ZOTech' },
+        { label: 'Ambisonics', value: '24 diffusori (3 anelli × 8) + zenith' },
+        { label: 'Video & Software', value: '4× Optoma 4K400STx · Mac Studio, OpenCV, mpv' }
+      ],
+      specsLinkUrl: 'https://adrianofarina.it/projects/2026/09/tresigallo/',
+      specsLinkLabel: 'Documentazione tecnica completa (adrianofarina.it) ↗'
     }
   ];
 
@@ -2521,6 +2530,7 @@
       }
 
       syncEssWidgetVisibility(phaseData);
+      syncPhaseSpecsCard(phaseData);
 
       const btnRoom3D = document.getElementById('btnPhaseRoom3D');
       if (btnRoom3D) {
@@ -2553,12 +2563,63 @@
     });
   }
 
+  // Aggiorna la scheda delle specifiche tecniche quando prevista dalla fase
+  function syncPhaseSpecsCard(phaseData) {
+    const card = document.getElementById('phaseSpecsCard');
+    const grid = document.getElementById('phaseSpecsGrid');
+    const link = document.getElementById('phaseSpecsLink');
+    const bodyElem = document.getElementById('portalBodyText');
+
+    const hasSpecs = Boolean(phaseData && Array.isArray(phaseData.specs) && phaseData.specs.length > 0);
+
+    if (bodyElem) {
+      bodyElem.classList.toggle('has-phase-specs', hasSpecs);
+    }
+
+    if (!card || !grid) return;
+
+    grid.innerHTML = '';
+    card.style.display = hasSpecs ? 'flex' : 'none';
+
+    if (!hasSpecs) return;
+
+    phaseData.specs.forEach(function (spec) {
+      const item = document.createElement('div');
+      item.className = 'phase-spec-item';
+
+      const labelEl = document.createElement('span');
+      labelEl.className = 'phase-spec-label';
+      labelEl.textContent = spec.label;
+
+      const valueEl = document.createElement('span');
+      valueEl.className = 'phase-spec-value';
+      valueEl.textContent = spec.value;
+
+      item.appendChild(labelEl);
+      item.appendChild(valueEl);
+      grid.appendChild(item);
+    });
+
+    if (link) {
+      if (phaseData.specsLinkUrl) {
+        link.href = phaseData.specsLinkUrl;
+        link.textContent = phaseData.specsLinkLabel || phaseData.specsLinkUrl;
+        link.style.display = 'inline-block';
+      } else {
+        link.style.display = 'none';
+      }
+    }
+  }
+
   function renderPortalSection(sectionKey) {
     resetPortalScrollPosition();
     stopEssDemoPlayback();
 
     const essWidget = document.getElementById('essDemoWidget');
     if (essWidget) essWidget.style.display = 'none';
+
+    const specsCard = document.getElementById('phaseSpecsCard');
+    if (specsCard) specsCard.style.display = 'none';
 
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);

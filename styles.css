@@ -603,9 +603,74 @@ html, body {
   margin-bottom: 0;
 }
 
-.portal-text-body.has-ess-demo {
+.portal-text-body.has-ess-demo,
+.portal-text-body.has-phase-specs {
   min-height: auto;
+  margin-bottom: 0.9rem;
+}
+
+/* Scheda Specifiche Tecniche Fase (Fase 5 — Sala Immersiva Tresigallo) */
+.phase-specs-card {
+  width: 100%;
   margin-bottom: 1rem;
+  padding: 0.8rem 0.95rem;
+  border-radius: 12px;
+  background: rgba(6, 12, 24, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  box-sizing: border-box;
+}
+
+.phase-specs-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem 0.75rem;
+}
+
+.phase-spec-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.12rem;
+  padding: 0.45rem 0.6rem;
+  border-radius: 8px;
+  background: rgba(3, 7, 18, 0.75);
+  border: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.phase-spec-label {
+  font-family: var(--font-title);
+  font-size: 0.66rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-cyan);
+}
+
+.phase-spec-value {
+  font-family: var(--font-body);
+  font-size: 0.78rem;
+  font-weight: 500;
+  line-height: 1.35;
+  color: #e2e8f0;
+}
+
+.phase-specs-link {
+  align-self: flex-start;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  font-weight: 600;
+  color: #38bdf8;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.phase-specs-link:hover,
+.phase-specs-link:focus-visible {
+  color: #fbbf24;
+  text-decoration: underline;
+  outline: none;
 }
 
 /* Laboratorio Interattivo ESS (Fase 2) */
@@ -2824,6 +2889,10 @@ html, body {
     line-height: 1.6;
     word-wrap: break-word;
     overflow-wrap: break-word;
+  }
+
+  .phase-specs-grid {
+    grid-template-columns: 1fr;
   }
 
   .btn-phase-wave {
