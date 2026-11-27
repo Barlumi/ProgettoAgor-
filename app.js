@@ -382,6 +382,23 @@
   const INNERMOST_CIRCLE_IDS = Object.freeze(new Set(['lab-c1', 'part-c1', 'cred-c1']));
   const DIALOG_FOCUS_SELECTOR = 'button:not([disabled]), [href], [tabindex]:not([tabindex="-1"])';
 
+  const SCRUB_CONFIG = Object.freeze({
+    OUTER_MARGIN_SVG: 24,
+    CLICK_SUPPRESS_MS: 450,
+    HAPTIC_MS: 8
+  });
+
+  const SCRUB_HINT = Object.freeze({
+    RELEASE_TO_OPEN: 'Rilascia per aprire',
+    RELEASE_TO_CANCEL: 'Rilascia fuori per annullare',
+    CANCEL_LABEL: 'Selezione annullata'
+  });
+
+  const SCRUB_MODE = Object.freeze({
+    IDLE: 'idle',
+    ACTIVE: 'active'
+  });
+
   // Stile attivo applicato: Stile Easy (Onda spettrale su fondo ossidiana)
   let activeStyle = STILE_EASY;
 
@@ -2580,6 +2597,249 @@
   }
 
   function initEventHandlers() {
+    // Stato dello scrub tattile sui cerchi su mobile
+    const mobileScrubState = {
+      mode: SCRUB_MODE.IDLE,
+      pointerId: null,
+      activeCircle: null,
+      suppressClickUntil: 0
+    };
+
+    // Raggruppa i cerchi per centro mobile per calcolare l'anello più vicino al dito
+    const mobileGroups = (function buildMobileCircleGroups() {
+      const byCenter = new Map();
+
+      CIRCLES_REGISTRY.forEach(function (c) {
+        const cx = c.mobileCx || c.cx;
+        const cy = c.mobileCy || c.cy;
+        const radius = c.mobileRadius || c.radius;
+        const key = cx + ',' + cy;
+
+        if (!byCenter.has(key)) {
+          byCenter.set(key, { cx: cx, cy: cy, outerRadius: radius, circles: [] });
+        }
+
+        const group = byCenter.get(key);
+        group.circles.push(c);
+        if (radius > group.outerRadius) {
+          group.outerRadius = radius;
+        }
+      });
+
+      return Array.from(byCenter.values());
+    })();
+
+    // Converte coordinate schermo del puntatore nel sistema di coordinate SVG
+    function clientToSvgPoint(svg, clientX, clientY) {
+      if (!svg || typeof svg.getScreenCTM !== 'function') return null;
+
+      const ctm = svg.getScreenCTM();
+      if (!ctm) return null;
+
+      const pt = svg.createSVGPoint();
+      pt.x = clientX;
+      pt.y = clientY;
+      return pt.matrixTransform(ctm.inverse());
+    }
+
+    // Trova il cerchio mobile agganciato alla posizione corrente del dito
+    function findMobileCircleAtPoint(clientX, clientY) {
+      const svg = document.getElementById('soundWavesSvg');
+      const svgPt = clientToSvgPoint(svg, clientX, clientY);
+      if (!svgPt) return null;
+
+      let matchedGroup = null;
+      let minGroupDist = Infinity;
+
+      for (let i = 0; i < mobileGroups.length; i++) {
+        const group = mobileGroups[i];
+        const dist = Math.hypot(svgPt.x - group.cx, svgPt.y - group.cy);
+        if (dist <= group.outerRadius + SCRUB_CONFIG.OUTER_MARGIN_SVG && dist < minGroupDist) {
+          minGroupDist = dist;
+          matchedGroup = group;
+        }
+      }
+
+      if (!matchedGroup) return null;
+
+      let bestCircle = null;
+      let minRingDist = Infinity;
+
+      matchedGroup.circles.forEach(function (c) {
+        const radius = c.mobileRadius || c.radius;
+        const distFromCenter = Math.hypot(svgPt.x - matchedGroup.cx, svgPt.y - matchedGroup.cy);
+        const ringDist = (INNERMOST_CIRCLE_IDS.has(c.id) && distFromCenter <= radius)
+          ? 0
+          : Math.abs(distFromCenter - radius);
+
+        if (ringDist < minRingDist) {
+          minRingDist = ringDist;
+          bestCircle = c;
+        }
+      });
+
+      return bestCircle;
+    }
+
+    function updateMobileScrubIndicator(circle) {
+      const indicator = document.getElementById('mobileScrubIndicator');
+      const labelEl = document.getElementById('mobileScrubLabel');
+      const hintEl = document.getElementById('mobileScrubHint');
+      if (!indicator || !labelEl || !hintEl) return;
+
+      if (mobileScrubState.mode !== SCRUB_MODE.ACTIVE) {
+        indicator.classList.remove('visible', 'is-canceling');
+        indicator.setAttribute('aria-hidden', 'true');
+        return;
+      }
+
+      indicator.classList.add('visible');
+      indicator.setAttribute('aria-hidden', 'false');
+
+      if (!circle) {
+        indicator.classList.add('is-canceling');
+        labelEl.textContent = SCRUB_HINT.CANCEL_LABEL;
+        hintEl.textContent = SCRUB_HINT.RELEASE_TO_CANCEL;
+        return;
+      }
+
+      indicator.classList.remove('is-canceling');
+      labelEl.textContent = circle.labelText;
+      hintEl.textContent = SCRUB_HINT.RELEASE_TO_OPEN;
+    }
+
+    // Aggiorna anello evidenziato, energia d'onda, suono e aptica al cambio anello
+    function setScrubActiveCircle(nextCircle) {
+      const prevCircle = mobileScrubState.activeCircle;
+      const prevId = prevCircle ? prevCircle.id : null;
+      const nextId = nextCircle ? nextCircle.id : null;
+
+      if (prevId === nextId) return;
+
+      if (prevId) {
+        const prevDom = circleDOM[prevId];
+        if (prevDom && prevDom.group) {
+          prevDom.group.classList.remove('circle-scrub-active');
+        }
+        if (state.circles[prevId]) {
+          state.circles[prevId].isHovered = false;
+        }
+      }
+
+      mobileScrubState.activeCircle = nextCircle || null;
+
+      if (nextCircle) {
+        const nextDom = circleDOM[nextCircle.id];
+        if (nextDom && nextDom.group) {
+          nextDom.group.classList.add('circle-scrub-active');
+        }
+        if (state.circles[nextCircle.id]) {
+          state.circles[nextCircle.id].isHovered = true;
+          state.circles[nextCircle.id].motionEnergy = 1.0;
+        }
+
+        const freq = (activeStyle.audio && activeStyle.audio.frequencies[nextCircle.id]) || AUDIO_BUS_CONFIG.DEFAULT_VOICE_FREQ;
+        playRipplePulseSound(freq);
+
+        try {
+          if (typeof navigator.vibrate === 'function') {
+            navigator.vibrate(SCRUB_CONFIG.HAPTIC_MS);
+          }
+        } catch (e) {}
+      }
+
+      updateMobileScrubIndicator(nextCircle);
+    }
+
+    function clearMobileScrub() {
+      const prevCircle = mobileScrubState.activeCircle;
+      if (prevCircle) {
+        const prevDom = circleDOM[prevCircle.id];
+        if (prevDom && prevDom.group) {
+          prevDom.group.classList.remove('circle-scrub-active');
+        }
+        if (state.circles[prevCircle.id]) {
+          state.circles[prevCircle.id].isHovered = false;
+        }
+      }
+
+      mobileScrubState.mode = SCRUB_MODE.IDLE;
+      mobileScrubState.pointerId = null;
+      mobileScrubState.activeCircle = null;
+
+      const soundscapeContainer = document.getElementById('soundscapeContainer');
+      if (soundscapeContainer) {
+        soundscapeContainer.classList.remove('is-scrubbing');
+      }
+
+      updateMobileScrubIndicator(null);
+    }
+
+    // Gestione scrub tattile sull'SVG: trascina tra gli anelli e rilascia per aprire
+    const soundWavesSvg = document.getElementById('soundWavesSvg');
+    if (soundWavesSvg) {
+      soundWavesSvg.addEventListener('pointerdown', function (e) {
+        if (!isMobileViewport() || state.portalOpen) return;
+
+        const hit = findMobileCircleAtPoint(e.clientX, e.clientY);
+        if (!hit) return;
+
+        mobileScrubState.mode = SCRUB_MODE.ACTIVE;
+        mobileScrubState.pointerId = e.pointerId;
+
+        try {
+          soundWavesSvg.setPointerCapture(e.pointerId);
+        } catch (err) {}
+
+        const soundscapeContainer = document.getElementById('soundscapeContainer');
+        if (soundscapeContainer) {
+          soundscapeContainer.classList.add('is-scrubbing');
+        }
+
+        ensureAudioUnlocked();
+        setScrubActiveCircle(hit);
+      });
+
+      soundWavesSvg.addEventListener('touchmove', function (e) {
+        if (mobileScrubState.mode === SCRUB_MODE.ACTIVE) {
+          e.preventDefault();
+        }
+      }, { passive: false });
+
+      window.addEventListener('pointermove', function (e) {
+        if (mobileScrubState.mode !== SCRUB_MODE.ACTIVE || e.pointerId !== mobileScrubState.pointerId) {
+          return;
+        }
+        const nextCircle = findMobileCircleAtPoint(e.clientX, e.clientY);
+        setScrubActiveCircle(nextCircle);
+      });
+
+      window.addEventListener('pointerup', function (e) {
+        if (mobileScrubState.mode !== SCRUB_MODE.ACTIVE || e.pointerId !== mobileScrubState.pointerId) {
+          return;
+        }
+
+        try {
+          soundWavesSvg.releasePointerCapture(e.pointerId);
+        } catch (err) {}
+
+        const selected = mobileScrubState.activeCircle;
+        clearMobileScrub();
+        mobileScrubState.suppressClickUntil = performance.now() + SCRUB_CONFIG.CLICK_SUPPRESS_MS;
+
+        if (selected) {
+          activateCircleNavigation(selected);
+        }
+      });
+
+      window.addEventListener('pointercancel', function (e) {
+        if (mobileScrubState.mode !== SCRUB_MODE.ACTIVE || e.pointerId !== mobileScrubState.pointerId) {
+          return;
+        }
+        clearMobileScrub();
+      });
+    }
+
     // Clic ed hover sull'intero gruppo cerchio (inclusa l'etichetta curva)
     CIRCLES_REGISTRY.forEach(function (c) {
       const dom = circleDOM[c.id];
@@ -2587,7 +2847,10 @@
 
       const circleGroup = dom.group;
 
-      circleGroup.addEventListener('pointerenter', function () {
+      circleGroup.addEventListener('pointerenter', function (e) {
+        if (mobileScrubState.mode === SCRUB_MODE.ACTIVE || (isMobileViewport() && e.pointerType === 'touch')) {
+          return;
+        }
         ensureAudioUnlocked();
         if (performance.now() < state.suppressHoverAudioUntil) {
           return;
@@ -2596,19 +2859,28 @@
         state.circles[c.id].motionEnergy = 1.0;
       });
 
-      circleGroup.addEventListener('pointermove', function () {
+      circleGroup.addEventListener('pointermove', function (e) {
+        if (mobileScrubState.mode === SCRUB_MODE.ACTIVE || (isMobileViewport() && e.pointerType === 'touch')) {
+          return;
+        }
         if (performance.now() < state.suppressHoverAudioUntil) {
           return;
         }
         state.circles[c.id].motionEnergy = Math.min(1.0, state.circles[c.id].motionEnergy + 0.15);
       });
 
-      circleGroup.addEventListener('pointerleave', function () {
+      circleGroup.addEventListener('pointerleave', function (e) {
+        if (mobileScrubState.mode === SCRUB_MODE.ACTIVE || (isMobileViewport() && e.pointerType === 'touch')) {
+          return;
+        }
         state.circles[c.id].isHovered = false;
       });
 
       circleGroup.addEventListener('click', function (e) {
         e.stopPropagation();
+        if (performance.now() < mobileScrubState.suppressClickUntil) {
+          return;
+        }
         activateCircleNavigation(c);
       });
 
@@ -2890,7 +3162,7 @@
     let scrollRafId = null;
 
     function handleMobileAcousticScroll() {
-      if (!isMobileViewport() || state.portalOpen || state.audioMuted || !state.initialIntroCompleted) {
+      if (!isMobileViewport() || state.portalOpen || state.audioMuted || !state.initialIntroCompleted || mobileScrubState.mode === SCRUB_MODE.ACTIVE) {
         return;
       }
       ensureAudioUnlocked();
