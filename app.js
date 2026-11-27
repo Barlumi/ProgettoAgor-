@@ -26,8 +26,8 @@
         'I ricercatori hanno condotto una campagna sperimentale in 5 città dell\'Emilia-Romagna (Parma, Rimini, Faenza, Comacchio e Tresigallo), registrando il soundscape di 11 piazze storiche.',
         'Al centro di ogni piazza è stato posizionato un microfono sferico a 64 capsule (Eigenmike em64) abbinato a una telecamera 360° in 8K. Su rete digitale Dante a 48 kHz, audio e video vengono acquisiti in sincronia per documentare il campo acustico e le immagini dello spazio urbano.'
       ],
-      image: 'assets/gallery/image12.jpg',
-      imageCaption: 'Rilievo in Piazza Cavour a Rimini: microfono sferico Eigenmike em64 e telecamera 360° in 8K per la registrazione del soundscape.'
+      image: 'assets/gallery/image31.jpg',
+      imageCaption: 'Rilievo in Piazza Cavour a Rimini: microfono sferico Eigenmike em64 (con antivento), telecamera 360° e testa binaurale per la registrazione del soundscape.'
     },
     {
       num: 2,
@@ -37,8 +37,8 @@
         'Facciate, colonne e portici riflettono il suono definendo l\'acustica di ogni piazza. Le misure seguono lo standard ISO 3382, applicando allo spazio aperto i parametri utilizzati per teatri e sale da concerto.',
         'Attraverso il metodo ESS (Exponential Sine Sweep), una sorgente a dodecaedro emette uno sweep a frequenza crescente che permette di calcolare la Risposta all\'Impulso (IR 3D). Con l\'approccio multicanale MIMO si ricavano il tempo di riverberazione (T30 di circa 1,6 s a Rimini) e la direzione delle prime riflessioni.'
       ],
-      image: 'assets/gallery/image31.jpg',
-      imageCaption: 'Misura acustica in Piazza Cavour a Rimini: calcolo della risposta all\'impulso e del tempo di riverberazione con sorgente a dodecaedro.',
+      image: 'assets/gallery/image12.jpg',
+      imageCaption: 'Misura acustica in Piazza Cavour a Rimini: sorgente omnidirezionale a dodecaedro per il calcolo della risposta all\'impulso (ESS) e del tempo di riverberazione.',
       hasEssDemo: true
     },
     {
@@ -224,22 +224,22 @@
       items: [
         {
           title: 'Rimini, Piazza Cavour',
-          caption: 'Setup di misura con microfono sferico a 64 capsule Eigenmike em64 e sorgente acustica per la cattura del soundscape.',
+          caption: 'Sorgente acustica omnidirezionale a dodecaedro posizionata in Piazza Cavour per la misura della risposta all\'impulso (ESS).',
           image: 'assets/gallery/image12.jpg'
         },
         {
           title: 'Faenza, Piazza del Popolo',
-          caption: 'Il gruppo di ricerca CIRI-EC dell\'Università di Bologna con la sonda sferica sotto le arcate dei portici storici.',
+          caption: 'Il gruppo di ricerca CIRI-EC dell\'Università di Bologna con la sorgente omnidirezionale a dodecaedro affacciato su Piazza del Popolo.',
           image: 'assets/gallery/image13.jpg'
         },
         {
           title: 'Tresigallo, Piazza della Repubblica',
-          caption: 'Postazione di misura ed emissione acustica installata in prossimità della fontana monumentale nella Città del \'900.',
+          caption: 'Postazione di acquisizione con microfono sferico Eigenmike em64, telecamera 360° e microfono di riferimento presso la fontana monumentale.',
           image: 'assets/gallery/image14.jpg'
         },
         {
           title: 'Faenza, Teatro Masini',
-          caption: 'Misura delle risposte all\'impulso tridimensionali (IR 3D) con sonda sferica dal palcoscenico verso l\'ordine dei palchi.',
+          caption: 'Misura delle risposte all\'impulso 3D (IR 3D) dai palchi verso il palcoscenico con microfono sferico Eigenmike em64, telecamera 360° e testa binaurale.',
           image: 'assets/gallery/image15.jpg'
         },
         {
@@ -253,8 +253,8 @@
           image: 'assets/gallery/image17.jpg'
         },
         {
-          title: 'Array Sferico em64 sul Cavalletto',
-          caption: 'Dettaglio della sfera rigida a 64 capsule Eigenmike em64 a 1,7 m di quota (Rimini, 2024).',
+          title: 'Sorgente a Dodecaedro sul Cavalletto',
+          caption: 'Dettaglio della sorgente sonora omnidirezionale a dodecaedro su cavalletto in Piazza Cavour (Rimini, 2024).',
           image: 'assets/gallery/image27.jpg'
         },
         {
@@ -263,8 +263,8 @@
           image: 'assets/gallery/image23.jpg'
         },
         {
-          title: 'Sorgente Sferica Chiesi & Eigenmike-32',
-          caption: 'Diffusore sferico a 32 trasduttori controllati singolarmente (sinistra) e sonda microfonica a 32 capsule (destra).',
+          title: 'Sorgente Sferica a 32 Trasduttori',
+          caption: 'Diffusore sferico multicanale a 32 trasduttori controllati singolarmente per misure acustiche MIMO.',
           image: 'assets/gallery/image24.jpg'
         },
         {
@@ -289,7 +289,7 @@
         },
         {
           title: 'Piazza Cavour come Sala da Concerto',
-          caption: 'em64 + dodecaedro con altoparlanti pilotati singolarmente (MIMO). Decadimento misurato ≈ 1,6 s: analogo a una sala d\'opera media.',
+          caption: 'Postazione di acquisizione in Piazza Cavour con Eigenmike em64, telecamera 360° e testa binaurale (decadimento misurato ≈ 1,6 s, analogo a una sala d\'opera media).',
           image: 'assets/gallery/image31.jpg'
         },
         {
