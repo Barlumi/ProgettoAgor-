@@ -2147,14 +2147,14 @@ html, body {
   }
 
   /* Risalto visivo immediato durante lo Scroll Sonoro */
-  .circle-item.circle-sounding .wave-path-visible {
+  .circle-item.circle-sounding .wave-single-circle {
     stroke: #38bdf8 !important;
     stroke-width: 2.2px !important;
     filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.95)) !important;
   }
 
-  .circle-item.circle-sounding .wave-strand-inner,
-  .circle-item.circle-sounding .wave-strand-outer {
+  .circle-item.circle-sounding .wave-harmonic-strand.strand-inner,
+  .circle-item.circle-sounding .wave-harmonic-strand.strand-outer {
     opacity: 0.75 !important;
     stroke-opacity: 0.75 !important;
   }
@@ -2381,7 +2381,7 @@ html, body {
     margin: 2rem auto 0 auto;
   }
 
-  .partner-circle-card {
+  .partner-circular-card {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -2398,7 +2398,7 @@ html, body {
     inset: 14px;
   }
 
-  .partner-circle-caption {
+  .partner-circular-name {
     font-size: 0.85rem;
     line-height: 1.45;
     margin-top: 0.85rem;
