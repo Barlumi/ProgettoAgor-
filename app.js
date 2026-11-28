@@ -128,6 +128,62 @@
     Object.freeze({ id: GALLERY_CATEGORY.VIDEOS, label: 'Video' })
   ]);
 
+  const BASE_DOCUMENT_TITLE = 'AGORÀ — Laboratorio Virtuale Acustico';
+
+  const SECTION_KEY = Object.freeze({
+    LABORATORIO: 'laboratorio',
+    TIMELINE: 'timeline',
+    GALLERY: 'gallery',
+    PARTNERSHIP: 'partnership',
+    PUBBLICAZIONI: 'pubblicazioni',
+    CREDITS: 'credits'
+  });
+
+  const ROUTE_SLUG = Object.freeze({
+    PHASE_PREFIX: 'fase-',
+    TIMELINE: 'timeline',
+    GALLERY: 'gallery',
+    PARTNER: 'partner',
+    PUBBLICAZIONI: 'pubblicazioni',
+    CREDITI: 'crediti'
+  });
+
+  const ROUTE_TYPE = Object.freeze({
+    HOME: 'home',
+    PHASE: 'phase',
+    SECTION: 'section'
+  });
+
+  const URL_SYNC_MODE = Object.freeze({
+    PUSH: 'push',
+    REPLACE: 'replace',
+    NONE: 'none'
+  });
+
+  const PHASE_TRANSITION = Object.freeze({
+    FADE: 'fade',
+    IMMEDIATE: 'immediate'
+  });
+
+  const SECTION_TO_SLUG = Object.freeze({
+    [SECTION_KEY.TIMELINE]: ROUTE_SLUG.TIMELINE,
+    [SECTION_KEY.GALLERY]: ROUTE_SLUG.GALLERY,
+    [SECTION_KEY.PARTNERSHIP]: ROUTE_SLUG.PARTNER,
+    [SECTION_KEY.PUBBLICAZIONI]: ROUTE_SLUG.PUBBLICAZIONI,
+    [SECTION_KEY.CREDITS]: ROUTE_SLUG.CREDITI
+  });
+
+  const SLUG_TO_SECTION = Object.freeze({
+    timeline: SECTION_KEY.TIMELINE,
+    gallery: SECTION_KEY.GALLERY,
+    galleria: SECTION_KEY.GALLERY,
+    partner: SECTION_KEY.PARTNERSHIP,
+    partnership: SECTION_KEY.PARTNERSHIP,
+    pubblicazioni: SECTION_KEY.PUBBLICAZIONI,
+    crediti: SECTION_KEY.CREDITS,
+    credits: SECTION_KEY.CREDITS
+  });
+
   // -------------------------------------------------------------------------
   // DATI DETTAGLIATI PROGETTO AGORÀ (CIRI-EC Università di Bologna)
   // -------------------------------------------------------------------------
@@ -763,38 +819,111 @@
       ]
     },
     pubblicazioni: {
-      category: 'Letteratura Scientifica',
+      category: 'Letteratura Scientifica · 27 Contributi',
       title: 'Pubblicazioni & Ricerca',
       sections: [
         {
-          heading: 'Articoli su Riviste Internazionali con Peer-Review',
+          heading: 'Articoli su Riviste Internazionali con Peer-Review (5)',
           text: [
-            '• Farina A. et al. (2025) — "Immersive 3D Soundscape: Analysis of Environmental Acoustic Parameters of Historical Squares in Parma (Italy)". Urban Science, 9(7): 259.',
-            '• Bevilacqua A., Farina A., Tronchin L. (2026) — "Six-Degree-of-Freedom Audio Rendering Using Spatial Impulse Responses in an Urban Context". ASME Journal of Vibration and Acoustics (in press).'
+            {
+              text: '• Yan R., Tronchin L. (2026) — "Binaural and lateral energy parameters across seating zones in five historical European theatres: The role of architectural typology". Applied Acoustics, 258: 111663.',
+              doi: 'https://doi.org/10.1016/j.apacoust.2026.111663'
+            },
+            {
+              text: '• Bevilacqua A., Farina A., Tronchin L. (2026) — "Six-Degree-of-Freedom Audio Rendering Using Spatial Impulse Responses in an Urban Context". ASME Journal of Vibration and Acoustics, 148: 051002.',
+              doi: 'https://doi.org/10.1115/1.4071504'
+            },
+            {
+              text: '• Farina A., Bevilacqua A., Fadda M., Battisti L., Tommasino M.C., Tronchin L. (2025) — "Immersive 3D Soundscape: Analysis of Environmental Acoustic Parameters of Historical Squares in Parma (Italy)". Urban Science, 9(7): 259.',
+              doi: 'https://doi.org/10.3390/urbansci9070259'
+            },
+            {
+              text: '• Yan R., Tronchin L. (2025) — "Acoustic characteristics and objective evaluation of acoustic quality in historical Italian theaters". Applied Acoustics, 233: 110483 (Corrigendum: Vol. 245, 111207).',
+              doi: 'https://doi.org/10.1016/j.apacoust.2024.110483'
+            },
+            {
+              text: '• Stefani D., Binelli M., Farina A., Turchet L. (2025) — "Improved Real-Time Six-Degrees-of-Freedom Dynamic Auralization Through Nonuniformly Partitioned Convolution". Journal of the Audio Engineering Society (JAES).',
+              doi: 'https://doi.org/10.17743/jaes.2022.0224'
+            }
           ]
         },
         {
-          heading: 'Atti del Congresso Internazionale I3DA 2025 (Immersive and 3D Audio)',
+          heading: 'Atti del Congresso Internazionale I3DA 2025 — Bologna, 10–12 Settembre 2025 (13)',
           text: [
-            '• Battisti L. et al. — "3D Soundscape in Piazza Duomo of Parma"',
-            '• Tentoni G. et al. — "Soundscape in Piazza Garibaldi in Parma"',
-            '• Bevilacqua A. et al. — "Piazzale San Francesco (Parma) and Trafalgar Square"',
-            '• Martinetti A. et al. — "Piazza Tre Martiri (Rimini) and Piccadilly Circus"',
-            '• Tentoni G. et al. — "Piazza Cavour (Rimini) and Buckingham Palace Square"',
-            '• Bevilacqua A. et al. — "Piazza del Popolo (Faenza) and Leicester Square"',
-            '• Tronchin L. et al. — "Teatro Masini, Faenza: Indagini 2020 e 2025"',
-            '• Rimoldi V.D.F. et al. — "Teatro Comunale di Bologna senza poltrone"'
+            {
+              text: '• Battisti L., Tentoni G., Martinetti A., Fadda M., Farina A. — "3D Soundscape in Piazza Duomo of Parma, Italy".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202058'
+            },
+            {
+              text: '• Tentoni G., Martinetti A., Battisti L., Fadda M., Farina A., Tommasino M.C. — "Soundscape in Piazza Garibaldi in Parma, Italy".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202100'
+            },
+            {
+              text: '• Farina A., Tentoni G., Martinetti A., Battisti L., Fadda M., Tommasino M.C. — "Soundscape in Piazzale della Pilotta in Parma, Italy".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202060'
+            },
+            {
+              text: '• Bevilacqua A., Tentoni G., Martinetti A., Guardigli L., Turillazzi B., Fadda M., Farina A., Battisti L., Tronchin L. — "Measured soundscapes in Piazzale San Francesco in Parma and Trafalgar Square in London".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202085'
+            },
+            {
+              text: '• Martinetti A., Tentoni G., Bevilacqua A., Guardigli L., Turillazzi B., Battisti L., Farina A., Tronchin L. — "Soundscapes analysis: Piazza Tre Martiri in Rimini and Piccadilly Circus in London".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202075'
+            },
+            {
+              text: '• Tentoni G., Martinetti A., Guardigli L., Turillazzi B., Bevilacqua A., Farina A., Battisti L., Tronchin L. — "Two soundscapes in comparison: Piazza Cavour in Rimini and Buckingham Palace Square in London".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202108'
+            },
+            {
+              text: '• Bevilacqua A., Tentoni G., Martinetti A., Farina A., Yan R., Fadda M., Battisti L., van Tonder C., Tronchin L. — "Soundscapes across two historical cities: Piazza del Popolo in Faenza and Leicester Square in London".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202070'
+            },
+            {
+              text: '• Bevilacqua A., Farina A., Binelli M., Ferrari J., Pinardi D., Martinetti A. — "Soundscapes across London: insight through Westminster Square and St James Park".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202038'
+            },
+            {
+              text: '• Tentoni G., Martinetti A., Battisti L., Tronchin L., Gelli F. — "Soundscapes in Piazza della Repubblica of Tresigallo, Italy".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202116'
+            },
+            {
+              text: '• Tronchin L., Yan R., Saito H., Gelli F. — "Acoustic Characteristics of Teatro 900 in Tresigallo, Italy".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202098'
+            },
+            {
+              text: '• Tronchin L., Saito H., Denaro A., Tentoni G., Martinetti A., Gelli F. — "Acoustics measurements of Santa Maria\'s church in Pomposa, Italy".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202087'
+            },
+            {
+              text: '• Tronchin L., Yan R., Jambrošić K., Horvat M., Battisti L., Fadda M., Farina A., van Tonder C. — "Comparative Acoustic Survey of Teatro Masini, Faenza: Insights from the 2020 and 2025 Investigations".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202083'
+            },
+            {
+              text: '• Rimoldi V.D.F., Bevilacqua A., Saito H., Farina A., Yan R., Fadda M., Tronchin L. — "A Rare Event for the Teatro Comunale in Bologna: Acoustic Response without Seats".',
+              doi: 'https://doi.org/10.1109/I3DA65421.2025.11202059'
+            }
           ]
         },
         {
-          heading: 'Atti del Congresso Internazionale I3DA 2026',
+          heading: 'Atti del Congresso Internazionale I3DA 2026 — Venezia, 19–22 Novembre 2026 (7)',
           text: [
-            '• Bevilacqua A., Farina A. et al. — "MIMO Measurements in Piazza Cavour"',
-            '• Farina A., Bevilacqua A. et al. — "MIMO Measurements inside the Teatro Municipale in Piacenza"',
-            '• Denaro A. et al. — "Acoustic Characterisation of Piazza Trepponti in Comacchio"',
-            '• Tronchin L., Gelli F., Tentoni G. — "Luigi Russolo and the Acoustic Heritage of Comacchio"',
-            '• Tronchin L., Denaro A. et al. — "A New Questionnaire for Subjective Assessment of Acoustic Quality through Reproduction in Ambisonics and WFS Virtual Environments"',
-            '• Bevilacqua A., Farina A. et al. — "Evaluation of Acoustic and Scenery within the Communal Theatre in Modena"'
+            '• Bevilacqua A., Farina A., Tronchin L. — "MIMO Measurements in Piazza Cavour: Innovative Approach for Measuring an Outdoor Environment".',
+            '• Tronchin L., Farina A., Tommasino M.C., Bevilacqua A. — "A Fully Demountable AGORA Listening Room in Tresigallo: Project and Acoustic Specifications".',
+            '• Farina A., Bevilacqua A. et al. — "MIMO Measurements inside the Teatro Municipale in Piacenza".',
+            '• Denaro A. et al. — "Acoustic Characterisation of Piazza Trepponti in Comacchio".',
+            '• Tronchin L., Gelli F., Tentoni G. — "Luigi Russolo and the Acoustic Heritage of Comacchio".',
+            '• Tronchin L., Denaro A. et al. — "A New Questionnaire for Subjective Assessment of Acoustic Quality through Reproduction in Ambisonics and WFS Virtual Environments".',
+            '• Bevilacqua A., Farina A. et al. — "Evaluation of Acoustic and Scenery within the Communal Theatre in Modena".'
+          ]
+        },
+        {
+          heading: 'Altri Congressi Internazionali — IEEE IS2 (Internet of Sounds) (2)',
+          text: [
+            '• Ferrari M., Bevilacqua A., Vittori C., Adenot P., Buffa M., Turchet L. (2026) — "Browser-Native Real-Time Multi-directional Streaming of Third-Order Ambisonics". IEEE IS2 Conference, Cannes, 28–30 Ottobre 2026.',
+            {
+              text: '• Yan R., Tronchin L., Saito H. (2025) — "Visual and Objective Comparison of Two Concert Halls Using B-Format Recordings and HOA-Based Immersive Maps". IEEE IS2 2025.',
+              doi: 'https://doi.org/10.1109/IS264627.2025.11284636'
+            }
           ]
         }
       ]
@@ -1326,6 +1455,27 @@
 
   const ROOM_3D_BLANK_URL = 'about:blank';
 
+  const ROOM_3D_PROGRESS_CONFIG = Object.freeze({
+    START_PERCENT: 6,
+    MAX_PENDING_PERCENT: 92,
+    COMPLETE_PERCENT: 100,
+    ASYMPTOTE_TAU_MS: 2800,
+    COMPLETE_HOLD_MS: 320,
+    SLOW_HINT_DELAY_MS: 8000,
+    STAGE_SCENE_THRESHOLD: 35,
+    STAGE_INIT_THRESHOLD: 72
+  });
+
+  const ROOM_3D_LOAD_STAGE = Object.freeze({
+    CONNECTING: 'Connessione al server 3D…',
+    LOADING_SCENE: 'Caricamento modello 3D…',
+    INITIALIZING: 'Inizializzazione scena WebGL…',
+    READY: 'Modello 3D pronto',
+    DEFAULT_HINT: 'Sala immersiva interattiva · e-muse.it',
+    SLOW_HINT: 'Caricamento esteso — puoi anche aprire su e-muse.it ↗',
+    ERROR: 'Impossibile caricare l\'anteprima integrata.'
+  });
+
   const ESS_SIGNAL_TYPE = Object.freeze({
     SWEEP: 'sweep',
     INVERSE: 'inverse',
@@ -1364,19 +1514,30 @@
   // Stile attivo applicato: Stile Easy (Onda spettrale su fondo ossidiana)
   let activeStyle = STILE_EASY;
 
-  // -------------------------------------------------------------------------
-  // REGISTRO DEI CERCHI (STRUTTURA GEOMETRICA FISSA: Sinistra 5 Fasi | Destra)
-  // -------------------------------------------------------------------------
+  const CIRCLE_GAP_CONFIG = Object.freeze({
+    DESKTOP_FALLBACK_CHAR_PX: 13.2,
+    MOBILE_FALLBACK_CHAR_PX: 14.0,
+    DESKTOP_PADDING_PX: 30,
+    MOBILE_PADDING_PX: 24,
+    HOVER_BOLD_FACTOR: 1.08,
+    MAX_GAP_HALF_ANGLE: Math.PI * 0.78,
+    GUIDE_EXTRA_RAD: 0.35,
+    MIN_GUIDE_SPAN_RAD: 0.72,
+    MAX_GUIDE_SPAN_RAD: Math.PI * 0.92,
+    BACK_HOME_FALLBACK_CHAR_PX: 10.2,
+    BACK_HOME_PADDING_PX: 20
+  });
+
   // -------------------------------------------------------------------------
   // REGISTRO DEI CERCHI (COORDINATE DINAMICHE: Desktop Orizzontale | Mobile Verticale)
   // -------------------------------------------------------------------------
   const CIRCLES_REGISTRY = [
-    // --- ONDA 1: LABORATORIO VIRTUALE (5 ONDE CONCENTRICHE, DISTANZE ARMONIZZATE E COMPATTE) ---
+    // --- ONDA 1: LABORATORIO VIRTUALE (5 ONDE CONCENTRICHE, DISTANZE ARMONIZZATE E AMPIE) ---
     {
       id: 'lab-c1',
       system: 'laboratorio',
-      cx: 540, cy: 475, radius: 80, labelAngle: 0.85 * Math.PI,
-      mobileCx: 285, mobileCy: 390, mobileRadius: 65, mobileLabelAngle: 0.85 * Math.PI,
+      cx: 540, cy: 475, radius: 100, labelAngle: 0.85 * Math.PI,
+      mobileCx: 300, mobileCy: 360, mobileRadius: 78, mobileLabelAngle: 0.85 * Math.PI,
       labelText: '1 • Acquisizione 3D',
       isPhase: true,
       phaseIndex: 0
@@ -1384,8 +1545,8 @@
     {
       id: 'lab-c2',
       system: 'laboratorio',
-      cx: 540, cy: 475, radius: 140, labelAngle: 0.25 * Math.PI,
-      mobileCx: 285, mobileCy: 390, mobileRadius: 100, mobileLabelAngle: 0.25 * Math.PI,
+      cx: 540, cy: 475, radius: 162, labelAngle: 0.25 * Math.PI,
+      mobileCx: 300, mobileCy: 360, mobileRadius: 118, mobileLabelAngle: 0.25 * Math.PI,
       labelText: '2 • Risposte ad Impulso',
       isPhase: true,
       phaseIndex: 1
@@ -1393,8 +1554,8 @@
     {
       id: 'lab-c3',
       system: 'laboratorio',
-      cx: 540, cy: 475, radius: 200, labelAngle: 1.25 * Math.PI,
-      mobileCx: 285, mobileCy: 390, mobileRadius: 135, mobileLabelAngle: 1.25 * Math.PI,
+      cx: 540, cy: 475, radius: 224, labelAngle: 1.25 * Math.PI,
+      mobileCx: 300, mobileCy: 360, mobileRadius: 158, mobileLabelAngle: 1.25 * Math.PI,
       labelText: '3 • Armoniche Sferiche',
       isPhase: true,
       phaseIndex: 2
@@ -1402,8 +1563,8 @@
     {
       id: 'lab-c4',
       system: 'laboratorio',
-      cx: 540, cy: 475, radius: 260, labelAngle: 1.75 * Math.PI,
-      mobileCx: 285, mobileCy: 390, mobileRadius: 170, mobileLabelAngle: 1.75 * Math.PI,
+      cx: 540, cy: 475, radius: 286, labelAngle: 1.75 * Math.PI,
+      mobileCx: 300, mobileCy: 360, mobileRadius: 198, mobileLabelAngle: 1.75 * Math.PI,
       labelText: '4 • Realtà Virtuale 6DoF',
       isPhase: true,
       phaseIndex: 3
@@ -1411,8 +1572,8 @@
     {
       id: 'lab-c5',
       system: 'laboratorio',
-      cx: 540, cy: 475, radius: 320, labelAngle: 0.00 * Math.PI,
-      mobileCx: 285, mobileCy: 390, mobileRadius: 205, mobileLabelAngle: 0.05 * Math.PI,
+      cx: 540, cy: 475, radius: 348, labelAngle: 0.00 * Math.PI,
+      mobileCx: 300, mobileCy: 360, mobileRadius: 238, mobileLabelAngle: 0.05 * Math.PI,
       labelText: '5 • Restituzione Immersiva',
       isPhase: true,
       phaseIndex: 4
@@ -1422,24 +1583,24 @@
     {
       id: 'part-c1',
       system: 'partnership',
-      cx: 1240, cy: 285, radius: 65, labelAngle: 0.90 * Math.PI,
-      mobileCx: 315, mobileCy: 890, mobileRadius: 75, mobileLabelAngle: 0.85 * Math.PI,
+      cx: 1240, cy: 295, radius: 76, labelAngle: 0.90 * Math.PI,
+      mobileCx: 300, mobileCy: 890, mobileRadius: 78, mobileLabelAngle: 0.85 * Math.PI,
       labelText: 'Partner',
       isPhase: false
     },
     {
       id: 'part-c2',
       system: 'credits',
-      cx: 1240, cy: 285, radius: 115, labelAngle: 1.65 * Math.PI,
-      mobileCx: 315, mobileCy: 890, mobileRadius: 128, mobileLabelAngle: 1.65 * Math.PI,
+      cx: 1240, cy: 295, radius: 130, labelAngle: 1.65 * Math.PI,
+      mobileCx: 300, mobileCy: 890, mobileRadius: 130, mobileLabelAngle: 1.65 * Math.PI,
       labelText: 'Crediti',
       isPhase: false
     },
     {
       id: 'part-c3',
       system: 'pubblicazioni',
-      cx: 1240, cy: 285, radius: 165, labelAngle: 0.00 * Math.PI,
-      mobileCx: 315, mobileCy: 890, mobileRadius: 180, mobileLabelAngle: 0.15 * Math.PI,
+      cx: 1240, cy: 295, radius: 184, labelAngle: 0.00 * Math.PI,
+      mobileCx: 300, mobileCy: 890, mobileRadius: 182, mobileLabelAngle: 0.15 * Math.PI,
       labelText: 'Pubblicazioni',
       isPhase: false
     },
@@ -1448,16 +1609,16 @@
     {
       id: 'cred-c1',
       system: 'timeline',
-      cx: 1240, cy: 690, radius: 65, labelAngle: 0.85 * Math.PI,
-      mobileCx: 285, mobileCy: 1340, mobileRadius: 85, mobileLabelAngle: 0.85 * Math.PI,
+      cx: 1240, cy: 700, radius: 76, labelAngle: 0.85 * Math.PI,
+      mobileCx: 300, mobileCy: 1340, mobileRadius: 85, mobileLabelAngle: 0.85 * Math.PI,
       labelText: 'Timeline',
       isPhase: false
     },
     {
       id: 'cred-c2',
       system: 'gallery',
-      cx: 1240, cy: 690, radius: 110, labelAngle: 0.00 * Math.PI,
-      mobileCx: 285, mobileCy: 1340, mobileRadius: 155, mobileLabelAngle: 0.05 * Math.PI,
+      cx: 1240, cy: 700, radius: 130, labelAngle: 0.00 * Math.PI,
+      mobileCx: 300, mobileCy: 1340, mobileRadius: 150, mobileLabelAngle: 0.05 * Math.PI,
       labelText: 'Gallery',
       isPhase: false
     }
@@ -3297,18 +3458,35 @@
   // -------------------------------------------------------------------------
   // CALCOLO GEOMETRICO: CERCHIO APERTO CON RESPIRO LATERALE PER IL TESTO
   // -------------------------------------------------------------------------
-  function computeCircleGapArc(c) {
+  function computeCircleGapArc(c, textElem) {
     if (!c.labelText) {
       return { hasGap: false };
     }
 
     const coords = getCircleCoords(c);
     const isMob = isMobileViewport();
-    const textPxWidth = c.labelText.length * (isMob ? 11.0 : 10.5);
-    const paddingPx = isMob ? 14 : 22; // Respiro laterale calibrato
+    const fallbackCharPx = isMob ? CIRCLE_GAP_CONFIG.MOBILE_FALLBACK_CHAR_PX : CIRCLE_GAP_CONFIG.DESKTOP_FALLBACK_CHAR_PX;
+    const fallbackWidth = c.labelText.length * fallbackCharPx;
+
+    let measuredWidth = 0;
+    if (textElem && typeof textElem.getComputedTextLength === 'function') {
+      try {
+        measuredWidth = textElem.getComputedTextLength();
+      } catch (err) {
+        measuredWidth = 0;
+      }
+    }
+
+    // Include il fattore di ingrossamento hover-bold per impedire contatti anche al passaggio del mouse
+    const textPxWidth = measuredWidth > 0
+      ? Math.max(measuredWidth * CIRCLE_GAP_CONFIG.HOVER_BOLD_FACTOR, fallbackWidth * 0.85)
+      : fallbackWidth;
+    const paddingPx = isMob ? CIRCLE_GAP_CONFIG.MOBILE_PADDING_PX : CIRCLE_GAP_CONFIG.DESKTOP_PADDING_PX;
     const totalGapPx = textPxWidth + paddingPx * 2;
 
-    const gapHalfAngle = (totalGapPx / 2) / coords.radius;
+    const effectiveRadius = Math.max(24, coords.radius - activeStyle.dynamics.hoverPulseRadius);
+    const rawHalfAngle = (totalGapPx / 2) / effectiveRadius;
+    const gapHalfAngle = Math.min(CIRCLE_GAP_CONFIG.MAX_GAP_HALF_ANGLE, rawHalfAngle);
     const centerAngle = coords.labelAngle;
 
     const arcStartAngle = centerAngle + gapHalfAngle;
@@ -3321,6 +3499,41 @@
       arcStartAngle: arcStartAngle,
       arcEndAngle: arcEndAngle
     };
+  }
+
+  // Ricalcola tracce guida e varchi su tutti i cerchi dopo font-load o cambio layout
+  function refreshAllCircleGaps() {
+    CIRCLES_REGISTRY.forEach(function (c) {
+      const dom = circleDOM[c.id];
+      if (!dom) return;
+
+      const coords = getCircleCoords(c);
+      if (dom.guidePath && c.labelText) {
+        const seedArc = generateTextGuideArc(
+          coords.cx,
+          coords.cy,
+          coords.radius,
+          coords.labelAngle,
+          c.labelText,
+          CIRCLE_GAP_CONFIG.MAX_GUIDE_SPAN_RAD - CIRCLE_GAP_CONFIG.GUIDE_EXTRA_RAD
+        );
+        dom.guidePath.setAttribute('d', seedArc);
+      }
+
+      dom.gapData = computeCircleGapArc(c, dom.textElem);
+
+      if (dom.guidePath && dom.gapData.hasGap) {
+        const finalArc = generateTextGuideArc(
+          coords.cx,
+          coords.cy,
+          coords.radius,
+          dom.gapData.centerAngle,
+          c.labelText,
+          dom.gapData.gapHalfAngle
+        );
+        dom.guidePath.setAttribute('d', finalArc);
+      }
+    });
   }
 
   function revealAllCirclesImmediately() {
@@ -3368,13 +3581,7 @@
       }
     });
 
-    // Ricalcola i varchi per i testi su tutti i cerchi
-    CIRCLES_REGISTRY.forEach(function (c) {
-      const dom = circleDOM[c.id];
-      if (dom) {
-        dom.gapData = computeCircleGapArc(c);
-      }
-    });
+    refreshAllCircleGaps();
   }
 
   // -------------------------------------------------------------------------
@@ -3419,6 +3626,8 @@
 
       // 3. Tracciato Guida per il Testo su Path (<textPath>)
       let guidePath = null;
+      let textElem = null;
+      let textPathElem = null;
       if (c.labelText) {
         guidePath = document.createElementNS('http://www.w3.org/2000/svg', 'path');
         guidePath.setAttribute('id', 'guide-' + c.id);
@@ -3426,11 +3635,11 @@
         guidePath.setAttribute('stroke', 'none');
         g.appendChild(guidePath);
 
-        const textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        textElem = document.createElementNS('http://www.w3.org/2000/svg', 'text');
         textElem.setAttribute('class', 'wave-path-text');
         textElem.setAttribute('dominant-baseline', 'central');
 
-        const textPathElem = document.createElementNS('http://www.w3.org/2000/svg', 'textPath');
+        textPathElem = document.createElementNS('http://www.w3.org/2000/svg', 'textPath');
         textPathElem.setAttributeNS('http://www.w3.org/1999/xlink', 'xlink:href', '#guide-' + c.id);
         textPathElem.setAttribute('href', '#guide-' + c.id);
         textPathElem.setAttribute('startOffset', '50%');
@@ -3461,10 +3670,15 @@
         strandA: strandA,
         strandB: strandB,
         guidePath: guidePath,
+        textElem: textElem,
+        textPathElem: textPathElem,
         hitProxy: hitProxy,
-        gapData: computeCircleGapArc(c)
+        gapData: { hasGap: false }
       };
     });
+
+    // Misura la larghezza reale dei testi ora che gli elementi SVG sono nel DOM
+    refreshAllCircleGaps();
 
     // 5. Hub Centrali Informativi (Rendono immediatamente chiaro il contenuto di ogni gruppo di onde)
     SYSTEM_HUBS.forEach(function (hub) {
@@ -3547,39 +3761,53 @@
     return pathParts.join(' ');
   }
 
-  function generateTextGuideArc(cx, cy, radius, centerAngle, labelText) {
-    const textLen = (labelText && labelText.length) ? labelText.length : 12;
+  function generateTextGuideArc(cx, cy, radius, centerAngle, labelText, gapHalfAngle) {
     const isMob = isMobileViewport();
-    // Calcolo dell'estensione dell'arco guida calibrato su scala desktop e mobile
-    const charAngle = (isMob ? 11.5 : 9.0) / radius;
-    const span = Math.min(1.35, Math.max(0.60, (textLen * charAngle) / 2 + 0.30));
+    const safeRadius = Math.max(24, radius);
+    let span = 0;
+
+    if (typeof gapHalfAngle === 'number' && gapHalfAngle > 0) {
+      span = Math.min(
+        CIRCLE_GAP_CONFIG.MAX_GUIDE_SPAN_RAD,
+        Math.max(CIRCLE_GAP_CONFIG.MIN_GUIDE_SPAN_RAD, gapHalfAngle + CIRCLE_GAP_CONFIG.GUIDE_EXTRA_RAD)
+      );
+    } else {
+      const textLen = (labelText && labelText.length) ? labelText.length : 12;
+      const charPx = isMob ? CIRCLE_GAP_CONFIG.MOBILE_FALLBACK_CHAR_PX : CIRCLE_GAP_CONFIG.DESKTOP_FALLBACK_CHAR_PX;
+      const charAngle = charPx / safeRadius;
+      span = Math.min(
+        CIRCLE_GAP_CONFIG.MAX_GUIDE_SPAN_RAD,
+        Math.max(CIRCLE_GAP_CONFIG.MIN_GUIDE_SPAN_RAD, (textLen * charAngle) / 2 + CIRCLE_GAP_CONFIG.GUIDE_EXTRA_RAD)
+      );
+    }
 
     // Normalizziamo l'angolo centrale in [0, 2*PI)
     let normAngle = centerAngle % (Math.PI * 2);
     if (normAngle < 0) normAngle += Math.PI * 2;
 
     const isUpsideDown = normAngle > 0.45 * Math.PI && normAngle < 1.55 * Math.PI;
+    const largeArcFlag = (span * 2 > Math.PI) ? 1 : 0;
 
     const a1 = centerAngle - span;
     const a2 = centerAngle + span;
 
     if (isUpsideDown) {
-      const guideR = radius + (isMob ? 4.0 : 3.0);
+      const guideR = safeRadius + (isMob ? 4.0 : 3.0);
       const x1 = cx + guideR * Math.sin(a1);
       const y1 = cy - guideR * Math.cos(a1);
       const x2 = cx + guideR * Math.sin(a2);
       const y2 = cy - guideR * Math.cos(a2);
 
-      return ['M', x2.toFixed(2), y2.toFixed(2), 'A', guideR.toFixed(2), guideR.toFixed(2), 0, 0, 0, x1.toFixed(2), y1.toFixed(2)].join(' ');
-    } else {
-      const guideR = radius - 0.5;
-      const x1 = cx + guideR * Math.sin(a1);
-      const y1 = cy - guideR * Math.cos(a1);
-      const x2 = cx + guideR * Math.sin(a2);
-      const y2 = cy - guideR * Math.cos(a2);
-
-      return ['M', x1.toFixed(2), y1.toFixed(2), 'A', guideR.toFixed(2), guideR.toFixed(2), 0, 0, 1, x2.toFixed(2), y2.toFixed(2)].join(' ');
+      return ['M', x2.toFixed(2), y2.toFixed(2), 'A', guideR.toFixed(2), guideR.toFixed(2), 0, largeArcFlag, 0, x1.toFixed(2), y1.toFixed(2)].join(' ');
     }
+
+    const guideR = safeRadius - 0.5;
+    const x1 = cx + guideR * Math.sin(a1);
+    const y1 = cy - guideR * Math.cos(a1);
+    const x2 = cx + guideR * Math.sin(a2);
+    const y2 = cy - guideR * Math.cos(a2);
+
+    return ['M', x1.toFixed(2), y1.toFixed(2), 'A', guideR.toFixed(2), guideR.toFixed(2), 0, largeArcFlag, 1, x2.toFixed(2), y2.toFixed(2)].join(' ');
   }
 
   // -------------------------------------------------------------------------
@@ -3657,7 +3885,14 @@
         );
 
         if (dom.guidePath) {
-          const dGuide = generateTextGuideArc(coords.cx, coords.cy, currentRadius, dom.gapData.centerAngle, c.labelText);
+          const dGuide = generateTextGuideArc(
+            coords.cx,
+            coords.cy,
+            currentRadius,
+            dom.gapData.centerAngle,
+            c.labelText,
+            dom.gapData.gapHalfAngle
+          );
           dom.guidePath.setAttribute('d', dGuide);
         }
 
@@ -3832,6 +4067,7 @@
     backHomeDOM.strandB = strandB;
     backHomeDOM.pathVis = pathVis;
     backHomeDOM.guidePath = guidePath;
+    backHomeDOM.textElem = textElem;
     backHomeDOM.hitProxy = hitProxy;
   }
 
@@ -3857,12 +4093,12 @@
     }
     const currentRadius = baseRadius + radiusOffset;
 
-    const gapData = computeCircleGapArcDynamic(baseRadius, labelText, centerAngle);
+    const gapData = computeCircleGapArcDynamic(baseRadius, labelText, centerAngle, dom.textElem);
 
     const dVisible = generateArcPathString(cx, cy, currentRadius, gapData.arcStartAngle, gapData.arcEndAngle, waveAmp, 12, animTime * 2.0);
     const dStrandInner = generateArcPathString(cx, cy, currentRadius - 2.5, gapData.arcStartAngle, gapData.arcEndAngle, waveAmp * 0.7, 12, animTime * 2.0 + 0.6);
     const dStrandOuter = generateArcPathString(cx, cy, currentRadius + 2.5, gapData.arcStartAngle, gapData.arcEndAngle, waveAmp * 0.7, 12, animTime * 2.0 - 0.6);
-    const dGuide = generateTextGuideArc(cx, cy, currentRadius, centerAngle, labelText);
+    const dGuide = generateTextGuideArc(cx, cy, currentRadius, centerAngle, labelText, gapData.gapHalfAngle);
     const dHit = generateArcPathString(cx, cy, baseRadius, 0, Math.PI * 2, 0, 1, 0);
 
     dom.pathVis.setAttribute('d', dVisible);
@@ -3888,11 +4124,24 @@
     }
   }
 
-  function computeCircleGapArcDynamic(radius, labelText, centerAngle) {
-    const textPxWidth = labelText.length * 9.5;
-    const paddingPx = 18;
-    const totalGapPx = textPxWidth + paddingPx * 2;
-    const gapHalfAngle = (totalGapPx / 2) / radius;
+  function computeCircleGapArcDynamic(radius, labelText, centerAngle, textElem) {
+    const fallbackWidth = labelText.length * CIRCLE_GAP_CONFIG.BACK_HOME_FALLBACK_CHAR_PX;
+    let measuredWidth = 0;
+
+    if (textElem && typeof textElem.getComputedTextLength === 'function') {
+      try {
+        measuredWidth = textElem.getComputedTextLength();
+      } catch (err) {
+        measuredWidth = 0;
+      }
+    }
+
+    const textPxWidth = measuredWidth > 0
+      ? Math.max(measuredWidth * CIRCLE_GAP_CONFIG.HOVER_BOLD_FACTOR, fallbackWidth * 0.85)
+      : fallbackWidth;
+    const totalGapPx = textPxWidth + CIRCLE_GAP_CONFIG.BACK_HOME_PADDING_PX * 2;
+    const rawHalfAngle = (totalGapPx / 2) / radius;
+    const gapHalfAngle = Math.min(CIRCLE_GAP_CONFIG.MAX_GAP_HALF_ANGLE, rawHalfAngle);
 
     return {
       hasGap: true,
@@ -4053,9 +4302,156 @@
   }
 
   // -------------------------------------------------------------------------
+  // SINCRONIZZAZIONE URL HASH & CRONOLOGIA DEL BROWSER
+  // -------------------------------------------------------------------------
+  function buildHashForCurrentState() {
+    if (!state.portalOpen) return '';
+
+    if (state.activeSection === SECTION_KEY.LABORATORIO) {
+      return '#' + ROUTE_SLUG.PHASE_PREFIX + (state.currentPhaseIndex + 1);
+    }
+
+    const slug = SECTION_TO_SLUG[state.activeSection];
+    return slug ? '#' + slug : '';
+  }
+
+  function updateDocumentTitle() {
+    if (!state.portalOpen) {
+      document.title = BASE_DOCUMENT_TITLE;
+      return;
+    }
+
+    if (state.activeSection === SECTION_KEY.LABORATORIO) {
+      const phaseData = LAB_PHASES[state.currentPhaseIndex];
+      document.title = phaseData ? `${phaseData.title} — AGORÀ` : BASE_DOCUMENT_TITLE;
+      return;
+    }
+
+    const sectionData = DRAWER_DATA[state.activeSection];
+    document.title = sectionData ? `${sectionData.title} — AGORÀ` : BASE_DOCUMENT_TITLE;
+  }
+
+  function syncUrlToCurrentState(syncMode) {
+    updateDocumentTitle();
+    if (syncMode === URL_SYNC_MODE.NONE) return;
+
+    const targetHash = buildHashForCurrentState();
+    const currentHash = window.location.hash === '#' ? '' : (window.location.hash || '');
+    if (currentHash === targetHash) return;
+
+    const targetUrl = targetHash || (window.location.pathname + window.location.search);
+
+    try {
+      if (syncMode === URL_SYNC_MODE.REPLACE) {
+        window.history.replaceState(null, '', targetUrl);
+        return;
+      }
+
+      window.history.pushState(null, '', targetUrl);
+    } catch (err) {
+      window.location.hash = targetHash;
+    }
+  }
+
+  function parseRouteFromHash(rawHash) {
+    const normalized = (rawHash || '')
+      .trim()
+      .toLowerCase()
+      .replace(/^#/, '')
+      .replace(/^\/+/, '')
+      .replace(/\/+$/, '');
+
+    if (!normalized) {
+      return { type: ROUTE_TYPE.HOME };
+    }
+
+    const phaseMatch = normalized.match(/^(?:fase|phase|lab|laboratorio)(?:[-_]?(\d+))?$/);
+    if (phaseMatch) {
+      const parsedNum = phaseMatch[1] ? parseInt(phaseMatch[1], 10) : 1;
+      const isValidPhase = !isNaN(parsedNum) && parsedNum >= 1 && parsedNum <= LAB_PHASES.length;
+      const phaseIndex = isValidPhase ? parsedNum - 1 : 0;
+      return { type: ROUTE_TYPE.PHASE, phaseIndex: phaseIndex };
+    }
+
+    const sectionKey = SLUG_TO_SECTION[normalized];
+    if (sectionKey) {
+      return { type: ROUTE_TYPE.SECTION, sectionKey: sectionKey };
+    }
+
+    return { type: ROUTE_TYPE.HOME };
+  }
+
+  function closeTransientOverlaysForRouteChange() {
+    if (state.galleryLightboxOpen) {
+      closeGalleryLightbox();
+    }
+
+    if (state.room3dOpen) {
+      closeRoom3dModal();
+    }
+
+    const drawer = document.getElementById('mobileNavDrawer');
+    if (drawer && drawer.classList.contains('open')) {
+      closeMobileNavDrawer();
+    }
+  }
+
+  function applyRouteFromLocation(syncMode) {
+    const route = parseRouteFromHash(window.location.hash);
+
+    if (route.type === ROUTE_TYPE.HOME) {
+      if (state.portalOpen) {
+        closeCircularPortal(URL_SYNC_MODE.NONE);
+      }
+      updateDocumentTitle();
+      return;
+    }
+
+    if (route.type === ROUTE_TYPE.PHASE) {
+      const isSamePhase = state.portalOpen &&
+        state.activeSection === SECTION_KEY.LABORATORIO &&
+        state.currentPhaseIndex === route.phaseIndex;
+
+      if (isSamePhase) {
+        syncUrlToCurrentState(syncMode);
+        return;
+      }
+
+      closeTransientOverlaysForRouteChange();
+
+      if (state.portalOpen && state.activeSection === SECTION_KEY.LABORATORIO) {
+        renderPortalLabPhase(route.phaseIndex, PHASE_TRANSITION.FADE, syncMode);
+        return;
+      }
+
+      openCircularPortal(SECTION_KEY.LABORATORIO, route.phaseIndex, null, syncMode);
+      return;
+    }
+
+    if (route.type === ROUTE_TYPE.SECTION) {
+      const isSameSection = state.portalOpen && state.activeSection === route.sectionKey;
+      if (isSameSection) {
+        syncUrlToCurrentState(syncMode);
+        return;
+      }
+
+      closeTransientOverlaysForRouteChange();
+      openCircularPortal(route.sectionKey, null, null, syncMode);
+    }
+  }
+
+  // -------------------------------------------------------------------------
   // GESTIONE DELLA PAGINA (ZOOM IN/OUT & NAVIGAZIONE AD ONDE)
   // -------------------------------------------------------------------------
-  function openCircularPortal(sectionKey, phaseIndex, clickOrigin) {
+  function openCircularPortal(sectionKey, phaseIndex, clickOrigin, urlSyncMode) {
+    const effectiveSyncMode = urlSyncMode || URL_SYNC_MODE.PUSH;
+    const wasPortalOpen = state.portalOpen;
+    const prevSection = state.activeSection;
+
+    if (wasPortalOpen) {
+      closeTransientOverlaysForRouteChange();
+    }
+
     // Segna subito il portale aperto per evitare il ripple introduttivo sullo sblocco audio
     state.portalOpen = true;
     state.activeSection = sectionKey;
@@ -4104,13 +4500,16 @@
     playZoomInChime(baseFreq);
 
     // 2. Popolamento dei contenuti nella pagina
-    if (sectionKey === 'laboratorio') {
+    if (sectionKey === SECTION_KEY.LABORATORIO) {
       if (typeof phaseIndex === 'number') {
         state.currentPhaseIndex = phaseIndex;
       }
-      renderPortalLabPhase(state.currentPhaseIndex);
+      const transitionMode = (wasPortalOpen && prevSection === SECTION_KEY.LABORATORIO)
+        ? PHASE_TRANSITION.FADE
+        : PHASE_TRANSITION.IMMEDIATE;
+      renderPortalLabPhase(state.currentPhaseIndex, transitionMode, URL_SYNC_MODE.NONE);
     } else {
-      if (sectionKey === 'gallery') {
+      if (sectionKey === SECTION_KEY.GALLERY) {
         state.currentGalleryTrioIndex = 0;
         state.galleryCategory = GALLERY_CATEGORY.ALL;
       }
@@ -4125,10 +4524,12 @@
     }
 
     updateHeaderActiveStates();
+    syncUrlToCurrentState(effectiveSyncMode);
   }
 
-  function closeCircularPortal() {
+  function closeCircularPortal(urlSyncMode) {
     if (!state.portalOpen) return;
+    const effectiveSyncMode = urlSyncMode || URL_SYNC_MODE.PUSH;
     if (state.galleryLightboxOpen) {
       closeGalleryLightbox();
     }
@@ -4161,6 +4562,7 @@
 
     state.portalOpen = false;
     updateHeaderActiveStates();
+    syncUrlToCurrentState(effectiveSyncMode);
 
     // Silenzia e azzera lo stato hover di tutti i cerchi della home per evitare sovrapposizioni
     CIRCLES_REGISTRY.forEach(function (c) {
@@ -4176,9 +4578,12 @@
     setTimeout(triggerIntroExpansionRipple, 300);
   }
 
-  function renderPortalLabPhase(index) {
+  function renderPortalLabPhase(index, transitionMode, urlSyncMode) {
     if (index < 0) index = LAB_PHASES.length - 1;
     if (index >= LAB_PHASES.length) index = 0;
+
+    const effectiveTransition = transitionMode || PHASE_TRANSITION.FADE;
+    const effectiveSyncMode = urlSyncMode || URL_SYNC_MODE.PUSH;
 
     resetPortalScrollPosition();
     stopEssDemoPlayback();
@@ -4260,7 +4665,12 @@
       }
     }
 
-    if (state.portalOpen && titleElem && titleElem.textContent) {
+    const shouldFade = effectiveTransition === PHASE_TRANSITION.FADE &&
+      state.portalOpen &&
+      titleElem &&
+      titleElem.textContent;
+
+    if (shouldFade) {
       if (titleElem) titleElem.style.opacity = '0.35';
       if (bodyElem) bodyElem.style.opacity = '0.35';
       if (imgElem) imgElem.style.opacity = '0.35';
@@ -4283,6 +4693,10 @@
         dom.pathVis.classList.remove('active');
       }
     });
+
+    if (state.portalOpen && state.activeSection === SECTION_KEY.LABORATORIO) {
+      syncUrlToCurrentState(effectiveSyncMode);
+    }
   }
 
   // Costruisce la mappa vettoriale Emilia-Romagna con le 5 città rilevate
@@ -4952,6 +5366,33 @@
         bodyElem.appendChild(partnerGrid);
       }
 
+      function appendSectionParagraph(container, entry) {
+        const p = document.createElement('p');
+
+        if (typeof entry === 'string') {
+          p.textContent = entry;
+          container.appendChild(p);
+          return;
+        }
+
+        if (!entry || !entry.text) return;
+
+        p.appendChild(document.createTextNode(entry.text));
+
+        if (entry.doi) {
+          p.appendChild(document.createTextNode(' '));
+          const link = document.createElement('a');
+          link.className = 'portal-doi-link';
+          link.href = entry.doi;
+          link.target = '_blank';
+          link.rel = 'noopener noreferrer';
+          link.textContent = 'DOI ↗';
+          p.appendChild(link);
+        }
+
+        container.appendChild(p);
+      }
+
       if (Array.isArray(data.sections)) {
         data.sections.forEach(function (sec) {
           const block = document.createElement('div');
@@ -4965,14 +5406,10 @@
           divText.className = 'portal-block-text';
           if (Array.isArray(sec.text)) {
             sec.text.forEach(function (t) {
-              const p = document.createElement('p');
-              p.textContent = t;
-              divText.appendChild(p);
+              appendSectionParagraph(divText, t);
             });
           } else {
-            const p = document.createElement('p');
-            p.textContent = sec.text;
-            divText.appendChild(p);
+            appendSectionParagraph(divText, sec.text);
           }
 
           block.appendChild(h3);
@@ -5347,6 +5784,140 @@
   // -------------------------------------------------------------------------
   // MODALE MODELLO 3D SALA IMMERSIVA TRESIGALLO
   // -------------------------------------------------------------------------
+  const room3dLoadState = {
+    rafId: null,
+    hideTimerId: null,
+    startTimeMs: 0,
+    currentPercent: 0
+  };
+
+  function stopRoom3dProgressTimers() {
+    if (room3dLoadState.rafId !== null) {
+      cancelAnimationFrame(room3dLoadState.rafId);
+      room3dLoadState.rafId = null;
+    }
+
+    if (room3dLoadState.hideTimerId !== null) {
+      clearTimeout(room3dLoadState.hideTimerId);
+      room3dLoadState.hideTimerId = null;
+    }
+  }
+
+  function setRoom3dProgressUi(percent, labelText, hintText) {
+    const clamped = Math.max(0, Math.min(ROOM_3D_PROGRESS_CONFIG.COMPLETE_PERCENT, Math.round(percent)));
+    room3dLoadState.currentPercent = clamped;
+
+    const fillEl = document.getElementById('room3dProgressFill');
+    const barEl = document.getElementById('room3dProgressBar');
+    const percentEl = document.getElementById('room3dProgressPercent');
+    const labelEl = document.getElementById('room3dProgressLabel');
+    const hintEl = document.getElementById('room3dProgressHint');
+
+    if (fillEl) fillEl.style.width = `${clamped}%`;
+    if (barEl) barEl.setAttribute('aria-valuenow', String(clamped));
+    if (percentEl) percentEl.textContent = `${clamped}%`;
+    if (labelEl && labelText) labelEl.textContent = labelText;
+    if (hintEl && hintText) hintEl.textContent = hintText;
+  }
+
+  function resolveRoom3dStageLabel(percent) {
+    if (percent < ROOM_3D_PROGRESS_CONFIG.STAGE_SCENE_THRESHOLD) {
+      return ROOM_3D_LOAD_STAGE.CONNECTING;
+    }
+
+    if (percent < ROOM_3D_PROGRESS_CONFIG.STAGE_INIT_THRESHOLD) {
+      return ROOM_3D_LOAD_STAGE.LOADING_SCENE;
+    }
+
+    return ROOM_3D_LOAD_STAGE.INITIALIZING;
+  }
+
+  function startRoom3dProgress() {
+    stopRoom3dProgressTimers();
+
+    const loadingEl = document.getElementById('room3dLoading');
+    const iframeEl = document.getElementById('room3dIframe');
+
+    if (loadingEl) {
+      loadingEl.classList.remove('loaded', 'is-complete', 'is-error');
+    }
+
+    if (iframeEl) {
+      iframeEl.classList.remove('loaded');
+    }
+
+    room3dLoadState.startTimeMs = performance.now();
+    setRoom3dProgressUi(
+      ROOM_3D_PROGRESS_CONFIG.START_PERCENT,
+      ROOM_3D_LOAD_STAGE.CONNECTING,
+      ROOM_3D_LOAD_STAGE.DEFAULT_HINT
+    );
+
+    // Avanzamento asintotico fluido finché l'iframe cross-origin completa il caricamento
+    function stepProgress(nowMs) {
+      if (!state.room3dOpen) {
+        room3dLoadState.rafId = null;
+        return;
+      }
+
+      const elapsed = Math.max(0, nowMs - room3dLoadState.startTimeMs);
+      const span = ROOM_3D_PROGRESS_CONFIG.MAX_PENDING_PERCENT - ROOM_3D_PROGRESS_CONFIG.START_PERCENT;
+      const eased = 1 - Math.exp(-elapsed / ROOM_3D_PROGRESS_CONFIG.ASYMPTOTE_TAU_MS);
+      const nextPercent = ROOM_3D_PROGRESS_CONFIG.START_PERCENT + span * eased;
+      const hint = elapsed >= ROOM_3D_PROGRESS_CONFIG.SLOW_HINT_DELAY_MS
+        ? ROOM_3D_LOAD_STAGE.SLOW_HINT
+        : ROOM_3D_LOAD_STAGE.DEFAULT_HINT;
+
+      setRoom3dProgressUi(nextPercent, resolveRoom3dStageLabel(nextPercent), hint);
+      room3dLoadState.rafId = requestAnimationFrame(stepProgress);
+    }
+
+    room3dLoadState.rafId = requestAnimationFrame(stepProgress);
+  }
+
+  function completeRoom3dProgress() {
+    stopRoom3dProgressTimers();
+
+    const loadingEl = document.getElementById('room3dLoading');
+    const iframeEl = document.getElementById('room3dIframe');
+
+    if (loadingEl) {
+      loadingEl.classList.remove('is-error');
+      loadingEl.classList.add('is-complete');
+    }
+
+    setRoom3dProgressUi(
+      ROOM_3D_PROGRESS_CONFIG.COMPLETE_PERCENT,
+      ROOM_3D_LOAD_STAGE.READY,
+      ROOM_3D_LOAD_STAGE.DEFAULT_HINT
+    );
+
+    // Breve pausa al 100% per rendere leggibile il completamento prima della dissolvenza
+    room3dLoadState.hideTimerId = setTimeout(function () {
+      room3dLoadState.hideTimerId = null;
+      if (!state.room3dOpen) return;
+
+      if (loadingEl) loadingEl.classList.add('loaded');
+      if (iframeEl) iframeEl.classList.add('loaded');
+    }, ROOM_3D_PROGRESS_CONFIG.COMPLETE_HOLD_MS);
+  }
+
+  function failRoom3dProgress() {
+    stopRoom3dProgressTimers();
+
+    const loadingEl = document.getElementById('room3dLoading');
+    if (loadingEl) {
+      loadingEl.classList.remove('loaded', 'is-complete');
+      loadingEl.classList.add('is-error');
+    }
+
+    setRoom3dProgressUi(
+      room3dLoadState.currentPercent,
+      ROOM_3D_LOAD_STAGE.ERROR,
+      ROOM_3D_LOAD_STAGE.SLOW_HINT
+    );
+  }
+
   function openRoom3dModal(url, title) {
     if (!url) return;
 
@@ -5360,12 +5931,12 @@
     const modal = document.getElementById('room3dModal');
     const titleEl = document.getElementById('room3dTitle');
     const extLink = document.getElementById('room3dExternalLink');
-    const loadingEl = document.getElementById('room3dLoading');
     const iframe = document.getElementById('room3dIframe');
 
     if (titleEl && title) titleEl.textContent = title;
     if (extLink) extLink.href = url;
-    if (loadingEl) loadingEl.classList.remove('loaded');
+
+    startRoom3dProgress();
     if (iframe) iframe.src = url;
 
     if (modal) {
@@ -5384,6 +5955,7 @@
   function closeRoom3dModal() {
     if (!state.room3dOpen) return;
     state.room3dOpen = false;
+    stopRoom3dProgressTimers();
 
     const modal = document.getElementById('room3dModal');
     const iframe = document.getElementById('room3dIframe');
@@ -5400,6 +5972,7 @@
 
     // Scarica il contesto WebGL remoto alla chiusura per liberare risorse
     if (iframe) {
+      iframe.classList.remove('loaded');
       iframe.src = ROOM_3D_BLANK_URL;
     }
 
@@ -5917,9 +6490,17 @@
 
     if (room3dIframe) {
       room3dIframe.addEventListener('load', function () {
-        if (!state.room3dOpen) return;
-        const loadingEl = document.getElementById('room3dLoading');
-        if (loadingEl) loadingEl.classList.add('loaded');
+        if (!state.room3dOpen || room3dIframe.getAttribute('src') === ROOM_3D_BLANK_URL) {
+          return;
+        }
+        completeRoom3dProgress();
+      });
+
+      room3dIframe.addEventListener('error', function () {
+        if (!state.room3dOpen || room3dIframe.getAttribute('src') === ROOM_3D_BLANK_URL) {
+          return;
+        }
+        failRoom3dProgress();
       });
     }
 
@@ -6215,6 +6796,13 @@
         renderPortalSection('gallery');
       }
     });
+
+    function handleHistoryNavigation() {
+      applyRouteFromLocation(URL_SYNC_MODE.NONE);
+    }
+
+    window.addEventListener('popstate', handleHistoryNavigation);
+    window.addEventListener('hashchange', handleHistoryNavigation);
   }
 
   // -------------------------------------------------------------------------
@@ -6329,36 +6917,26 @@
     initBackHomeCircle();
     initPortalMediaCircle();
     initEventHandlers();
-    renderPortalLabPhase(0);
+
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(refreshAllCircleGaps);
+    }
 
     requestAnimationFrame(mainAnimationLoop);
 
-    // Gestione deep-link hash per apertura diretta (es. #lab, #lab-2, #timeline, #gallery, #partner, #crediti)
-    try {
-      const hash = (window.location.hash || '').toLowerCase().replace('#', '');
-      if (hash.startsWith('lab') || hash.startsWith('fase') || hash.startsWith('phase')) {
-        let pIdx = 0;
-        const match = hash.match(/\d+/);
-        if (match) {
-          pIdx = parseInt(match[0], 10) - 1;
-          if (isNaN(pIdx) || pIdx < 0 || pIdx > 4) pIdx = 0;
-        }
-        openCircularPortal('laboratorio', pIdx);
-      } else if (hash === 'timeline') {
-        openCircularPortal('timeline', null);
-      } else if (hash === 'gallery') {
-        openCircularPortal('gallery', null);
-      } else if (hash === 'partner' || hash === 'partnership') {
-        openCircularPortal('partnership', null);
-      } else if (hash === 'pubblicazioni') {
-        openCircularPortal('pubblicazioni', null);
-      } else if (hash === 'crediti' || hash === 'credits') {
-        openCircularPortal('credits', null);
-      }
-    } catch (e) {}
+    // Gestione deep-link hash per apertura diretta e canonicalizzazione URL (es. #fase-1..#fase-5, #gallery, #partner)
+    const initialRoute = parseRouteFromHash(window.location.hash);
 
-    // Comparsa iniziale dal nulla delle ondine dalla più piccola alla più grande (ritmo rapido)
-    setTimeout(triggerInitialEmergenceIntro, 180);
+    if (initialRoute.type === ROUTE_TYPE.HOME) {
+      renderPortalLabPhase(0, PHASE_TRANSITION.IMMEDIATE, URL_SYNC_MODE.NONE);
+      updateDocumentTitle();
+
+      // Comparsa iniziale dal nulla delle ondine dalla più piccola alla più grande (ritmo rapido)
+      setTimeout(triggerInitialEmergenceIntro, 180);
+      return;
+    }
+
+    applyRouteFromLocation(URL_SYNC_MODE.REPLACE);
   });
 
   // Esposizione per navigazione e test

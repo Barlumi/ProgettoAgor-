@@ -427,9 +427,9 @@ html, body {
 /* Testo Incastonato nel Varco del Cerchio Aperto (Titolazione di Sezione/Fase) */
 .wave-path-text {
   font-family: var(--font-title);
-  font-size: 11px;
+  font-size: 16.5px;
   font-weight: 600;
-  letter-spacing: 0.2em;
+  letter-spacing: 0.13em;
   text-transform: uppercase;
   fill: var(--text-bright);
   pointer-events: auto;
@@ -506,6 +506,11 @@ html, body {
   width: 100%;
   height: 100%;
   overflow: visible;
+}
+
+.portal-back-home-widget .wave-path-text {
+  font-size: 11.5px;
+  letter-spacing: 0.16em;
 }
 
 /* Layout Standard Tipo Sito Normale (Completamente Centrato nello Schermo) */
@@ -2245,18 +2250,119 @@ html, body {
 .room3d-loading {
   position: absolute;
   inset: 0;
+  z-index: 5;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #94a3b8;
-  font-family: var(--font-body);
-  font-size: 0.88rem;
+  padding: 1.5rem;
+  background: radial-gradient(circle at 50% 45%, rgba(14, 30, 56, 0.94), rgba(3, 7, 18, 0.98));
   pointer-events: none;
-  transition: opacity 0.25s ease;
+  transition: opacity 0.35s ease, visibility 0.35s ease;
 }
 
 .room3d-loading.loaded {
   opacity: 0;
+  visibility: hidden;
+}
+
+.room3d-loading-card {
+  width: min(380px, 100%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  padding: 1.15rem 1.3rem;
+  border-radius: 14px;
+  background: rgba(6, 12, 24, 0.85);
+  border: 1px solid rgba(56, 189, 248, 0.22);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45);
+}
+
+.room3d-loading-header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.room3d-loading-label {
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  font-weight: 500;
+  color: #e2e8f0;
+}
+
+.room3d-loading-percent {
+  font-family: var(--font-title);
+  font-size: 0.86rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+  color: #38bdf8;
+  flex-shrink: 0;
+}
+
+.room3d-progress-track {
+  position: relative;
+  width: 100%;
+  height: 7px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+  overflow: hidden;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.45);
+}
+
+.room3d-progress-fill {
+  position: relative;
+  width: 0%;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #0284c7 0%, #38bdf8 45%, #22d3ee 75%, #fbbf24 100%);
+  box-shadow: 0 0 14px rgba(56, 189, 248, 0.55);
+  transition: width 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+  overflow: hidden;
+}
+
+.room3d-progress-fill::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent 0%, rgba(255, 255, 255, 0.42) 50%, transparent 100%);
+  transform: translateX(-100%);
+  animation: room3dProgressShimmer 1.35s ease-in-out infinite;
+}
+
+.room3d-loading.is-complete .room3d-progress-fill::after,
+.room3d-loading.is-error .room3d-progress-fill::after {
+  animation: none;
+  opacity: 0;
+}
+
+.room3d-loading.is-error .room3d-progress-fill {
+  background: linear-gradient(90deg, #f59e0b, #ef4444);
+  box-shadow: none;
+}
+
+@keyframes room3dProgressShimmer {
+  0% {
+    transform: translateX(-100%);
+  }
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .room3d-progress-fill::after {
+    animation: none;
+    opacity: 0;
+  }
+}
+
+.room3d-loading-hint {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  color: #94a3b8;
+  line-height: 1.4;
 }
 
 .room3d-iframe {
@@ -2267,6 +2373,12 @@ html, body {
   border: 0;
   display: block;
   background: transparent;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.room3d-iframe.loaded {
+  opacity: 1;
 }
 
 .btn-phase-wave {
@@ -2382,6 +2494,29 @@ html, body {
 
 .portal-block-text p:last-child {
   margin-bottom: 0;
+}
+
+.portal-doi-link {
+  display: inline-block;
+  margin-left: 0.45rem;
+  padding: 0.1rem 0.48rem;
+  font-size: 0.72rem;
+  font-weight: 600;
+  color: #38bdf8;
+  border: 1px solid rgba(56, 189, 248, 0.35);
+  border-radius: 999px;
+  text-decoration: none;
+  vertical-align: baseline;
+  white-space: nowrap;
+  transition: background 0.2s ease, border-color 0.2s ease, color 0.2s ease;
+}
+
+.portal-doi-link:hover,
+.portal-doi-link:focus-visible {
+  background: rgba(56, 189, 248, 0.18);
+  border-color: #38bdf8;
+  color: #ffffff;
+  outline: none;
 }
 
 /* --------------------------------------------------------------------------
@@ -3176,8 +3311,8 @@ html, body {
   }
 
   .wave-path-text {
-    font-size: 15px;
-    letter-spacing: 0.14em;
+    font-size: 18.5px;
+    letter-spacing: 0.09em;
   }
 
   /* Hit proxy SVG calibrato per non sovrapporsi agli anelli vicini su mobile */

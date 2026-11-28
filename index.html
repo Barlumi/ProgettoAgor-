@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css?v=8">
+  <link rel="stylesheet" href="styles.css?v=11">
 </head>
 <body class="site-body" data-theme="easy">
 
@@ -420,7 +420,18 @@
       </div>
 
       <div class="room3d-stage">
-        <div class="room3d-loading" id="room3dLoading">Caricamento modello 3D…</div>
+        <div class="room3d-loading" id="room3dLoading" aria-live="polite">
+          <div class="room3d-loading-card">
+            <div class="room3d-loading-header">
+              <span class="room3d-loading-label" id="room3dProgressLabel">Connessione al server 3D…</span>
+              <span class="room3d-loading-percent" id="room3dProgressPercent">0%</span>
+            </div>
+            <div class="room3d-progress-track" id="room3dProgressBar" role="progressbar" aria-label="Avanzamento caricamento modello 3D" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0">
+              <div class="room3d-progress-fill" id="room3dProgressFill"></div>
+            </div>
+            <p class="room3d-loading-hint" id="room3dProgressHint">Sala immersiva interattiva · e-muse.it</p>
+          </div>
+        </div>
         <iframe id="room3dIframe" class="room3d-iframe" src="about:blank" title="Modello 3D della Sala Immersiva di Tresigallo" allow="fullscreen; xr-spatial-tracking; accelerometer; gyroscope" allowfullscreen referrerpolicy="no-referrer-when-downgrade"></iframe>
       </div>
     </div>
@@ -465,6 +476,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=9"></script>
+  <script src="app.js?v=13"></script></script></script>
 </body>
 </html>
