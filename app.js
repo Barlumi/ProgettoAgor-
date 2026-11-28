@@ -17,7 +17,27 @@
   // Posizionamenti predefiniti per ritagli circolari decentrati
   const IMAGE_POSITION = Object.freeze({
     DEFAULT: '50% 50%',
-    SPHERICAL_HARMONICS: '60.5% 50%'
+    SPHERICAL_HARMONICS: '60.5% 50%',
+    RIMINI_DODECAHEDRON: '28% 50%',
+    TRESIGALLO_RIG: '0% 50%',
+    DODECAHEDRON_CLOSEUP: '50% 0%',
+    SPHERICAL_SOURCE_32: '73% 50%'
+  });
+
+  // Zoom e traslazione (in % del riquadro) per centrare soggetti ai margini del fotogramma.
+  // Valori calcolati dalla posizione del dispositivo nella foto originale, mantenendo
+  // il bordo dell'immagine fuori dal cerchio per evitare spicchi vuoti.
+  const IMAGE_FRAME = Object.freeze({
+    DODECAHEDRON_CLOSEUP: Object.freeze({
+      position: IMAGE_POSITION.DODECAHEDRON_CLOSEUP,
+      scale: '3',
+      translate: '100% 47%'
+    }),
+    TRESIGALLO_RIG: Object.freeze({
+      position: IMAGE_POSITION.TRESIGALLO_RIG,
+      scale: '2',
+      translate: '50% -39%'
+    })
   });
 
   // Tipologie multimediali e categorie filtro della Gallery
@@ -352,6 +372,7 @@
       ],
       image: 'assets/gallery/image12.webp',
       imageCaption: 'Misura acustica in Piazza Cavour a Rimini: sorgente omnidirezionale a dodecaedro per il calcolo della risposta all\'impulso (ESS) e del tempo di riverberazione.',
+      imagePosition: IMAGE_POSITION.RIMINI_DODECAHEDRON,
       hasEssDemo: true,
       specs: [
         { label: 'Metodo', value: 'ESS 15 s · Filtro inverso (−6 dB/ott)' },
@@ -1142,6 +1163,7 @@
           title: 'Rimini, Piazza Cavour',
           caption: 'Sorgente acustica omnidirezionale a dodecaedro posizionata in Piazza Cavour per la misura della risposta all\'impulso (ESS).',
           image: 'assets/gallery/image12.webp',
+          imagePosition: IMAGE_POSITION.RIMINI_DODECAHEDRON,
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
@@ -1156,6 +1178,7 @@
           title: 'Tresigallo, Piazza della Repubblica',
           caption: 'Postazione di ripresa presso la fontana monumentale: microfono Nevaton VR, array Brahma di 1° ordine, lavalier Røde e telecamera 360° combinati per una registrazione Ambisonics di 3° ordine.',
           image: 'assets/gallery/image14.webp',
+          imageFrame: IMAGE_FRAME.TRESIGALLO_RIG,
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
@@ -1184,6 +1207,7 @@
           title: 'Sorgente a Dodecaedro sul Cavalletto',
           caption: 'Dettaglio della sorgente sonora omnidirezionale a dodecaedro su cavalletto in Piazza Cavour (Rimini, 2024).',
           image: 'assets/gallery/image27.webp',
+          imageFrame: IMAGE_FRAME.DODECAHEDRON_CLOSEUP,
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
@@ -1198,6 +1222,7 @@
           title: 'Sorgente Sferica a 32 Trasduttori',
           caption: 'Diffusore sferico multicanale a 32 trasduttori controllati singolarmente per misure acustiche MIMO.',
           image: 'assets/gallery/image24.webp',
+          imagePosition: IMAGE_POSITION.SPHERICAL_SOURCE_32,
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
@@ -5387,7 +5412,15 @@
         if (item.imageFit === IMAGE_FIT.CONTAIN) {
           img.classList.add('gallery-trio-img--contain');
         }
-        img.style.objectPosition = item.imagePosition || IMAGE_POSITION.DEFAULT;
+        const frame = item.imageFrame;
+        img.style.objectPosition = (frame && frame.position) || item.imagePosition || IMAGE_POSITION.DEFAULT;
+        // Proprietà individuali scale/translate: si compongono con lo zoom hover (transform)
+        if (frame && frame.scale) {
+          img.style.scale = frame.scale;
+        }
+        if (frame && frame.translate) {
+          img.style.translate = frame.translate;
+        }
         img.src = item.image;
         img.alt = item.title;
         img.loading = 'lazy';
