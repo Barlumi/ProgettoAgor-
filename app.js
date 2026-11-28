@@ -64,7 +64,7 @@
       id: 'tresigallo',
       name: 'Tresigallo',
       scenesCount: '1 piazza + Sala WFS',
-      scenes: 'Piazza della Repubblica (registrazione "Chitarra" HOA di 3° ordine davanti alla fontana), Teatro del \'900 e Sala Immersiva AGORÀ.',
+      scenes: 'Piazza della Repubblica (scena "Chitarra" HOA 3° ordine con Nevaton VR, Brahma 1° ordine e lavalier Røde), Teatro del \'900 e Sala Immersiva AGORÀ.',
       openLabel: 'Apri video Chitarra Live →',
       x: 326,
       y: 46,
@@ -200,7 +200,7 @@
           image: 'assets/videos/chitarra_tresigallo_poster.jpg',
           videoSrc: 'assets/videos/chitarra_tresigallo.mp4',
           videoWebmSrc: 'assets/videos/chitarra_tresigallo.webm',
-          caption: 'Registrazione dal vivo con sorgente reale in Piazza della Repubblica (Tresigallo) davanti alla fontana monumentale.',
+          caption: 'Registrazione dal vivo in Ambisonics di 3° ordine in Piazza della Repubblica (Tresigallo) con Nevaton VR, array Brahma di 1° ordine e lavalier Røde davanti alla fontana monumentale.',
           featured: true
         },
         {
@@ -245,7 +245,7 @@
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
           image: 'assets/campagna/tresigallo_chitarra_live.jpg',
-          caption: 'Ripresa Ambisonics a 64 capsule per lo scenario musicale in Piazza della Repubblica a Tresigallo.',
+          caption: 'Ripresa Ambisonics di 3° ordine ottenuta combinando un microfono Nevaton VR, un array Brahma di 1° ordine e un microfono lavalier Røde in Piazza della Repubblica a Tresigallo.',
           featured: false
         },
         {
@@ -612,7 +612,7 @@
         },
         {
           title: 'Tresigallo, Piazza della Repubblica',
-          caption: 'Postazione di acquisizione con microfono sferico Eigenmike em64, telecamera 360° e microfono di riferimento presso la fontana monumentale.',
+          caption: 'Postazione di ripresa presso la fontana monumentale: microfono Nevaton VR, array Brahma di 1° ordine, lavalier Røde e telecamera 360° combinati per una registrazione Ambisonics di 3° ordine.',
           image: 'assets/gallery/image14.jpg',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
@@ -755,7 +755,7 @@
         },
         {
           title: 'Chitarra Live in Piazza della Repubblica (Video)',
-          caption: 'Esecuzione di una sorgente sonora reale (chitarra classica) davanti alla fontana di Tresigallo per validare la localizzazione 3D.',
+          caption: 'Esecuzione di chitarra classica davanti alla fontana di Tresigallo, registrata in Ambisonics di 3° ordine combinando Nevaton VR, array Brahma di 1° ordine e lavalier Røde.',
           image: 'assets/videos/chitarra_tresigallo_poster.jpg',
           videoSrc: 'assets/videos/chitarra_tresigallo.mp4',
           videoWebmSrc: 'assets/videos/chitarra_tresigallo.webm',
