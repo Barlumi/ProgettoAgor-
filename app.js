@@ -1823,6 +1823,7 @@
     room3dOpen: false,
     portalOpen: false,
     audioMuted: false,
+    audioUnlockedOnce: false,
     audioPromptDismissed: false,
     suppressHoverAudioUntil: 0,
     introRippleAudioPlayed: false,
@@ -1877,7 +1878,10 @@
   });
 
   const VOICE_ENVELOPE = Object.freeze({
-    GAIN_FLOOR: 0.0001,
+    EXP_RAMP_FLOOR: 0.0001,
+    SILENT_GAIN: 0,
+    IDLE_INTENSITY_EPS: 0.005,
+    NOTE_ZERO_SNAP_SEC: 0.015,
     INTENSITY_CURVE_EXP: 1.6,
     ATTACK_TAU_SEC: 0.14,
     RELEASE_TAU_SEC: 0.24,
@@ -1885,6 +1889,15 @@
     SILENCE_FADE_SEC: 0.12,
     MUTE_FADE_SEC: 0.08,
     UNMUTE_FADE_SEC: 0.12
+  });
+
+  // Margini temporali per sospendere l'AudioContext quando nessun suono o riverbero è attivo
+  const AUDIO_IDLE_CONFIG = Object.freeze({
+    REVERB_TAIL_MS: 1850,
+    VOICE_RELEASE_TAIL_MS: 1200,
+    MUTE_SUSPEND_DELAY_MS: 220,
+    ESS_END_TAIL_MS: 140,
+    UNLOCK_GRACE_MS: 600
   });
 
   const CHIME_CONFIG = Object.freeze({
@@ -1926,6 +1939,81 @@
   let masterCompressorNode = null;
   let essDryGainNode = null;
   const audioNodes = {};
+  let audioBusyUntilMs = 0;
+  let audioSuspendPending = false;
+  let muteSuspendTimerId = null;
+
+  // Estende la finestra di attività audio e riattiva il contesto se era sospeso a riposo
+  function markAudioActive(durationMs) {
+    if (state.audioMuted || !state.audioPromptDismissed) return;
+
+    if (muteSuspendTimerId) {
+      clearTimeout(muteSuspendTimerId);
+      muteSuspendTimerId = null;
+    }
+
+    audioBusyUntilMs = Math.max(audioBusyUntilMs, performance.now() + durationMs);
+
+    if (audioCtx && audioCtx.state === 'suspended' && state.audioUnlockedOnce) {
+      audioCtx.resume().catch(function () {});
+    }
+  }
+
+  // Garantisce che l'AudioContext sia attivo prima di schedulare un suono one-shot
+  function runWhenAudioRunning(durationMs, playFn) {
+    if (!audioCtx || state.audioMuted || !state.audioPromptDismissed) return;
+
+    markAudioActive(durationMs);
+
+    if (audioCtx.state === 'running') {
+      playFn();
+      return;
+    }
+
+    if (audioCtx.state === 'suspended') {
+      audioCtx.resume().then(function () {
+        if (audioCtx && audioCtx.state === 'running' && !state.audioMuted) {
+          playFn();
+        }
+      }).catch(function () {});
+    }
+  }
+
+  // Azzera istantaneamente i guadagni delle voci persistenti prima della sospensione
+  function snapAllVoiceGainsToZero() {
+    if (!audioCtx) return;
+
+    const now = audioCtx.currentTime;
+    Object.keys(audioNodes).forEach(function (key) {
+      const voice = audioNodes[key];
+      if (!voice || !voice.gain) return;
+
+      voice.currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+      voice.gain.gain.cancelScheduledValues(now);
+      voice.gain.gain.setValueAtTime(VOICE_ENVELOPE.SILENT_GAIN, now);
+    });
+  }
+
+  // Sospende il grafo Web Audio quando non ci sono suoni né code di riverbero in corso
+  // così l'icona dell'altoparlante nella scheda del browser si spegne a riposo
+  function suspendAudioIfIdle() {
+    if (!audioCtx || audioCtx.state !== 'running' || audioSuspendPending) return;
+    if (essDemoState && essDemoState.activeSource) return;
+    if (!state.audioMuted && performance.now() < audioBusyUntilMs) return;
+
+    snapAllVoiceGainsToZero();
+    audioSuspendPending = true;
+
+    audioCtx.suspend().then(function () {
+      audioSuspendPending = false;
+      const hasPendingAudio = (performance.now() < audioBusyUntilMs) || (essDemoState && essDemoState.activeSource);
+      if (!state.audioMuted && hasPendingAudio) {
+        audioCtx.resume().catch(function () {});
+      }
+    }).catch(function () {
+      audioSuspendPending = false;
+    });
+  }
 
   function getAudioOutputNode() {
     return masterGainNode || audioCtx.destination;
@@ -1974,7 +2062,7 @@
 
       // Bus master: somma segnale dry + riverbero morbido, filtro caldo e limiter dolce
       masterGainNode = audioCtx.createGain();
-      const initialMaster = state.audioMuted ? VOICE_ENVELOPE.GAIN_FLOOR : activeStyle.audio.masterVolume;
+      const initialMaster = state.audioMuted ? VOICE_ENVELOPE.SILENT_GAIN : activeStyle.audio.masterVolume;
       masterGainNode.gain.setValueAtTime(initialMaster, audioCtx.currentTime);
 
       const masterFilter = audioCtx.createBiquadFilter();
@@ -2048,7 +2136,7 @@
       filter.Q.setValueAtTime(activeStyle.audio.filterQ, now);
 
       const gainNode = audioCtx.createGain();
-      gainNode.gain.setValueAtTime(VOICE_ENVELOPE.GAIN_FLOOR, now);
+      gainNode.gain.setValueAtTime(VOICE_ENVELOPE.SILENT_GAIN, now);
 
       // Tre parziali sinusoidali pure: fondamentale, coro caldo e ottava soffice
       const partials = [
@@ -2085,7 +2173,7 @@
         filter: filter,
         gain: gainNode,
         baseFreq: freq,
-        currentGain: VOICE_ENVELOPE.GAIN_FLOOR
+        currentGain: VOICE_ENVELOPE.SILENT_GAIN
       };
 
       audioNodes[id] = voiceObj;
@@ -2101,12 +2189,20 @@
 
     const now = audioCtx.currentTime;
     const clamped = Math.max(0, Math.min(1.0, intensity));
-    const targetVol = Math.max(
-      VOICE_ENVELOPE.GAIN_FLOOR,
-      Math.pow(clamped, VOICE_ENVELOPE.INTENSITY_CURVE_EXP) * activeStyle.audio.maxVoiceGain
-    );
+
+    if (clamped <= VOICE_ENVELOPE.IDLE_INTENSITY_EPS) {
+      if ((voice.currentGain || VOICE_ENVELOPE.SILENT_GAIN) === VOICE_ENVELOPE.SILENT_GAIN) return;
+
+      voice.currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+      voice.gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, now, VOICE_ENVELOPE.RELEASE_TAU_SEC);
+      return;
+    }
+
+    markAudioActive(AUDIO_IDLE_CONFIG.VOICE_RELEASE_TAIL_MS + AUDIO_IDLE_CONFIG.REVERB_TAIL_MS);
+
+    const targetVol = Math.pow(clamped, VOICE_ENVELOPE.INTENSITY_CURVE_EXP) * activeStyle.audio.maxVoiceGain;
     const targetCutoff = activeStyle.audio.baseFilterCutoff + clamped * activeStyle.audio.filterModulationRange;
-    const tau = targetVol >= (voice.currentGain || VOICE_ENVELOPE.GAIN_FLOOR)
+    const tau = targetVol >= (voice.currentGain || VOICE_ENVELOPE.SILENT_GAIN)
       ? VOICE_ENVELOPE.ATTACK_TAU_SEC
       : VOICE_ENVELOPE.RELEASE_TAU_SEC;
 
@@ -2145,10 +2241,15 @@
     state.audioMuted = mode === AUDIO_MUTE_MODE.MUTED;
     updateAudioMuteUI();
 
+    if (muteSuspendTimerId) {
+      clearTimeout(muteSuspendTimerId);
+      muteSuspendTimerId = null;
+    }
+
     if (!audioCtx) return;
 
     if (masterGainNode) {
-      const targetMaster = state.audioMuted ? VOICE_ENVELOPE.GAIN_FLOOR : activeStyle.audio.masterVolume;
+      const targetMaster = state.audioMuted ? VOICE_ENVELOPE.SILENT_GAIN : activeStyle.audio.masterVolume;
       const fadeTau = state.audioMuted ? VOICE_ENVELOPE.MUTE_FADE_SEC : VOICE_ENVELOPE.UNMUTE_FADE_SEC;
       masterGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
       if (essDryGainNode) {
@@ -2157,8 +2258,10 @@
     }
 
     if (state.audioMuted) {
+      audioBusyUntilMs = 0;
       stopEssDemoPlayback();
       silenceAllVoices(VOICE_ENVELOPE.MUTE_FADE_SEC);
+      muteSuspendTimerId = setTimeout(suspendAudioIfIdle, AUDIO_IDLE_CONFIG.MUTE_SUSPEND_DELAY_MS);
     }
   }
 
@@ -2219,10 +2322,20 @@
   }
 
   function ensureAudioUnlocked(callback) {
+    if (state.audioMuted) return;
+
     if (!audioCtx) initAudioContext();
     if (!audioCtx) return;
 
+    // Non riattivare il contesto a riposo per semplici eventi passivi senza suoni in coda:
+    // saranno le funzioni che emettono audio a riprendere il contesto al momento opportuno.
+    if (state.audioUnlockedOnce && typeof callback !== 'function') return;
+
+    audioBusyUntilMs = Math.max(audioBusyUntilMs, performance.now() + AUDIO_IDLE_CONFIG.UNLOCK_GRACE_MS);
+
     function onUnlocked() {
+      state.audioUnlockedOnce = true;
+      markAudioActive(AUDIO_IDLE_CONFIG.UNLOCK_GRACE_MS);
       detachUnlockListeners();
       dismissAudioPrompt();
       if (!state.introRippleAudioPlayed && !state.portalOpen) {
@@ -2252,7 +2365,7 @@
     'pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown'
   ];
   function onUserWakeGesture() {
-    if (!state.audioPromptDismissed || state.audioMuted) return;
+    if (!state.audioPromptDismissed || state.audioMuted || state.audioUnlockedOnce) return;
     ensureAudioUnlocked();
   }
   function attachUnlockListeners() {
@@ -2289,32 +2402,34 @@
       }
       if (audioNodes[c.id] && audioNodes[c.id].gain) {
         try {
-          audioNodes[c.id].currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
+          audioNodes[c.id].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
           audioNodes[c.id].gain.gain.cancelScheduledValues(time);
-          audioNodes[c.id].gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, time, ramp);
+          audioNodes[c.id].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, time, ramp);
         } catch (e) {}
       }
     });
 
     if (audioNodes['back-home'] && audioNodes['back-home'].gain) {
       try {
-        audioNodes['back-home'].currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
+        audioNodes['back-home'].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
         audioNodes['back-home'].gain.gain.cancelScheduledValues(time);
-        audioNodes['back-home'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, time, ramp);
+        audioNodes['back-home'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, time, ramp);
       } catch (e) {}
     }
 
     if (audioNodes['portal-media'] && audioNodes['portal-media'].gain) {
       try {
-        audioNodes['portal-media'].currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
+        audioNodes['portal-media'].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
         audioNodes['portal-media'].gain.gain.cancelScheduledValues(time);
-        audioNodes['portal-media'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, time, ramp);
+        audioNodes['portal-media'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, time, ramp);
       } catch (e) {}
     }
   }
 
   // Crea una nota sinusoidale filtrata con inviluppo privo di scatti
   function triggerSoftFilteredNote(freq, peakGain, attackSec, decaySec, stopSec, filterHz, delaySec) {
+    markAudioActive(((delaySec || 0) + stopSec) * 1000 + AUDIO_IDLE_CONFIG.REVERB_TAIL_MS);
+
     const startAt = audioCtx.currentTime + (delaySec || 0);
     const osc = audioCtx.createOscillator();
     const filter = audioCtx.createBiquadFilter();
@@ -2327,9 +2442,10 @@
     filter.frequency.setValueAtTime(filterHz, startAt);
     filter.Q.setValueAtTime(CHIME_CONFIG.ZOOM_FILTER_Q, startAt);
 
-    gain.gain.setValueAtTime(VOICE_ENVELOPE.GAIN_FLOOR, startAt);
+    gain.gain.setValueAtTime(VOICE_ENVELOPE.EXP_RAMP_FLOOR, startAt);
     gain.gain.exponentialRampToValueAtTime(peakGain, startAt + attackSec);
-    gain.gain.exponentialRampToValueAtTime(VOICE_ENVELOPE.GAIN_FLOOR, startAt + decaySec);
+    gain.gain.exponentialRampToValueAtTime(VOICE_ENVELOPE.EXP_RAMP_FLOOR, startAt + decaySec);
+    gain.gain.setValueAtTime(VOICE_ENVELOPE.SILENT_GAIN, startAt + decaySec + VOICE_ENVELOPE.NOTE_ZERO_SNAP_SEC);
 
     osc.connect(filter);
     filter.connect(gain);
@@ -2343,21 +2459,24 @@
   // SINTESI EFFETTI SONORI TRANSIZIONI (TRIADE MORBIDA, RITORNO, FASI)
   // -------------------------------------------------------------------------
   function playZoomInChime(baseFreq) {
-    if (!audioCtx || state.audioMuted) return;
+    if (!audioCtx || state.audioMuted || !state.audioPromptDismissed) return;
     try {
       const freq = baseFreq || AUDIO_BUS_CONFIG.DEFAULT_VOICE_FREQ;
       const filterHz = freq * CHIME_CONFIG.ZOOM_FILTER_MULT;
+      const activeWindowMs = CHIME_CONFIG.ZOOM_STOP_SEC * 1000 + AUDIO_IDLE_CONFIG.REVERB_TAIL_MS;
 
-      CHIME_CONFIG.ZOOM_PARTIALS.forEach(function (partial) {
-        triggerSoftFilteredNote(
-          freq * partial.ratio,
-          partial.gain,
-          CHIME_CONFIG.ZOOM_ATTACK_SEC,
-          CHIME_CONFIG.ZOOM_DECAY_SEC,
-          CHIME_CONFIG.ZOOM_STOP_SEC,
-          filterHz,
-          0
-        );
+      runWhenAudioRunning(activeWindowMs, function () {
+        CHIME_CONFIG.ZOOM_PARTIALS.forEach(function (partial) {
+          triggerSoftFilteredNote(
+            freq * partial.ratio,
+            partial.gain,
+            CHIME_CONFIG.ZOOM_ATTACK_SEC,
+            CHIME_CONFIG.ZOOM_DECAY_SEC,
+            CHIME_CONFIG.ZOOM_STOP_SEC,
+            filterHz,
+            0
+          );
+        });
       });
     } catch (e) {
       // Ignora errori di contesto non inizializzato
@@ -2365,18 +2484,23 @@
   }
 
   function playReturnChime() {
-    if (!audioCtx || state.audioMuted) return;
+    if (!audioCtx || state.audioMuted || !state.audioPromptDismissed) return;
     try {
-      CHIME_CONFIG.RETURN_CHORD_HZ.forEach(function (freq, i) {
-        triggerSoftFilteredNote(
-          freq,
-          CHIME_CONFIG.RETURN_PEAK_GAIN,
-          CHIME_CONFIG.RETURN_ATTACK_SEC,
-          CHIME_CONFIG.RETURN_DECAY_SEC,
-          CHIME_CONFIG.RETURN_STOP_SEC,
-          freq * CHIME_CONFIG.RETURN_FILTER_MULT,
-          i * CHIME_CONFIG.RETURN_STAGGER_SEC
-        );
+      const maxDelay = (CHIME_CONFIG.RETURN_CHORD_HZ.length - 1) * CHIME_CONFIG.RETURN_STAGGER_SEC;
+      const activeWindowMs = (maxDelay + CHIME_CONFIG.RETURN_STOP_SEC) * 1000 + AUDIO_IDLE_CONFIG.REVERB_TAIL_MS;
+
+      runWhenAudioRunning(activeWindowMs, function () {
+        CHIME_CONFIG.RETURN_CHORD_HZ.forEach(function (freq, i) {
+          triggerSoftFilteredNote(
+            freq,
+            CHIME_CONFIG.RETURN_PEAK_GAIN,
+            CHIME_CONFIG.RETURN_ATTACK_SEC,
+            CHIME_CONFIG.RETURN_DECAY_SEC,
+            CHIME_CONFIG.RETURN_STOP_SEC,
+            freq * CHIME_CONFIG.RETURN_FILTER_MULT,
+            i * CHIME_CONFIG.RETURN_STAGGER_SEC
+          );
+        });
       });
     } catch (e) {
       // Ignora errori
@@ -2384,47 +2508,42 @@
   }
 
   function playPhaseStepSound() {
-    if (!audioCtx || state.audioMuted) return;
+    if (!audioCtx || state.audioMuted || !state.audioPromptDismissed) return;
     try {
-      triggerSoftFilteredNote(
-        CHIME_CONFIG.STEP_BASE_HZ,
-        CHIME_CONFIG.STEP_BASE_GAIN,
-        CHIME_CONFIG.STEP_ATTACK_SEC,
-        CHIME_CONFIG.STEP_DECAY_SEC,
-        CHIME_CONFIG.STEP_STOP_SEC,
-        CHIME_CONFIG.STEP_FILTER_HZ,
-        0
-      );
-      triggerSoftFilteredNote(
-        CHIME_CONFIG.STEP_OVERTONE_HZ,
-        CHIME_CONFIG.STEP_OVERTONE_GAIN,
-        CHIME_CONFIG.STEP_ATTACK_SEC,
-        CHIME_CONFIG.STEP_DECAY_SEC,
-        CHIME_CONFIG.STEP_STOP_SEC,
-        CHIME_CONFIG.STEP_FILTER_HZ,
-        0
-      );
+      const activeWindowMs = CHIME_CONFIG.STEP_STOP_SEC * 1000 + AUDIO_IDLE_CONFIG.REVERB_TAIL_MS;
+
+      runWhenAudioRunning(activeWindowMs, function () {
+        triggerSoftFilteredNote(
+          CHIME_CONFIG.STEP_BASE_HZ,
+          CHIME_CONFIG.STEP_BASE_GAIN,
+          CHIME_CONFIG.STEP_ATTACK_SEC,
+          CHIME_CONFIG.STEP_DECAY_SEC,
+          CHIME_CONFIG.STEP_STOP_SEC,
+          CHIME_CONFIG.STEP_FILTER_HZ,
+          0
+        );
+        triggerSoftFilteredNote(
+          CHIME_CONFIG.STEP_OVERTONE_HZ,
+          CHIME_CONFIG.STEP_OVERTONE_GAIN,
+          CHIME_CONFIG.STEP_ATTACK_SEC,
+          CHIME_CONFIG.STEP_DECAY_SEC,
+          CHIME_CONFIG.STEP_STOP_SEC,
+          CHIME_CONFIG.STEP_FILTER_HZ,
+          0
+        );
+      });
     } catch (e) {
       // Ignora errori
     }
   }
 
   function playRipplePulseSound(freq) {
-    if (!audioCtx) initAudioContext();
-    if (!audioCtx || state.audioMuted) return;
+    if (!audioCtx || state.audioMuted || !state.audioPromptDismissed) return;
 
-    if (audioCtx.state === 'suspended') {
-      audioCtx.resume().then(function () {
-        if (audioCtx.state === 'running') {
-          playSineTone(freq);
-        }
-      }).catch(function () {});
-      return;
-    }
-
-    if (audioCtx.state === 'running') {
+    const activeWindowMs = CHIME_CONFIG.RIPPLE_STOP_SEC * 1000 + AUDIO_IDLE_CONFIG.REVERB_TAIL_MS;
+    runWhenAudioRunning(activeWindowMs, function () {
       playSineTone(freq);
-    }
+    });
   }
 
   function playSineTone(freq) {
@@ -2844,10 +2963,12 @@
     const durationMs = (audioSamples.length / sampleRate) * 1000;
     const startedAt = performance.now();
     essDemoState.activeSource = src;
+    markAudioActive(durationMs + AUDIO_IDLE_CONFIG.ESS_END_TAIL_MS);
 
     src.onended = function () {
       if (essDemoState.activeSource === src) {
         essDemoState.activeSource = null;
+        audioBusyUntilMs = Math.max(audioBusyUntilMs, performance.now() + AUDIO_IDLE_CONFIG.ESS_END_TAIL_MS);
       }
       if (essDemoState.playheadRafId) {
         cancelAnimationFrame(essDemoState.playheadRafId);
@@ -2873,6 +2994,7 @@
 
   function triggerEssAction(signalType) {
     ensureAudioUnlocked();
+    markAudioActive(AUDIO_IDLE_CONFIG.UNLOCK_GRACE_MS);
     stopEssDemoPlayback();
 
     const sampleRate = audioCtx ? audioCtx.sampleRate : ESS_CONFIG.FALLBACK_SAMPLE_RATE;
@@ -4224,8 +4346,10 @@
         if (state.portalOpen || state.audioMuted || isHoverAudioSuppressed) {
           // Quando si è in una pagina interna, l'audio è spento o durante la propagazione di ritorno alla home,
           // i cerchi della Home non devono produrre suoni di passaggio del mouse
-          voice.currentGain = VOICE_ENVELOPE.GAIN_FLOOR;
-          voice.gain.gain.setTargetAtTime(VOICE_ENVELOPE.GAIN_FLOOR, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
+          if ((voice.currentGain || VOICE_ENVELOPE.SILENT_GAIN) !== VOICE_ENVELOPE.SILENT_GAIN) {
+            voice.currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+            voice.gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
+          }
         } else {
           const combinedIntensity = Math.min(1.0, st.motionEnergy * 1.2 + (st.isHovered ? 0.4 : 0));
           modulateHarmonicVoice(voice, combinedIntensity);
@@ -4238,8 +4362,9 @@
       animateBackHomeCircle();
       if (state.activeSection === 'laboratorio') {
         animatePortalMediaCircle();
-      } else if (audioCtx && audioNodes['portal-media']) {
-        audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
+      } else if (audioCtx && audioNodes['portal-media'] && (audioNodes['portal-media'].currentGain || VOICE_ENVELOPE.SILENT_GAIN) !== VOICE_ENVELOPE.SILENT_GAIN) {
+        audioNodes['portal-media'].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+        audioNodes['portal-media'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
       }
       if (state.activeSection === 'gallery') {
         animateGalleryCircles();
@@ -4247,8 +4372,14 @@
     } else {
       // Quando siamo sulla Home: silenzia rigorosamente le voci della pagina interna
       if (audioCtx) {
-        if (audioNodes['back-home']) audioNodes['back-home'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
-        if (audioNodes['portal-media']) audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.03);
+        if (audioNodes['back-home'] && (audioNodes['back-home'].currentGain || VOICE_ENVELOPE.SILENT_GAIN) !== VOICE_ENVELOPE.SILENT_GAIN) {
+          audioNodes['back-home'].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+          audioNodes['back-home'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
+        }
+        if (audioNodes['portal-media'] && (audioNodes['portal-media'].currentGain || VOICE_ENVELOPE.SILENT_GAIN) !== VOICE_ENVELOPE.SILENT_GAIN) {
+          audioNodes['portal-media'].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+          audioNodes['portal-media'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
+        }
       }
       backHomeState.isHovered = false;
       backHomeState.motionEnergy = 0;
@@ -4256,6 +4387,7 @@
       mediaWaveState.motionEnergy = 0;
     }
 
+    suspendAudioIfIdle();
     requestAnimationFrame(mainAnimationLoop);
   }
 
@@ -4861,7 +4993,8 @@
     stopShExplorerAnimation();
 
     if (audioCtx && audioNodes['portal-media']) {
-      audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
+      audioNodes['portal-media'].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+      audioNodes['portal-media'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
     }
     mediaWaveState.isHovered = false;
     mediaWaveState.motionEnergy = 0;
@@ -5273,7 +5406,8 @@
     if (mapCard) mapCard.style.display = 'none';
 
     if (audioCtx && audioNodes['portal-media']) {
-      audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
+      audioNodes['portal-media'].currentGain = VOICE_ENVELOPE.SILENT_GAIN;
+      audioNodes['portal-media'].gain.gain.setTargetAtTime(VOICE_ENVELOPE.SILENT_GAIN, audioCtx.currentTime, VOICE_ENVELOPE.SILENCE_FADE_SEC);
     }
     mediaWaveState.isHovered = false;
     mediaWaveState.motionEnergy = 0;
@@ -7024,10 +7158,10 @@
     // Controllo Audio Spento / Attivo centralizzato (Desktop e Mobile Drawer)
     function toggleAudioMute() {
       const nextMode = state.audioMuted ? AUDIO_MUTE_MODE.ACTIVE : AUDIO_MUTE_MODE.MUTED;
+      setAudioMuteMode(nextMode);
       if (nextMode === AUDIO_MUTE_MODE.ACTIVE) {
         ensureAudioUnlocked();
       }
-      setAudioMuteMode(nextMode);
     }
 
     const muteToggle = document.getElementById('btnAudioMute');
