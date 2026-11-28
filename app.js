@@ -196,7 +196,7 @@
         'I ricercatori hanno condotto una campagna sperimentale in 5 città dell\'Emilia-Romagna (Parma, Rimini, Faenza, Comacchio e Tresigallo), registrando il soundscape di 11 piazze storiche insieme a rilievi comparativi in teatri storici e in camera anecoica.',
         'Al centro di ogni piazza il kit di acquisizione integra microfono sferico Eigenmike em64 (64 capsule), camera 360° in 8K, testa binaurale Neumann KU 100, microfono B-format Sennheiser Ambeo e microfono ECM-8000 su rete Dante a 48 kHz.'
       ],
-      image: 'assets/gallery/image31.jpg',
+      image: 'assets/gallery/image31.webp',
       imageCaption: 'Rilievo in Piazza Cavour a Rimini: microfono sferico Eigenmike em64 (con antivento), telecamera 360° e testa binaurale per la registrazione del soundscape.',
       hasCampaignMap: true,
       mediaStripTag: 'Mappe & Foto sul Campo · 5 Città',
@@ -208,7 +208,7 @@
           shortLabel: 'Mappa Parma',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/parma_san_francesco_mappa_punti.jpg',
+          image: 'assets/campagna/parma_san_francesco_mappa_punti.webp',
           caption: 'Planimetria delle posizioni di misura in Piazzale San Francesco (Parma): 2 sorgenti (SA, SB) × 6 microfoni su distanze da 4,03 m a 37,40 m.',
           featured: true
         },
@@ -217,7 +217,7 @@
           shortLabel: 'Aerea Parma',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/parma_san_francesco_aerea.jpg',
+          image: 'assets/campagna/parma_san_francesco_aerea.webp',
           caption: 'Inquadramento urbanistico dell\'area di misura (28 × 50 m) tra la Chiesa di San Francesco, la Casa della Musica e Borgo degli Studi.',
           featured: true
         },
@@ -226,7 +226,7 @@
           shortLabel: 'Kit Ripresa',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/kit_acquisizione_rimini.jpg',
+          image: 'assets/gallery/kit_acquisizione_rimini.webp',
           caption: 'Postazione multi-sensore co-localizzata in Piazza Cavour: Eigenmike em64, Insta360, testa artificiale KU 100, Sennheiser Ambeo, ECM-8000 e Zoom F8.',
           featured: true
         },
@@ -235,7 +235,7 @@
           shortLabel: 'Mappa 3D',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image29.jpg',
+          image: 'assets/gallery/image29.webp',
           caption: 'Distribuzione spaziale a colori della pressione e provenienza sonora sovrapposta alla ripresa 360° (Farina et al., Urban Science 2025).',
           featured: true
         },
@@ -244,7 +244,7 @@
           shortLabel: 'Trepponti 80ms',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image33.jpg',
+          image: 'assets/gallery/image33.webp',
           caption: 'Mappa panoramica delle prime riflessioni (0–80 ms) estratta dalla sonda sferica a 64 capsule a Piazza Trepponti.',
           featured: true
         },
@@ -253,7 +253,7 @@
           shortLabel: 'Chitarra Live',
           badge: MEDIA_BADGE.VIDEO,
           mediaType: MEDIA_TYPE.VIDEO,
-          image: 'assets/videos/chitarra_tresigallo_poster.jpg',
+          image: 'assets/videos/chitarra_tresigallo_poster.webp',
           videoSrc: 'assets/videos/chitarra_tresigallo.mp4',
           videoWebmSrc: 'assets/videos/chitarra_tresigallo.webm',
           caption: 'Registrazione dal vivo in Ambisonics di 3° ordine in Piazza della Repubblica (Tresigallo) con Nevaton VR, array Brahma di 1° ordine e lavalier Røde davanti alla fontana monumentale.',
@@ -264,7 +264,7 @@
           shortLabel: 'Rilievo Parma',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/parma_san_francesco_rilievo.jpg',
+          image: 'assets/campagna/parma_san_francesco_rilievo.webp',
           caption: 'Sorgente omnidirezionale e microfoni posizionati davanti alla facciata della Chiesa di San Francesco durante il rilievo ESS.',
           featured: false
         },
@@ -273,7 +273,7 @@
           shortLabel: 'Piazza Cavour',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/rimini_kit_piazza_cavour.jpg',
+          image: 'assets/campagna/rimini_kit_piazza_cavour.webp',
           caption: 'Allestimento del cavalletto con sonda sferica e testa artificiale al centro di Piazza Cavour (Rimini, 2024).',
           featured: false
         },
@@ -282,7 +282,7 @@
           shortLabel: 'Panorama 360°',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image16.jpg',
+          image: 'assets/gallery/image16.webp',
           caption: 'Fotogramma equirettangolare a 360° acquisito in sincronia temporale con i 64 canali dell\'Eigenmike em64.',
           featured: false
         },
@@ -291,7 +291,7 @@
           shortLabel: 'Faenza Piazza',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image13.jpg',
+          image: 'assets/gallery/image13.webp',
           caption: 'Il gruppo di ricerca CIRI-EC dell\'Università di Bologna durante i rilievi acustici affacciati su Piazza del Popolo.',
           featured: false
         },
@@ -300,7 +300,7 @@
           shortLabel: 'Tresigallo HOA',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/tresigallo_chitarra_live.jpg',
+          image: 'assets/campagna/tresigallo_chitarra_live.webp',
           caption: 'Ripresa Ambisonics di 3° ordine ottenuta combinando un microfono Nevaton VR, un array Brahma di 1° ordine e un microfono lavalier Røde in Piazza della Repubblica a Tresigallo.',
           featured: false
         },
@@ -309,7 +309,7 @@
           shortLabel: 'Teatro Bologna',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/bologna_teatro_comunale.jpg',
+          image: 'assets/campagna/bologna_teatro_comunale.webp',
           caption: 'Indagine acustica nella cavea storica del Teatro Comunale di Bologna per il confronto metodologico teatri-piazze.',
           featured: false
         },
@@ -318,7 +318,7 @@
           shortLabel: 'SS. Salvatore',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/bologna_chiesa_ss_salvatore.jpg',
+          image: 'assets/campagna/bologna_chiesa_ss_salvatore.webp',
           caption: 'Rilievo della risposta all\'impulso 3D in architettura monumentale ecclesiastica con em64 e testa binaurale.',
           featured: false
         },
@@ -327,7 +327,7 @@
           shortLabel: 'Zagabria TNC',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/zagabria_teatro_nazionale.jpg',
+          image: 'assets/campagna/zagabria_teatro_nazionale.webp',
           caption: 'Campagna internazionale comparativa in sala d\'opera storica con catena di acquisizione multicanale.',
           featured: false
         },
@@ -336,7 +336,7 @@
           shortLabel: 'Cam. Anecoica',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/ferrara_camera_anecoica.jpg',
+          image: 'assets/campagna/ferrara_camera_anecoica.webp',
           caption: 'Registrazioni anecoiche di riferimento utilizzate come sorgenti asciutte per l\'auralizzazione nelle piazze.',
           featured: false
         }
@@ -350,7 +350,7 @@
         'Facciate, colonne e portici riflettono il suono definendo l\'acustica di ogni piazza. Le misure seguono lo standard ISO 3382, applicando allo spazio aperto sweep esponenziali (ESS) da 15 s su catena digitale Dante (scheda RME Digiface Dante, amplificatore Classe D a 32 canali) e sorgenti omnidirezionali MIMO: dodecaedro DodecMIMO a 12 trasduttori, sorgente sferica Chiesi a 32 canali e Look Line SL203AC.',
         'La deconvoluzione con filtro inverso separa le distorsioni armoniche e restituisce risposte all\'impulso 3D ad alto rapporto segnale/rumore (540.000 campioni dopo trimming). A Parma (Piazzale San Francesco, 2 sorgenti × 6 microfoni su 4,03–37,40 m), Rimini (T30 ≈ 1,6 s) e Comacchio Trepponti (9 posizioni, T30 = 1,4–1,9 s), i parametri EDT, T30, C80 e G(r) rivelano un comportamento acustico assimilabile a sale da concerto.'
       ],
-      image: 'assets/gallery/image12.jpg',
+      image: 'assets/gallery/image12.webp',
       imageCaption: 'Misura acustica in Piazza Cavour a Rimini: sorgente omnidirezionale a dodecaedro per il calcolo della risposta all\'impulso (ESS) e del tempo di riverberazione.',
       hasEssDemo: true,
       specs: [
@@ -368,7 +368,7 @@
           shortLabel: 'Spettro ESS',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/spettrogramma_ess.jpg',
+          image: 'assets/gallery/spettrogramma_ess.webp',
           caption: 'Analisi tempo-frequenza dello sweep esponenziale e separazione delle distorsioni armoniche tramite deconvoluzione lineare di Farina.',
           featured: true
         },
@@ -377,7 +377,7 @@
           shortLabel: 'Catena Dante',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/catena_dante_mimo.jpg',
+          image: 'assets/gallery/catena_dante_mimo.webp',
           caption: 'Architettura di misura AGORÀ: PC con switch PoE+, RME Digiface Dante, amplificatore a 32 canali Classe D, Eigenmike em64 e sorgente DodecMIMO.',
           featured: true
         },
@@ -386,7 +386,7 @@
           shortLabel: 'Trimming IR',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase2/ir_trimming_deconv.jpg',
+          image: 'assets/fase2/ir_trimming_deconv.webp',
           caption: 'Estrazione della risposta all\'impulso lineare dopo la convoluzione con il filtro inverso (eliminazione dei picchi armonici antecedenti t₀).',
           featured: true
         },
@@ -395,7 +395,7 @@
           shortLabel: 'Grafico T30',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase2/grafico_t30_parma.jpg',
+          image: 'assets/fase2/grafico_t30_parma.webp',
           caption: 'Andamento di T30 (125–4000 Hz) in Piazzale San Francesco per le posizioni di sorgente S1 e S2: valori compresi tra 1,2 s e 2,8 s.',
           featured: true
         },
@@ -404,7 +404,7 @@
           shortLabel: 'Grafico C80',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase2/grafico_c80_parma.jpg',
+          image: 'assets/fase2/grafico_c80_parma.webp',
           caption: 'Chiarezza musicale C80 (dB) alle bande d\'ottava per le sorgenti S1 e S2 davanti alle facciate storiche di San Francesco.',
           featured: true
         },
@@ -413,7 +413,7 @@
           shortLabel: 'Forza G(d)',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase2/grafico_g_distanza.jpg',
+          image: 'assets/fase2/grafico_g_distanza.webp',
           caption: 'Andamento sperimentale della Forza Sonora G (dB) rispetto alla distanza sorgente-ricevitore (da 4,03 m a 37,40 m) in ambito urbano.',
           featured: true
         },
@@ -422,7 +422,7 @@
           shortLabel: 'Grafico EDT',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase2/grafico_edt_parma.jpg',
+          image: 'assets/fase2/grafico_edt_parma.webp',
           caption: 'Confronto spettrale dell\'Early Decay Time (EDT) fra le posizioni S1 e S2 tra 125 Hz e 4000 Hz.',
           featured: false
         },
@@ -431,7 +431,7 @@
           shortLabel: 'Catena SIPARIO',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase2/catena_em32_sipario.jpg',
+          image: 'assets/fase2/catena_em32_sipario.webp',
           caption: 'Architettura di misura multicanale utilizzata nel progetto capostipite SIPARIO con sonda em32 e sorgente sferica a 12 canali.',
           featured: false
         },
@@ -440,7 +440,7 @@
           shortLabel: 'Mappa Punti',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/campagna/parma_san_francesco_mappa_punti.jpg',
+          image: 'assets/campagna/parma_san_francesco_mappa_punti.webp',
           caption: 'Geometria di misura ISO 3382 a Piazzale San Francesco: 2 sorgenti (SA, SB) × 6 postazioni di ricezione.',
           featured: false
         }
@@ -454,7 +454,7 @@
         'I 64 segnali dell\'Eigenmike em64 consentono una codifica fino al 6° ordine HOA e vengono standardizzati in tracce master AmbiX di 3° ordine (16 canali, convenzione ACN/SN3D), formando un campo sonoro 3D indipendente dal sistema di riproduzione.',
         'Tramite Plogue Bidule, O3A Flare e il convolutore a matrice X-MCFX (N × 16 canali), l\'energia spaziale viene proiettata come mappa di intensità a colori su immagini equirettangolari 360° e analizzata con profili di Loudness psicoacustico (confronto tra Piazza Garibaldi, Duomo e Pilotta) e mappe di prime riflessioni 0–80 ms.'
       ],
-      image: 'assets/gallery/image28.jpg',
+      image: 'assets/gallery/image28.webp',
       imageCaption: 'Mappa acustica in formato AmbiX: scomposizione in armoniche sferiche e intensità del suono nello spazio 3D.',
       imagePosition: IMAGE_POSITION.SPHERICAL_HARMONICS,
       hasShExplorer: true,
@@ -473,7 +473,7 @@
           shortLabel: 'Mappa 3D Parma',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image29.jpg',
+          image: 'assets/gallery/image29.webp',
           caption: 'Provenienza direzionale e intensità del soundscape sovrapposte all\'immagine equirettangolare 360° (Farina et al., Urban Science 2025).',
           featured: true
         },
@@ -482,7 +482,7 @@
           shortLabel: 'Riflessioni 80ms',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image33.jpg',
+          image: 'assets/gallery/image33.webp',
           caption: 'Individuazione delle riflessioni precoci dalle murature storiche di Piazza Trepponti a Comacchio tramite beamforming HOA.',
           featured: true
         },
@@ -491,7 +491,7 @@
           shortLabel: 'Loudness (sone)',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image30.jpg',
+          image: 'assets/gallery/image30.webp',
           caption: 'Confronto dinamico su 300 s tra Piazza Garibaldi (traffico e voci), Piazzale della Pilotta e Piazza Duomo (oasi quieta).',
           featured: true
         },
@@ -500,7 +500,7 @@
           shortLabel: 'Beamforming 3D',
           badge: MEDIA_BADGE.VIDEO,
           mediaType: MEDIA_TYPE.VIDEO,
-          image: 'assets/videos/beamforming_pompei_poster.jpg',
+          image: 'assets/videos/beamforming_pompei_poster.webp',
           videoSrc: 'assets/videos/beamforming_pompei.mp4',
           videoWebmSrc: 'assets/videos/beamforming_pompei.webm',
           caption: 'Visualizzazione animata della localizzazione direzionale tramite array sferico e filtri a fascio in ambiente aperto storico.',
@@ -511,7 +511,7 @@
           shortLabel: 'Piramide AmbiX',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image28.jpg',
+          image: 'assets/gallery/image28.webp',
           caption: 'Lobi di direttività positivi/negativi dall\'ordine 0 (W) all\'ordine 3 (Q, O, M, K, L, N, P) nello standard AmbiX SN3D.',
           featured: true
         },
@@ -520,7 +520,7 @@
           shortLabel: 'Dettaglio IR',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase2/ir_processed_zoom.jpg',
+          image: 'assets/fase2/ir_processed_zoom.webp',
           caption: 'Ingrandimento temporale della risposta all\'impulso allineata pronta per la codifica in armoniche sferiche e convoluzione a matrice.',
           featured: true
         }
@@ -534,7 +534,7 @@
         'Il modello digitale fotorealista di Piazzale San Francesco a Parma (28 × 50 m) è stato generato integrando un drone DJI Mini 4 Pro (250 g) e una fotocamera Sony Alpha 7 IV: 2.910 fotografie ad alta sovrapposizione (80%) ricomposte in RealityCapture con mesh e texture ad alta fedeltà.',
         'All\'interno di Unreal Engine la geometria si fonde con le risposte all\'impulso HOA di 6 zone acustiche interpolate in tempo reale con 6 gradi di libertà (6DOF), auralizzando l\'aria "Ti tradì quell\'alma ingrata" da Il Trovatore di Verdi tra spazio aperto e facciate storiche (Bevilacqua, Farina, Tronchin · ASME J. Vib. Acoust., 2026).'
       ],
-      image: 'assets/gallery/image35.jpg',
+      image: 'assets/gallery/image35.webp',
       imageCaption: 'Ricostruzione in Realtà Virtuale 6DOF di Piazzale San Francesco a Parma: navigazione libera con audio interattivo.',
       specs: [
         { label: 'Caso Studio', value: 'Piazzale San Francesco, Parma (28 × 50 m)' },
@@ -551,7 +551,7 @@
           shortLabel: 'Demo VR 6DOF',
           badge: MEDIA_BADGE.VIDEO,
           mediaType: MEDIA_TYPE.VIDEO,
-          image: 'assets/videos/vr_auralizzazione_6dof_poster.jpg',
+          image: 'assets/videos/vr_auralizzazione_6dof_poster.webp',
           videoSrc: 'assets/videos/vr_auralizzazione_6dof.mp4',
           videoWebmSrc: 'assets/videos/vr_auralizzazione_6dof.webm',
           caption: 'Demo dal vivo in Unreal Engine: l\'ascoltatore cammina virtualmente in Piazzale San Francesco con l\'auralizzazione di Verdi adattiva in 6DOF.',
@@ -562,7 +562,7 @@
           shortLabel: 'Modello 3D Drone',
           badge: MEDIA_BADGE.VIDEO,
           mediaType: MEDIA_TYPE.VIDEO,
-          image: 'assets/videos/fotogrammetria_drone_parma_poster.jpg',
+          image: 'assets/videos/fotogrammetria_drone_parma_poster.webp',
           videoSrc: 'assets/videos/fotogrammetria_drone_parma.mp4',
           videoWebmSrc: 'assets/videos/fotogrammetria_drone_parma.webm',
           caption: 'Mesh 3D testurizzata ricostruita in RealityCapture dalle 2.910 fotografie acquisite con DJI Mini 4 Pro e Sony Alpha 7 IV.',
@@ -573,7 +573,7 @@
           shortLabel: '6 Zone 6DOF',
           badge: MEDIA_BADGE.MAP,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase4/parma_zone_6dof_mappa.jpg',
+          image: 'assets/fase4/parma_zone_6dof_mappa.webp',
           caption: 'Partizione spaziale di Piazzale San Francesco in 6 zone omogenee associate alle rispettive risposte all\'impulso HOA per l\'interpolazione continua.',
           featured: true
         },
@@ -582,7 +582,7 @@
           shortLabel: 'Test Visore VR',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase4/vr_headset_test.jpg',
+          image: 'assets/fase4/vr_headset_test.webp',
           caption: 'Sessione di test con visore VR e tracciamento a 6 gradi di libertà presso i laboratori dell\'Università di Parma.',
           featured: true
         },
@@ -591,7 +591,7 @@
           shortLabel: 'Render Unreal',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/fase4/parma_unreal_veduta.jpg',
+          image: 'assets/fase4/parma_unreal_veduta.webp',
           caption: 'Scorcio dell\'ambiente virtuale calibrato tra la Chiesa di San Francesco, la Casa della Musica e le facciate laterali.',
           featured: true
         },
@@ -600,7 +600,7 @@
           shortLabel: 'Flusso 6DOF',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/gallery/image34.jpg',
+          image: 'assets/gallery/image34.webp',
           caption: 'Schema metodologico integrato: Rilievo Visivo (fotogrammetria) + Rilievo Acustico (IR HOA) → Ambiente Immersivo 6DOF.',
           featured: true
         }
@@ -615,7 +615,7 @@
         'La diffusione sonora combina un array WFS (Wave Field Synthesis) a 128 canali con soundbar dedicate e amplificatori ZOTech, insieme a una cupola Ambisonics da 24 altoparlanti (3 anelli ottagonali da 8 più diffusore zenitale), pilotati da tracce master AmbiX di 3° ordine (16 canali) con AllRADecoder, WFSMixer e Plogue Bidule.',
         'La proiezione ottagonale a 360° impiega 4 proiettori a ottica corta Optoma 4K400STx e un Mac Studio, gestiti da una pipeline open-source (Python + OpenCV per warp prospettico e keystone, 4 istanze mpv sincronizzate, blocco UUID dei display con displayplacer e Web UI Python).'
       ],
-      image: 'assets/gallery/tresigallo_wfs_room.jpg',
+      image: 'assets/gallery/tresigallo_wfs_room.webp',
       imageCaption: 'Sala immersiva AGORÀ a Tresigallo (Urban Center "Sogni"): struttura ottagonale da 6 m con array WFS a 128 canali, 24 diffusori Ambisonics e proiezione 360° a 4 proiettori 4K.',
       model3dUrl: 'https://e-muse.it/tresigallo',
       model3dTitle: 'Sala Immersiva WFS — Tresigallo',
@@ -635,7 +635,7 @@
           title: 'Progetto CAD 3D Ottagono',
           shortLabel: 'Progetto 3D',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/cad_ottagono.jpg',
+          image: 'assets/tresigallo/cad_ottagono.webp',
           caption: 'Modello CAD Blender dell\'ottagono da 6 m: struttura portante, barre WFS, 4 proiettori e diffusori Ambisonics.',
           featured: true
         },
@@ -643,7 +643,7 @@
           title: 'Profilati Bosch Rexroth (160 kg)',
           shortLabel: 'Profilati 40mm',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/profilati_trasporto.jpg',
+          image: 'assets/tresigallo/profilati_trasporto.webp',
           caption: 'Travi modulari in alluminio estruso Bosch Rexroth da 40 mm pronte per il trasporto e il montaggio a Tresigallo.',
           featured: false
         },
@@ -651,7 +651,7 @@
           title: 'Piastre Base Zincate 40×40',
           shortLabel: 'Piastre base',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/piastra_base.jpg',
+          image: 'assets/tresigallo/piastra_base.webp',
           caption: 'Giunto di ancoraggio a terra con piastra base in acciaio galvanizzato Bosch Rexroth e tasselli M8.',
           featured: false
         },
@@ -659,7 +659,7 @@
           title: 'Erezione Struttura Ottagonale',
           shortLabel: 'Telaio 6 m',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/telaio_ottagono.jpg',
+          image: 'assets/tresigallo/telaio_ottagono.webp',
           caption: 'Montaggio dello scheletro ottagonale da 6 m di diametro e 3,8 m di altezza all\'interno dell\'Urban Center "Sogni".',
           featured: true
         },
@@ -667,7 +667,7 @@
           title: 'Montaggio Barre WFS 128 Canali',
           shortLabel: 'Montaggio WFS',
           mediaType: MEDIA_TYPE.VIDEO,
-          image: 'assets/videos/montaggio_wfs_poster.jpg',
+          image: 'assets/videos/montaggio_wfs_poster.webp',
           videoSrc: 'assets/videos/montaggio_wfs.mp4',
           videoWebmSrc: 'assets/videos/montaggio_wfs.webm',
           caption: 'Installazione in quota della cornice modulare e delle soundbar per la Wave Field Synthesis a 128 canali.',
@@ -677,7 +677,7 @@
           title: 'Banco Test Array WFS in Laboratorio',
           shortLabel: 'Banco WFS',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/test_wfs_hub.jpg',
+          image: 'assets/tresigallo/test_wfs_hub.webp',
           caption: 'Premontaggio e collaudo dei moduli di altoparlanti WFS prima dell\'installazione a Tresigallo.',
           featured: false
         },
@@ -685,7 +685,7 @@
           title: 'Teli di Proiezione & Soundbar WFS',
           shortLabel: 'Teli & WFS',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/schermi_wfs_alto.jpg',
+          image: 'assets/tresigallo/schermi_wfs_alto.webp',
           caption: 'Vista dall\'alto dell\'anello continuo dei pannelli di proiezione e dell\'anello inferiore di trasduttori WFS.',
           featured: true
         },
@@ -693,7 +693,7 @@
           title: 'Calibrazione Proiettori Optoma 4K',
           shortLabel: 'Warp OpenCV',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/calibrazione_proiezione.jpg',
+          image: 'assets/tresigallo/calibrazione_proiezione.webp',
           caption: 'Allineamento prospettico tramite griglia di calibrazione OpenCV e quattro proiettori a ottica corta Optoma 4K400STx.',
           featured: false
         },
@@ -701,7 +701,7 @@
           title: 'Proiezione Panoramica 360° Attiva',
           shortLabel: 'Video 360°',
           mediaType: MEDIA_TYPE.VIDEO,
-          image: 'assets/videos/proiezione_360_poster.jpg',
+          image: 'assets/videos/proiezione_360_poster.webp',
           videoSrc: 'assets/videos/proiezione_360.mp4',
           videoWebmSrc: 'assets/videos/proiezione_360.webm',
           caption: 'Prova dinamica della proiezione immersiva a 360° lungo i teli ottagonali della sala con audio spazializzato.',
@@ -711,7 +711,7 @@
           title: 'Sala Agorà Pronta per l\'Apertura',
           shortLabel: 'Sala pronta',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/sala_pronta.jpg',
+          image: 'assets/tresigallo/sala_pronta.webp',
           caption: 'Vista d\'insieme dell\'ottagono completo con sedute, diffusori Ambisonics su 3 anelli e barre WFS perimetrali.',
           featured: false
         },
@@ -719,7 +719,7 @@
           title: 'Giornata Inaugurale a Tresigallo',
           shortLabel: 'Inaugurazione',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/inaugurazione_pubblico.jpg',
+          image: 'assets/tresigallo/inaugurazione_pubblico.webp',
           caption: 'Il pubblico e le istituzioni all\'interno della sala immersiva durante l\'inaugurazione all\'Urban Center "Sogni".',
           featured: false
         },
@@ -727,7 +727,7 @@
           title: 'Pubblico Immerso nella Piazza 360°',
           shortLabel: 'Esperienza live',
           mediaType: MEDIA_TYPE.VIDEO,
-          image: 'assets/videos/inaugurazione_sala_poster.jpg',
+          image: 'assets/videos/inaugurazione_sala_poster.webp',
           videoSrc: 'assets/videos/inaugurazione_sala.mp4',
           videoWebmSrc: 'assets/videos/inaugurazione_sala.webm',
           caption: 'Visitatori immersi nella ricostruzione audiovisiva della piazza storica durante la prima dimostrazione pubblica.',
@@ -737,7 +737,7 @@
           title: 'Sessione d\'Ascolto Collettiva',
           shortLabel: 'Ascolto 3D',
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/ascolto_collettivo.jpg',
+          image: 'assets/tresigallo/ascolto_collettivo.webp',
           caption: 'Fruizione condivisa inclusiva dentro il cerchio immersivo della Città del \'900 senza barriere motorie.',
           featured: false
         },
@@ -746,7 +746,7 @@
           shortLabel: 'Soundbar ZOTech',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/tresigallo_soundbar_zotech.jpg',
+          image: 'assets/tresigallo/tresigallo_soundbar_zotech.webp',
           caption: 'Dettaglio delle soundbar modulari di derivazione SIPARIO e dei box di amplificazione dedicati ZOTech collegati via RME MADIface.',
           featured: false
         },
@@ -755,7 +755,7 @@
           shortLabel: 'Bus MADI',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/tresigallo_allrad_layout.jpg',
+          image: 'assets/tresigallo/tresigallo_allrad_layout.webp',
           caption: 'Interfaccia multicanale ad alta densità (fibra ottica MADI / cavo) tra Mac Studio e unità di amplificazione ZOTech in sala.',
           featured: false
         },
@@ -764,7 +764,7 @@
           shortLabel: 'Warp OpenCV 2D',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/tresigallo_warp_opencv.jpg',
+          image: 'assets/tresigallo/tresigallo_warp_opencv.webp',
           caption: 'Uscita deformata e miscelazione dei bordi per mappare con precisione le superfici inclinate dei teli ottagonali dai quattro Optoma 4K.',
           featured: false
         },
@@ -773,7 +773,7 @@
           shortLabel: 'Master Web UI',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/tresigallo_master_ui.jpg',
+          image: 'assets/tresigallo/tresigallo_master_ui.webp',
           caption: 'Interfaccia web Python per la gestione di playlist delle scene e sincronizzazione OSC/UDP delle quattro istanze mpv e del motore audio.',
           featured: false
         },
@@ -782,7 +782,7 @@
           shortLabel: 'Test Qualità',
           badge: MEDIA_BADGE.NONE,
           mediaType: MEDIA_TYPE.IMAGE,
-          image: 'assets/tresigallo/tresigallo_questionario.jpg',
+          image: 'assets/tresigallo/tresigallo_questionario.webp',
           caption: 'Interfaccia di valutazione percettiva per confrontare la resa immersiva tra decodifica Ambisonics 3D e Wave Field Synthesis.',
           featured: false
         }
@@ -1141,77 +1141,77 @@
         {
           title: 'Rimini, Piazza Cavour',
           caption: 'Sorgente acustica omnidirezionale a dodecaedro posizionata in Piazza Cavour per la misura della risposta all\'impulso (ESS).',
-          image: 'assets/gallery/image12.jpg',
+          image: 'assets/gallery/image12.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Faenza, Piazza del Popolo',
           caption: 'Il gruppo di ricerca CIRI-EC dell\'Università di Bologna con la sorgente omnidirezionale a dodecaedro affacciato su Piazza del Popolo.',
-          image: 'assets/gallery/image13.jpg',
+          image: 'assets/gallery/image13.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Tresigallo, Piazza della Repubblica',
           caption: 'Postazione di ripresa presso la fontana monumentale: microfono Nevaton VR, array Brahma di 1° ordine, lavalier Røde e telecamera 360° combinati per una registrazione Ambisonics di 3° ordine.',
-          image: 'assets/gallery/image14.jpg',
+          image: 'assets/gallery/image14.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Faenza, Teatro Masini',
           caption: 'Misura delle risposte all\'impulso 3D (IR 3D) dai palchi verso il palcoscenico con microfono sferico Eigenmike em64, telecamera 360° e testa binaurale.',
-          image: 'assets/gallery/image15.jpg',
+          image: 'assets/gallery/image15.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Rimini, Piazza Cavour (Ripresa 360°)',
           caption: 'Scatto fotografico panoramico equirettangolare a 360° abbinato all\'acquisizione audio multicanale.',
-          image: 'assets/gallery/image16.jpg',
+          image: 'assets/gallery/image16.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Il Team di Misura al Teatro Masini',
           caption: 'I ricercatori di CIRI-EC (UniBo), CIDEA (UniPr) e Gruppo C.S.A. durante le sessioni sperimentali a Faenza.',
-          image: 'assets/gallery/image17.jpg',
+          image: 'assets/gallery/image17.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Sorgente a Dodecaedro sul Cavalletto',
           caption: 'Dettaglio della sorgente sonora omnidirezionale a dodecaedro su cavalletto in Piazza Cavour (Rimini, 2024).',
-          image: 'assets/gallery/image27.jpg',
+          image: 'assets/gallery/image27.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Misura MIMO in Teatro (SIPARIO)',
           caption: 'Sorgente sferica a 32 altoparlanti e microfono Eigenmike sul palco nei teatri storici dell\'Emilia-Romagna.',
-          image: 'assets/gallery/image23.jpg',
+          image: 'assets/gallery/image23.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Sorgente Sferica a 32 Trasduttori',
           caption: 'Diffusore sferico multicanale a 32 trasduttori controllati singolarmente per misure acustiche MIMO.',
-          image: 'assets/gallery/image24.jpg',
+          image: 'assets/gallery/image24.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Rilievo Aerofotogrammetrico con Drone',
           caption: 'Scansione volumetrica e fotogrammetrica con drone all\'interno del Teatro Comunale Pavarotti di Modena.',
-          image: 'assets/gallery/image26.jpg',
+          image: 'assets/gallery/image26.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Armoniche Sferiche fino al 3° Ordine',
           caption: 'Rappresentazione spaziale dei 16 canali Ambix (ACN/SN3D) dall\'ordine 0 (W) all\'ordine 3 (Q, O, M, K, L, N, P).',
-          image: 'assets/gallery/image28.jpg',
+          image: 'assets/gallery/image28.webp',
           imagePosition: IMAGE_POSITION.SPHERICAL_HARMONICS,
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
@@ -1219,49 +1219,49 @@
         {
           title: 'Mappa Acustica 3D a Colori (Parma)',
           caption: 'Mappa di intensità e provenienza direzionale del paesaggio sonoro 3D sovrapposta a immagine 360 (Farina et al., Urban Science 2025).',
-          image: 'assets/gallery/image29.jpg',
+          image: 'assets/gallery/image29.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Profili di Loudness nel Tempo (sone)',
           caption: 'Analisi psicoacustica comparata tra Piazza Garibaldi (forte variabilità), Piazza Duomo (silenziosa) e Piazzale Pilotta.',
-          image: 'assets/gallery/image30.jpg',
+          image: 'assets/gallery/image30.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Piazza Cavour come Sala da Concerto',
           caption: 'Postazione di acquisizione in Piazza Cavour con Eigenmike em64, telecamera 360° e testa binaurale (decadimento misurato ≈ 1,6 s, analogo a una sala d\'opera media).',
-          image: 'assets/gallery/image31.jpg',
+          image: 'assets/gallery/image31.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Comacchio, Piazza Trepponti',
           caption: 'Prima caratterizzazione acustica dei ponti monumentali: sweep ESS su 9 posizioni con T30 tra 1,4 s e 1,9 s.',
-          image: 'assets/gallery/image32.jpg',
+          image: 'assets/gallery/image32.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Sala Immersiva WFS di Tresigallo (Edificio Sogni)',
           caption: 'Allestimento della sala d\'ascolto con array circolare di diffusori Wave Field Synthesis e sistema di videoproiezione a 360°.',
-          image: 'assets/gallery/tresigallo_wfs_room.jpg',
+          image: 'assets/gallery/tresigallo_wfs_room.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Mappa delle Prime Riflessioni (Trepponti)',
           caption: 'Mappa panoramica delle prime riflessioni (0–80 ms) elaborata dalla sonda a 64 capsule a Comacchio.',
-          image: 'assets/gallery/image33.jpg',
+          image: 'assets/gallery/image33.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Flusso di Modellazione VR 6DoF',
           caption: 'Schema della catena: Rilievo Visivo (fotogrammetria) + Rilievo Acustico (IR HOA) → Ambiente Audiovisivo Immersivo a 6DoF.',
-          image: 'assets/gallery/image34.jpg',
+          image: 'assets/gallery/image34.webp',
           imageFit: 'contain',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
@@ -1269,21 +1269,21 @@
         {
           title: 'Piazzale San Francesco in Unreal Engine',
           caption: 'Ricostruzione 3D e navigazione libera a 6 gradi di libertà con auralizzazione in tempo reale di un brano da Il Trovatore.',
-          image: 'assets/gallery/image35.jpg',
+          image: 'assets/gallery/image35.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Kit Completo di Acquisizione in Piazza',
           caption: 'Configurazione operativa in Piazza Cavour: Eigenmike em64, Insta360 8K, testa artificiale KU 100, Sennheiser Ambeo, ECM-8000 e Zoom F8.',
-          image: 'assets/gallery/kit_acquisizione_rimini.jpg',
+          image: 'assets/gallery/kit_acquisizione_rimini.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Catena Hardware MIMO & Dante',
           caption: 'Architettura di misura multicanale: PC e switch PoE su rete Dante, scheda RME Digiface Dante, amplificatore 32 ch Classe D e sorgente sferica.',
-          image: 'assets/gallery/catena_dante_mimo.jpg',
+          image: 'assets/gallery/catena_dante_mimo.webp',
           imageFit: 'contain',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
@@ -1291,14 +1291,14 @@
         {
           title: 'Spettrogramma Exponential Sine Sweep',
           caption: 'Analisi tempo-frequenza di uno sweep esponenziale da 20 Hz a 20 kHz e distorsioni armoniche separate nella deconvoluzione di Farina.',
-          image: 'assets/gallery/spettrogramma_ess.jpg',
+          image: 'assets/gallery/spettrogramma_ess.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Chitarra Live in Piazza della Repubblica (Video)',
           caption: 'Esecuzione di chitarra classica davanti alla fontana di Tresigallo, registrata in Ambisonics di 3° ordine combinando Nevaton VR, array Brahma di 1° ordine e lavalier Røde.',
-          image: 'assets/videos/chitarra_tresigallo_poster.jpg',
+          image: 'assets/videos/chitarra_tresigallo_poster.webp',
           videoSrc: 'assets/videos/chitarra_tresigallo.mp4',
           videoWebmSrc: 'assets/videos/chitarra_tresigallo.webm',
           category: GALLERY_CATEGORY.SQUARES,
@@ -1307,7 +1307,7 @@
         {
           title: 'Modello CAD 3D della Sala Ottagonale',
           caption: 'Progetto tridimensionale in Blender dell\'ottagono da 6 m all\'Urban Center "Sogni" con coni di proiezione e diffusori.',
-          image: 'assets/tresigallo/cad_ottagono.jpg',
+          image: 'assets/tresigallo/cad_ottagono.webp',
           imageFit: 'contain',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
@@ -1315,28 +1315,28 @@
         {
           title: 'Profilati Bosch Rexroth da 40 mm',
           caption: 'Trasporto dei profilati strutturali in alluminio estruso Bosch Rexroth (160 kg complessivi) verso il cantiere di Tresigallo.',
-          image: 'assets/tresigallo/profilati_trasporto.jpg',
+          image: 'assets/tresigallo/profilati_trasporto.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Piastre Base Zincate in Acciaio',
           caption: 'Assemblaggio delle piastre base Bosch Rexroth 40×40 (galvanizzate, fissaggio M8) per l\'ancoraggio dei montanti dell\'ottagono.',
-          image: 'assets/tresigallo/piastra_base.jpg',
+          image: 'assets/tresigallo/piastra_base.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Erezione del Telaio Ottagonale (6 × 3,8 m)',
           caption: 'Montaggio su trabattello della struttura portante smontabile nella sala principale dell\'edificio razionalista "Sogni".',
-          image: 'assets/tresigallo/telaio_ottagono.jpg',
+          image: 'assets/tresigallo/telaio_ottagono.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Montaggio in Quota delle Barre WFS (Video)',
           caption: 'Installazione della cornice superiore e delle barre per l\'array Wave Field Synthesis a 128 canali nella sala di Tresigallo.',
-          image: 'assets/videos/montaggio_wfs_poster.jpg',
+          image: 'assets/videos/montaggio_wfs_poster.webp',
           videoSrc: 'assets/videos/montaggio_wfs.mp4',
           videoWebmSrc: 'assets/videos/montaggio_wfs.webm',
           category: GALLERY_CATEGORY.TRESIGALLO,
@@ -1345,28 +1345,28 @@
         {
           title: 'Banco Test Array WFS al Creative Hub',
           caption: 'Premontaggio e verifica acustica dei moduli di soundbar WFS e cablaggi audio prima del trasferimento in sala.',
-          image: 'assets/tresigallo/test_wfs_hub.jpg',
+          image: 'assets/tresigallo/test_wfs_hub.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Vista dall\'Alto: Teli & Anello WFS',
           caption: 'Allestimento dall\'interno con gli schermi bianchi a 360° e il perimetro continuo delle soundbar Wave Field Synthesis.',
-          image: 'assets/tresigallo/schermi_wfs_alto.jpg',
+          image: 'assets/tresigallo/schermi_wfs_alto.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Calibrazione Proiettori Optoma 4K400STx',
           caption: 'Fase di taratura ottica e warp prospettico con OpenCV sui quattro proiettori a ottica corta sincronizzati da Mac Studio.',
-          image: 'assets/tresigallo/calibrazione_proiezione.jpg',
+          image: 'assets/tresigallo/calibrazione_proiezione.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Proiezione Panoramica 360° Attiva (Video)',
           caption: 'Test completo di proiezione avvolgente a 360° e restituzione spaziale del paesaggio sonoro dentro l\'ottagono di Tresigallo.',
-          image: 'assets/videos/proiezione_360_poster.jpg',
+          image: 'assets/videos/proiezione_360_poster.webp',
           videoSrc: 'assets/videos/proiezione_360.mp4',
           videoWebmSrc: 'assets/videos/proiezione_360.webm',
           category: GALLERY_CATEGORY.TRESIGALLO,
@@ -1375,21 +1375,21 @@
         {
           title: 'Sala Immersiva Agorà Completata',
           caption: 'Configurazione finale della sala con accessibilità priva di barriere, 24 diffusori Ambisonics su 3 anelli più zenit e array WFS.',
-          image: 'assets/tresigallo/sala_pronta.jpg',
+          image: 'assets/tresigallo/sala_pronta.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Inaugurazione all\'Urban Center "Sogni"',
           caption: 'Il pubblico e gli ospiti all\'interno della sala immersiva di Tresigallo durante l\'apertura ufficiale al pubblico.',
-          image: 'assets/tresigallo/inaugurazione_pubblico.jpg',
+          image: 'assets/tresigallo/inaugurazione_pubblico.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Visitatori Dentro la Piazza 360° (Video)',
           caption: 'Esperienza dal vivo durante l\'inaugurazione: i cittadini esplorano la piazza storica immersi tra suono 3D e video panoramico.',
-          image: 'assets/videos/inaugurazione_sala_poster.jpg',
+          image: 'assets/videos/inaugurazione_sala_poster.webp',
           videoSrc: 'assets/videos/inaugurazione_sala.mp4',
           videoWebmSrc: 'assets/videos/inaugurazione_sala.webm',
           category: GALLERY_CATEGORY.TRESIGALLO,
@@ -1398,14 +1398,14 @@
         {
           title: 'Fruizione Inclusiva e Ascolto Condiviso',
           caption: 'Gruppi di visitatori seduti all\'interno dell\'ottagono di Tresigallo durante le dimostrazioni acustiche e visive.',
-          image: 'assets/tresigallo/ascolto_collettivo.jpg',
+          image: 'assets/tresigallo/ascolto_collettivo.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Parma · Mappa Punti IR in Piazzale San Francesco',
           caption: 'Planimetria acustica della campagna in Piazzale San Francesco: 2 sorgenti omnidirezionali (SA, SB) × 6 ricevitori da 4,03 m a 37,40 m.',
-          image: 'assets/campagna/parma_san_francesco_mappa_punti.jpg',
+          image: 'assets/campagna/parma_san_francesco_mappa_punti.webp',
           imageFit: 'contain',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
@@ -1413,35 +1413,35 @@
         {
           title: 'Parma · Vista Aerea Piazzale San Francesco',
           caption: 'Rilievo dall\'alto della geometria urbanistica (28 × 50 m) collegata al modello acustico tridimensionale.',
-          image: 'assets/campagna/parma_san_francesco_aerea.jpg',
+          image: 'assets/campagna/parma_san_francesco_aerea.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Parma · Acquisizione davanti alla Chiesa',
           caption: 'Rilievo sul campo in Piazzale San Francesco con sorgente omnidirezionale e microfoni su cavalletto.',
-          image: 'assets/campagna/parma_san_francesco_rilievo.jpg',
+          image: 'assets/campagna/parma_san_francesco_rilievo.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Bologna · Teatro Comunale senza Poltrone',
           caption: 'Sessione sperimentale nella cavea del Teatro Comunale di Bologna per lo studio comparato di spazi monumentali.',
-          image: 'assets/campagna/bologna_teatro_comunale.jpg',
+          image: 'assets/campagna/bologna_teatro_comunale.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Ferrara · Camera Anecoica Universitaria',
           caption: 'Cattura di sorgenti sonore anecoiche asciutte da convolvere con le risposte all\'impulso delle piazze.',
-          image: 'assets/campagna/ferrara_camera_anecoica.jpg',
+          image: 'assets/campagna/ferrara_camera_anecoica.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Beamforming Spaziale su Mappa Sonoro-Visiva (Video)',
           caption: 'Visualizzazione animata della localizzazione direzionale tramite array sferico e filtri a fascio in ambiente storico.',
-          image: 'assets/videos/beamforming_pompei_poster.jpg',
+          image: 'assets/videos/beamforming_pompei_poster.webp',
           videoSrc: 'assets/videos/beamforming_pompei.mp4',
           videoWebmSrc: 'assets/videos/beamforming_pompei.webm',
           category: GALLERY_CATEGORY.SQUARES,
@@ -1450,7 +1450,7 @@
         {
           title: 'Sorvolo Fotogrammetrico Piazzale San Francesco (Video)',
           caption: 'Ricostruzione fotogrammetrica RealityCapture da 2.910 fotografie (DJI Mini 4 Pro + Sony α7 IV) a Parma.',
-          image: 'assets/videos/fotogrammetria_drone_parma_poster.jpg',
+          image: 'assets/videos/fotogrammetria_drone_parma_poster.webp',
           videoSrc: 'assets/videos/fotogrammetria_drone_parma.mp4',
           videoWebmSrc: 'assets/videos/fotogrammetria_drone_parma.webm',
           category: GALLERY_CATEGORY.SQUARES,
@@ -1459,7 +1459,7 @@
         {
           title: 'Demo VR 6DOF · Il Trovatore in Piazza (Video)',
           caption: 'Navigazione libera con auralizzazione adattiva 6DOF dell\'aria "Ti tradì quell\'alma ingrata" in Piazzale San Francesco.',
-          image: 'assets/videos/vr_auralizzazione_6dof_poster.jpg',
+          image: 'assets/videos/vr_auralizzazione_6dof_poster.webp',
           videoSrc: 'assets/videos/vr_auralizzazione_6dof.mp4',
           videoWebmSrc: 'assets/videos/vr_auralizzazione_6dof.webm',
           category: GALLERY_CATEGORY.SQUARES,
@@ -1468,14 +1468,14 @@
         {
           title: 'Parma · Mappa delle 6 Zone Acustiche 6DOF',
           caption: 'Partizione spaziale di Piazzale San Francesco nelle 6 zone di interpolazione delle risposte all\'impulso HOA.',
-          image: 'assets/fase4/parma_zone_6dof_mappa.jpg',
+          image: 'assets/fase4/parma_zone_6dof_mappa.webp',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
         },
         {
           title: 'Parametri ISO 3382 · Grafico T30 (Parma)',
           caption: 'Andamento frequenziale (125–4000 Hz) del tempo di riverberazione T30 in Piazzale San Francesco per le sorgenti S1 e S2.',
-          image: 'assets/fase2/grafico_t30_parma.jpg',
+          image: 'assets/fase2/grafico_t30_parma.webp',
           imageFit: 'contain',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.IMAGE
@@ -1483,7 +1483,7 @@
         {
           title: 'AGORÀ Master Controller · Web UI (Tresigallo)',
           caption: 'Regia web Python per il controllo sincronizzato dei flussi video a 360° e della decodifica Ambisonics/WFS nella sala immersiva.',
-          image: 'assets/tresigallo/tresigallo_master_ui.jpg',
+          image: 'assets/tresigallo/tresigallo_master_ui.webp',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         }
