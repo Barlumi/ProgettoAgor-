@@ -1041,7 +1041,7 @@
         {
           name: 'Università di Parma – CIDEA',
           image: 'assets/gallery/image10.png',
-          url: 'https://www.unipr.it/node/285514'
+          url: 'http://www.centritecnopolo.unipr.it/cidea/'
         },
         {
           name: 'Consorzio Futuro in Ricerca (CFR)',
@@ -1070,7 +1070,7 @@
             },
             {
               parts: [
-                { label: 'Università di Parma – CIDEA (Centro Interdipartimentale per l\'Energia e l\'Ambiente)', url: 'https://www.unipr.it/node/285514' },
+                { label: 'Università di Parma – CIDEA (Centro Interdipartimentale per l\'Energia e l\'Ambiente)', url: 'http://www.centritecnopolo.unipr.it/cidea/' },
                 ': Prof. Sara Rainieri; A. Bevilacqua, M. Binelli.'
               ]
             },
