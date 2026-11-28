@@ -39,10 +39,10 @@
 
   const EMILIA_ROMAGNA_MAP_GEOM = Object.freeze({
     SVG_NS: 'http://www.w3.org/2000/svg',
-    REGION_PATH: 'M 24 24 L 78 20 L 145 28 L 218 32 L 292 26 L 368 30 L 386 46 L 378 72 L 362 94 L 384 118 L 418 148 L 404 160 L 360 162 L 326 144 L 278 140 L 236 124 L 186 118 L 138 104 L 84 90 L 44 68 Z',
-    VIA_EMILIA_PATH: 'M 64 34 L 122 56 L 194 74 L 258 92 L 318 112 L 404 142',
-    REF_CITY_X: 258,
-    REF_CITY_Y: 92,
+    REGION_PATH: 'M 39.6 79.6 L 34.0 74.4 L 43.1 65.4 L 40.7 58.1 L 33.2 53.5 L 34.1 47.7 L 38.3 45.7 L 44.6 33.3 L 44.0 28.8 L 48.7 23.1 L 58.9 19.7 L 62.9 23.8 L 64.9 21.8 L 63.1 16.8 L 64.6 15.1 L 69.1 20.4 L 74.0 15.2 L 74.6 23.0 L 83.9 27.1 L 87.9 23.9 L 88.8 18.3 L 95.3 23.9 L 96.5 28.0 L 98.2 21.1 L 103.1 24.4 L 105.0 23.5 L 103.1 16.0 L 108.0 14.5 L 107.5 20.4 L 115.2 14.9 L 120.2 21.0 L 119.4 24.3 L 122.7 29.9 L 126.5 29.0 L 127.7 32.7 L 135.6 29.4 L 138.6 32.0 L 141.4 31.1 L 158.1 42.1 L 164.2 39.2 L 167.7 46.0 L 182.6 51.4 L 189.7 48.9 L 196.5 38.8 L 197.4 42.8 L 201.2 37.9 L 203.2 44.9 L 221.0 49.3 L 220.1 50.8 L 226.0 49.3 L 232.5 43.9 L 239.7 44.9 L 241.6 42.8 L 250.5 47.4 L 261.3 44.5 L 264.4 46.6 L 265.9 43.6 L 270.2 42.9 L 282.2 44.4 L 282.6 48.1 L 294.5 46.8 L 304.3 54.7 L 317.9 48.4 L 319.2 43.5 L 326.3 40.3 L 339.9 40.7 L 344.4 38.7 L 354.2 40.3 L 361.8 43.0 L 365.4 48.2 L 368.5 46.0 L 370.4 48.5 L 374.8 49.1 L 380.7 45.8 L 382.8 48.4 L 381.3 51.2 L 382.8 59.2 L 388.1 60.9 L 389.8 66.6 L 393.5 70.2 L 385.4 63.5 L 381.8 63.2 L 377.9 74.0 L 376.6 83.4 L 381.3 102.1 L 382.2 123.5 L 390.1 155.0 L 394.3 164.5 L 408.5 181.8 L 415.3 186.0 L 428.4 201.0 L 435.7 204.0 L 433.1 211.6 L 433.7 219.9 L 427.8 222.7 L 426.9 227.3 L 421.0 227.9 L 417.0 217.4 L 411.6 220.8 L 405.9 218.4 L 405.7 212.1 L 408.4 208.2 L 407.4 200.3 L 395.6 206.1 L 396.0 214.6 L 399.6 214.2 L 402.4 216.7 L 400.3 219.8 L 395.1 219.5 L 393.6 228.6 L 381.8 232.2 L 381.6 237.0 L 372.9 238.6 L 371.2 242.4 L 367.8 237.6 L 357.6 241.0 L 354.8 238.3 L 347.1 237.5 L 339.1 231.9 L 338.3 229.1 L 330.3 230.0 L 315.1 218.8 L 315.9 211.6 L 312.1 209.4 L 312.9 206.0 L 307.7 200.4 L 317.8 185.1 L 319.6 178.7 L 311.8 179.0 L 308.4 182.5 L 304.0 179.5 L 300.5 180.7 L 304.1 173.2 L 298.2 171.7 L 295.9 174.1 L 292.6 173.3 L 285.5 167.4 L 285.1 163.1 L 281.6 160.0 L 276.9 166.4 L 272.3 165.8 L 265.4 173.5 L 255.5 174.3 L 262.9 180.1 L 261.1 183.1 L 250.8 180.7 L 238.5 184.2 L 233.1 180.6 L 233.5 176.3 L 222.4 188.7 L 220.3 183.9 L 215.3 182.9 L 204.3 173.8 L 191.6 172.9 L 189.2 179.3 L 185.7 180.1 L 177.8 173.4 L 173.1 162.7 L 166.8 162.1 L 160.6 155.5 L 152.5 152.7 L 146.3 155.3 L 133.7 141.5 L 128.3 142.7 L 117.9 135.6 L 115.7 133.2 L 117.4 127.9 L 113.5 123.5 L 96.0 123.2 L 88.6 133.2 L 89.2 135.6 L 79.3 139.7 L 76.9 132.0 L 70.8 128.0 L 68.8 129.3 L 65.3 127.8 L 56.6 132.4 L 55.8 130.4 L 51.9 130.9 L 55.4 120.7 L 58.6 120.5 L 57.9 108.2 L 50.1 105.6 L 48.1 101.4 L 45.2 105.3 L 40.0 104.4 L 35.9 100.2 L 29.6 101.6 L 29.5 98.3 L 24.3 99.0 L 24.3 87.5 L 30.2 87.4 L 38.7 86.9 L 36.8 84.3 Z',
+    VIA_EMILIA_PATH: 'M 81.4 28.0 L 124.0 58.3 L 154.9 68.8 L 189.9 85.4 L 224.1 93.8 L 272.5 118.5 L 315.6 141.5 L 335.1 152.5 L 353.4 162.7 L 377.2 176.2 L 414.7 187.9',
+    REF_CITY_X: 272.5,
+    REF_CITY_Y: 118.5,
     REF_CITY_LABEL: 'Bologna'
   });
 
@@ -53,8 +53,8 @@
       scenesCount: '6 scene 3D',
       scenes: 'Piazza Duomo (2 scene), Piazza Garibaldi, Piazzale San Francesco (28 × 50 m, 2 sorgenti × 6 microfoni), Parco Ducale e Lungo Parma – Piazza Ghiaia.',
       openLabel: 'Apri mappa punti San Francesco →',
-      x: 122,
-      y: 56,
+      x: 154.9,
+      y: 68.8,
       dx: 11,
       dy: -6,
       anchor: 'start',
@@ -66,8 +66,8 @@
       scenesCount: '1 piazza + Sala WFS',
       scenes: 'Piazza della Repubblica (scena "Chitarra" HOA 3° ordine con Nevaton VR, Brahma 1° ordine e lavalier Røde), Teatro del \'900 e Sala Immersiva AGORÀ.',
       openLabel: 'Apri video Chitarra Live →',
-      x: 326,
-      y: 46,
+      x: 336.4,
+      y: 66.2,
       dx: -11,
       dy: -4,
       anchor: 'end',
@@ -79,10 +79,10 @@
       scenesCount: '1 piazza',
       scenes: 'Piazza Trepponti: rilievo ESS su 9 posizioni (T30 tra 1,4 e 1,9 s), mappa prime riflessioni 0–80 ms, acqua, avifauna e dialetto locale.',
       openLabel: 'Apri mappa Trepponti →',
-      x: 368,
-      y: 66,
-      dx: 11,
-      dy: -2,
+      x: 369.8,
+      y: 86.0,
+      dx: 12,
+      dy: 4,
       anchor: 'start',
       lightboxIndex: 4
     }),
@@ -92,9 +92,9 @@
       scenesCount: '1 piazza + Teatro',
       scenes: 'Piazza del Popolo (rilievi sotto i portici storici con sorgente a dodecaedro ed em64) e Teatro Masini (campagne 2020 e 2025).',
       openLabel: 'Apri rilievo Faenza →',
-      x: 318,
-      y: 112,
-      dx: -10,
+      x: 335.1,
+      y: 152.5,
+      dx: -11,
       dy: 14,
       anchor: 'end',
       lightboxIndex: 9
@@ -105,10 +105,10 @@
       scenesCount: '2 scene 3D',
       scenes: 'Piazza Cavour (kit completo em64 + KU 100 + Insta360, misure MIMO con decadimento ≈ 1,6 s) e Piazza Tre Martiri.',
       openLabel: 'Apri kit Piazza Cavour →',
-      x: 404,
-      y: 142,
-      dx: -11,
-      dy: 4,
+      x: 414.7,
+      y: 187.9,
+      dx: -12,
+      dy: 5,
       anchor: 'end',
       lightboxIndex: 2
     })
@@ -819,11 +819,11 @@
       ]
     },
     pubblicazioni: {
-      category: 'Letteratura Scientifica · 27 Contributi',
+      category: 'Letteratura Scientifica · 25 Contributi',
       title: 'Pubblicazioni & Ricerca',
       sections: [
         {
-          heading: 'Articoli su Riviste Internazionali con Peer-Review (5)',
+          heading: 'Articoli su Riviste Internazionali con Peer-Review (4)',
           text: [
             {
               text: '• Yan R., Tronchin L. (2026) — "Binaural and lateral energy parameters across seating zones in five historical European theatres: The role of architectural typology". Applied Acoustics, 258: 111663.',
@@ -840,10 +840,6 @@
             {
               text: '• Yan R., Tronchin L. (2025) — "Acoustic characteristics and objective evaluation of acoustic quality in historical Italian theaters". Applied Acoustics, 233: 110483 (Corrigendum: Vol. 245, 111207).',
               doi: 'https://doi.org/10.1016/j.apacoust.2024.110483'
-            },
-            {
-              text: '• Stefani D., Binelli M., Farina A., Turchet L. (2025) — "Improved Real-Time Six-Degrees-of-Freedom Dynamic Auralization Through Nonuniformly Partitioned Convolution". Journal of the Audio Engineering Society (JAES).',
-              doi: 'https://doi.org/10.17743/jaes.2022.0224'
             }
           ]
         },
@@ -917,9 +913,8 @@
           ]
         },
         {
-          heading: 'Altri Congressi Internazionali — IEEE IS2 (Internet of Sounds) (2)',
+          heading: 'Altri Congressi Internazionali — IEEE IS2 (Internet of Sounds) (1)',
           text: [
-            '• Ferrari M., Bevilacqua A., Vittori C., Adenot P., Buffa M., Turchet L. (2026) — "Browser-Native Real-Time Multi-directional Streaming of Third-Order Ambisonics". IEEE IS2 Conference, Cannes, 28–30 Ottobre 2026.',
             {
               text: '• Yan R., Tronchin L., Saito H. (2025) — "Visual and Objective Comparison of Two Concert Halls Using B-Format Recordings and HOA-Based Immersive Maps". IEEE IS2 2025.',
               doi: 'https://doi.org/10.1109/IS264627.2025.11284636'
@@ -934,39 +929,83 @@
       logos: [
         {
           name: 'Gruppo C.S.A. S.p.A. (Soggetto Capofila)',
-          image: 'assets/gallery/image8.png'
+          image: 'assets/gallery/image8.png',
+          url: 'https://www.csaricerche.com/'
         },
         {
           name: 'Università di Bologna – CIRI-EC',
-          image: 'assets/gallery/image9.png'
+          image: 'assets/gallery/image9.png',
+          url: 'https://centri.unibo.it/edilizia-costruzioni/'
         },
         {
           name: 'Università di Parma – CIDEA',
-          image: 'assets/gallery/image10.png'
+          image: 'assets/gallery/image10.png',
+          url: 'https://www.unipr.it/node/285514'
         },
         {
           name: 'Consorzio Futuro in Ricerca (CFR)',
-          image: 'assets/gallery/image11.png'
+          image: 'assets/gallery/image11.png',
+          url: 'https://www.cieffeerre.it/'
         }
       ],
       sections: [
         {
           heading: 'Soggetto Capofila',
-          text: 'Gruppo C.S.A. S.p.A. (Istituto di Ricerca Applicata e Ambientale): capofila responsabile del coordinamento operativo, monitoraggio delle milestone, supervisione amministrativa e raccordo tra i partner industriali e scientifici. Team: G. Tentoni, A. Martinetti, I. Berardi, A. Denaro.'
+          text: {
+            parts: [
+              { label: 'Gruppo C.S.A. S.p.A.', url: 'https://www.csaricerche.com/' },
+              ' (Istituto di Ricerca Applicata e Ambientale): capofila responsabile del coordinamento operativo, monitoraggio delle milestone, supervisione amministrativa e raccordo tra i partner industriali e scientifici. Team: G. Tentoni, A. Martinetti, I. Berardi, A. Denaro.'
+            ]
+          }
         },
         {
           heading: 'Partner Scientifici e Accademici',
           text: [
-            'Università di Bologna – Dipartimento di Architettura e CIRI Edilizia e Costruzioni: Responsabile scientifico Prof. Lamberto Tronchin; team operativo: L. Battisti, R. Yan, A. Farina, M. Fadda.',
-            'Università di Parma – CIDEA (Centro Interdipartimentale per l\'Energia e l\'Ambiente): Prof. Sara Rainieri; A. Bevilacqua, M. Binelli.',
-            'Consorzio Futuro in Ricerca (CFR): valorizzazione economica e trasferimento tecnologico dei risultati di ricerca verso il tessuto produttivo e le amministrazioni.'
+            {
+              parts: [
+                { label: 'Università di Bologna – Dipartimento di Architettura e CIRI Edilizia e Costruzioni', url: 'https://centri.unibo.it/edilizia-costruzioni/' },
+                ': Responsabile scientifico Prof. Lamberto Tronchin; team operativo: L. Battisti, R. Yan, A. Farina, M. Fadda.'
+              ]
+            },
+            {
+              parts: [
+                { label: 'Università di Parma – CIDEA (Centro Interdipartimentale per l\'Energia e l\'Ambiente)', url: 'https://www.unipr.it/node/285514' },
+                ': Prof. Sara Rainieri; A. Bevilacqua, M. Binelli.'
+              ]
+            },
+            {
+              parts: [
+                { label: 'Consorzio Futuro in Ricerca (CFR)', url: 'https://www.cieffeerre.it/' },
+                ': valorizzazione economica e trasferimento tecnologico dei risultati di ricerca verso il tessuto produttivo e le amministrazioni.'
+              ]
+            }
           ]
         },
         {
           heading: 'Partner Industriali & Polo di Tresigallo',
           text: [
-            'Imprese partner: PGM Acustica, Mango Mobile Agency, CreatiBo – Bologna Creative Hub.',
-            'Polo di Tresigallo: Comune di Tresigallo, Associazione Torri di Marmo (messa a disposizione dell\'edificio \"Sogni\"), Zotech (amplificatori multicanale a 32 stadi dedicati), Ing. S. Campanini (sviluppo del plugin VST WFSMixer).'
+            {
+              parts: [
+                'Imprese partner: ',
+                { label: 'PGM Acustica', url: 'https://www.pgmacustica.it/' },
+                ', ',
+                { label: 'Mango Mobile Agency', url: 'https://mangomobi.com/' },
+                ', ',
+                { label: 'CreatiBo – Bologna Creative Hub', url: 'https://bologna-creativehub.it/' },
+                '.'
+              ]
+            },
+            {
+              parts: [
+                'Polo di Tresigallo: ',
+                { label: 'Comune di Tresignana (Tresigallo)', url: 'https://www.comune.tresignana.fe.it/' },
+                ', ',
+                { label: 'Associazione Torri di Marmo', url: 'https://www.tresigallolacittametafisica.it/' },
+                ' (messa a disposizione dell\'edificio "Sogni"), ',
+                { label: 'Zotech', url: 'https://www.zotech.it/' },
+                ' (amplificatori multicanale a 32 stadi dedicati), Ing. S. Campanini (sviluppo del plugin VST WFSMixer).'
+              ]
+            }
           ]
         }
       ]
@@ -5289,8 +5328,16 @@
         partnerGrid.className = 'partner-circular-grid';
 
         data.logos.forEach(function (logo) {
-          const card = document.createElement('div');
+          const isExternalCard = Boolean(logo.url);
+          const card = document.createElement(isExternalCard ? 'a' : 'div');
           card.className = 'partner-circular-card';
+
+          if (isExternalCard) {
+            card.href = logo.url;
+            card.target = '_blank';
+            card.rel = 'noopener noreferrer';
+            card.setAttribute('aria-label', `${logo.name} (sito esterno)`);
+          }
 
           const mediaWrap = document.createElement('div');
           mediaWrap.className = 'partner-circle-media-wrap';
@@ -5356,7 +5403,15 @@
 
           const caption = document.createElement('span');
           caption.className = 'partner-circular-name';
-          caption.textContent = logo.name;
+          caption.appendChild(document.createTextNode(logo.name));
+
+          if (isExternalCard) {
+            const arrowSpan = document.createElement('span');
+            arrowSpan.className = 'partner-link-arrow';
+            arrowSpan.setAttribute('aria-hidden', 'true');
+            arrowSpan.textContent = ' ↗';
+            caption.appendChild(arrowSpan);
+          }
 
           card.appendChild(mediaWrap);
           card.appendChild(caption);
@@ -5364,6 +5419,16 @@
         });
 
         bodyElem.appendChild(partnerGrid);
+      }
+
+      function createExternalAnchor(className, href, text) {
+        const link = document.createElement('a');
+        link.className = className;
+        link.href = href;
+        link.target = '_blank';
+        link.rel = 'noopener noreferrer';
+        link.textContent = text;
+        return link;
       }
 
       function appendSectionParagraph(container, entry) {
@@ -5375,19 +5440,28 @@
           return;
         }
 
+        if (entry && Array.isArray(entry.parts)) {
+          entry.parts.forEach(function (part) {
+            if (typeof part === 'string') {
+              p.appendChild(document.createTextNode(part));
+              return;
+            }
+
+            if (part && part.label && part.url) {
+              p.appendChild(createExternalAnchor('portal-inline-link', part.url, `${part.label} ↗`));
+            }
+          });
+          container.appendChild(p);
+          return;
+        }
+
         if (!entry || !entry.text) return;
 
         p.appendChild(document.createTextNode(entry.text));
 
         if (entry.doi) {
           p.appendChild(document.createTextNode(' '));
-          const link = document.createElement('a');
-          link.className = 'portal-doi-link';
-          link.href = entry.doi;
-          link.target = '_blank';
-          link.rel = 'noopener noreferrer';
-          link.textContent = 'DOI ↗';
-          p.appendChild(link);
+          p.appendChild(createExternalAnchor('portal-doi-link', entry.doi, 'DOI ↗'));
         }
 
         container.appendChild(p);
