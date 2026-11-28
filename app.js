@@ -1798,6 +1798,7 @@
     room3dOpen: false,
     portalOpen: false,
     audioMuted: false,
+    audioPromptDismissed: false,
     suppressHoverAudioUntil: 0,
     introRippleAudioPlayed: false,
     initialIntroCompleted: false,
@@ -2089,12 +2090,116 @@
     voice.filter.frequency.setTargetAtTime(targetCutoff, now, VOICE_ENVELOPE.FILTER_TAU_SEC);
   }
 
+  const AUDIO_MUTE_MODE = Object.freeze({
+    ACTIVE: 'active',
+    MUTED: 'muted'
+  });
+
+  const AUDIO_PROMPT_CONFIG = Object.freeze({
+    CHECK_DELAY_MS: 80,
+    VISIBLE_CLASS: 'visible',
+    OVERLAY_ID: 'audioPromptOverlay',
+    ENABLE_BTN_ID: 'btnAudioPromptEnable',
+    MUTE_BTN_ID: 'btnAudioPromptMute'
+  });
+
+  function updateAudioMuteUI() {
+    const muteToggle = document.getElementById('btnAudioMute');
+    const muteLabel = document.getElementById('audioMuteLabel');
+    if (muteToggle) muteToggle.classList.toggle('muted', state.audioMuted);
+    if (muteLabel) muteLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
+
+    const drawerToggle = document.getElementById('btnDrawerAudioToggle');
+    const drawerLabel = document.getElementById('drawerAudioStatusLabel') || document.getElementById('drawerAudioLabel');
+    if (drawerToggle) drawerToggle.classList.toggle('muted', state.audioMuted);
+    if (drawerLabel) drawerLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
+  }
+
+  // Sincronizza lo stato globale attivo/silenzioso e i gain del bus master
+  function setAudioMuteMode(mode) {
+    state.audioMuted = mode === AUDIO_MUTE_MODE.MUTED;
+    updateAudioMuteUI();
+
+    if (!audioCtx) return;
+
+    if (masterGainNode) {
+      const targetMaster = state.audioMuted ? VOICE_ENVELOPE.GAIN_FLOOR : activeStyle.audio.masterVolume;
+      const fadeTau = state.audioMuted ? VOICE_ENVELOPE.MUTE_FADE_SEC : VOICE_ENVELOPE.UNMUTE_FADE_SEC;
+      masterGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
+      if (essDryGainNode) {
+        essDryGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
+      }
+    }
+
+    if (state.audioMuted) {
+      stopEssDemoPlayback();
+      silenceAllVoices(VOICE_ENVELOPE.MUTE_FADE_SEC);
+    }
+  }
+
+  function dismissAudioPrompt() {
+    state.audioPromptDismissed = true;
+    const overlay = document.getElementById(AUDIO_PROMPT_CONFIG.OVERLAY_ID);
+    if (!overlay) return;
+
+    overlay.classList.remove(AUDIO_PROMPT_CONFIG.VISIBLE_CLASS);
+    overlay.setAttribute('aria-hidden', 'true');
+  }
+
+  // Mostra il prompt di attivazione audio al caricamento finché l'utente non sceglie
+  function showAudioPromptOnLoad() {
+    if (state.audioPromptDismissed) return;
+
+    const overlay = document.getElementById(AUDIO_PROMPT_CONFIG.OVERLAY_ID);
+    if (!overlay) return;
+
+    overlay.classList.add(AUDIO_PROMPT_CONFIG.VISIBLE_CLASS);
+    overlay.setAttribute('aria-hidden', 'false');
+
+    const enableBtn = document.getElementById(AUDIO_PROMPT_CONFIG.ENABLE_BTN_ID);
+    if (enableBtn) {
+      enableBtn.focus({ preventScroll: true });
+    }
+  }
+
+  function initAudioPromptControls() {
+    const enableBtn = document.getElementById(AUDIO_PROMPT_CONFIG.ENABLE_BTN_ID);
+    const muteBtn = document.getElementById(AUDIO_PROMPT_CONFIG.MUTE_BTN_ID);
+
+    if (enableBtn) {
+      enableBtn.addEventListener('click', function () {
+        setAudioMuteMode(AUDIO_MUTE_MODE.ACTIVE);
+        dismissAudioPrompt();
+        ensureAudioUnlocked(function () {
+          if (state.portalOpen) playPhaseStepSound();
+        });
+      });
+    }
+
+    if (muteBtn) {
+      muteBtn.addEventListener('click', function () {
+        setAudioMuteMode(AUDIO_MUTE_MODE.MUTED);
+        dismissAudioPrompt();
+      });
+    }
+
+    document.addEventListener('keydown', function (e) {
+      if (e.key !== 'Escape') return;
+      const overlay = document.getElementById(AUDIO_PROMPT_CONFIG.OVERLAY_ID);
+      if (!overlay || !overlay.classList.contains(AUDIO_PROMPT_CONFIG.VISIBLE_CLASS)) return;
+
+      setAudioMuteMode(AUDIO_MUTE_MODE.MUTED);
+      dismissAudioPrompt();
+    });
+  }
+
   function ensureAudioUnlocked(callback) {
     if (!audioCtx) initAudioContext();
     if (!audioCtx) return;
 
     function onUnlocked() {
       detachUnlockListeners();
+      dismissAudioPrompt();
       if (!state.introRippleAudioPlayed && !state.portalOpen) {
         state.introRippleAudioPlayed = true;
         triggerIntroExpansionRipple();
@@ -2122,6 +2227,7 @@
     'pointerdown', 'mousedown', 'touchstart', 'touchend', 'keydown'
   ];
   function onUserWakeGesture() {
+    if (!state.audioPromptDismissed || state.audioMuted) return;
     ensureAudioUnlocked();
   }
   function attachUnlockListeners() {
@@ -6884,37 +6990,11 @@
 
     // Controllo Audio Spento / Attivo centralizzato (Desktop e Mobile Drawer)
     function toggleAudioMute() {
-      ensureAudioUnlocked();
-      state.audioMuted = !state.audioMuted;
-      updateAudioMuteUI();
-
-      if (!audioCtx) return;
-
-      if (masterGainNode) {
-        const targetMaster = state.audioMuted ? VOICE_ENVELOPE.GAIN_FLOOR : activeStyle.audio.masterVolume;
-        const fadeTau = state.audioMuted ? VOICE_ENVELOPE.MUTE_FADE_SEC : VOICE_ENVELOPE.UNMUTE_FADE_SEC;
-        masterGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
-        if (essDryGainNode) {
-          essDryGainNode.gain.setTargetAtTime(targetMaster, audioCtx.currentTime, fadeTau);
-        }
+      const nextMode = state.audioMuted ? AUDIO_MUTE_MODE.ACTIVE : AUDIO_MUTE_MODE.MUTED;
+      if (nextMode === AUDIO_MUTE_MODE.ACTIVE) {
+        ensureAudioUnlocked();
       }
-
-      if (state.audioMuted) {
-        stopEssDemoPlayback();
-        silenceAllVoices(VOICE_ENVELOPE.MUTE_FADE_SEC);
-      }
-    }
-
-    function updateAudioMuteUI() {
-      const muteToggle = document.getElementById('btnAudioMute');
-      const muteLabel = document.getElementById('audioMuteLabel');
-      if (muteToggle) muteToggle.classList.toggle('muted', state.audioMuted);
-      if (muteLabel) muteLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
-
-      const drawerToggle = document.getElementById('btnDrawerAudioToggle');
-      const drawerLabel = document.getElementById('drawerAudioStatusLabel') || document.getElementById('drawerAudioLabel');
-      if (drawerToggle) drawerToggle.classList.toggle('muted', state.audioMuted);
-      if (drawerLabel) drawerLabel.textContent = state.audioMuted ? 'Audio Spento' : 'Audio Attivo';
+      setAudioMuteMode(nextMode);
     }
 
     const muteToggle = document.getElementById('btnAudioMute');
@@ -7190,12 +7270,14 @@
   // AVVIO ALL'ONLOAD (PANORAMICA ONDE CONCENTRICHE INTERATTIVA)
   // -------------------------------------------------------------------------
   document.addEventListener('DOMContentLoaded', function () {
-    initAudioContext();
     attachUnlockListeners();
+    initAudioPromptControls();
     renderSvgScene();
     initBackHomeCircle();
     initPortalMediaCircle();
     initEventHandlers();
+
+    setTimeout(showAudioPromptOnLoad, AUDIO_PROMPT_CONFIG.CHECK_DELAY_MS);
 
     if (document.fonts && document.fonts.ready) {
       document.fonts.ready.then(refreshAllCircleGaps);

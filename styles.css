@@ -3152,6 +3152,147 @@ a.partner-circular-card:focus-visible .partner-circular-name {
 }
 
 /* --------------------------------------------------------------------------
+   Prompt Modale di Attivazione Audio al Caricamento
+   -------------------------------------------------------------------------- */
+.audio-prompt-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 1100;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(3, 7, 18, 0.72);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.28s ease;
+}
+
+.audio-prompt-overlay.visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.audio-prompt-card {
+  width: 100%;
+  max-width: 430px;
+  padding: 2rem 1.85rem 1.75rem;
+  border-radius: 20px;
+  background: rgba(11, 18, 34, 0.94);
+  border: 1px solid rgba(56, 189, 248, 0.32);
+  box-shadow: 0 24px 64px rgba(0, 0, 0, 0.65), 0 0 36px rgba(56, 189, 248, 0.14);
+  text-align: center;
+  transform: translateY(10px) scale(0.98);
+  transition: transform 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.audio-prompt-overlay.visible .audio-prompt-card {
+  transform: translateY(0) scale(1);
+}
+
+.audio-prompt-icon {
+  margin: 0 auto 0.85rem;
+}
+
+.audio-prompt-wave-svg {
+  width: 64px;
+  height: 28px;
+  display: block;
+  margin: 0 auto;
+  filter: drop-shadow(0 0 10px rgba(56, 189, 248, 0.5));
+}
+
+.audio-prompt-kicker {
+  font-family: var(--font-title);
+  font-size: 0.74rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--color-cyan);
+  margin-bottom: 0.45rem;
+}
+
+.audio-prompt-title {
+  font-family: var(--font-title);
+  font-size: 1.45rem;
+  font-weight: 600;
+  color: var(--text-bright);
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+}
+
+.audio-prompt-desc {
+  font-size: 0.94rem;
+  line-height: 1.6;
+  color: var(--text-main);
+  margin-bottom: 1.5rem;
+}
+
+.audio-prompt-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+}
+
+.audio-prompt-btn-primary {
+  width: 100%;
+  min-height: 46px;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  border: 1px solid rgba(56, 189, 248, 0.65);
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.28), rgba(245, 158, 11, 0.2));
+  color: #ffffff;
+  font-family: var(--font-title);
+  font-size: 0.92rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: background 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.15s ease;
+}
+
+.audio-prompt-btn-primary:hover {
+  background: linear-gradient(135deg, rgba(14, 165, 233, 0.44), rgba(245, 158, 11, 0.3));
+  border-color: #38bdf8;
+  box-shadow: 0 0 22px rgba(56, 189, 248, 0.32);
+  transform: translateY(-1px);
+}
+
+.audio-prompt-btn-primary:focus-visible {
+  outline: 2px solid #38bdf8;
+  outline-offset: 3px;
+}
+
+.audio-prompt-btn-secondary {
+  width: 100%;
+  min-height: 44px;
+  padding: 0.65rem 1.1rem;
+  border-radius: 999px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  background: transparent;
+  color: var(--text-muted);
+  font-family: var(--font-body);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s ease, border-color 0.2s ease, background 0.2s ease;
+}
+
+.audio-prompt-btn-secondary:hover {
+  color: #ffffff;
+  border-color: rgba(148, 163, 184, 0.6);
+  background: rgba(148, 163, 184, 0.08);
+}
+
+.audio-prompt-btn-secondary:focus-visible {
+  color: #ffffff;
+  outline: 2px solid #38bdf8;
+  outline-offset: 2px;
+}
+
+/* --------------------------------------------------------------------------
    Adattamento Responsivo Multi-Breakpoint Impeccabile (UX-UI Standard)
    -------------------------------------------------------------------------- */
 
@@ -3827,6 +3968,10 @@ a.partner-circular-card:focus-visible .partner-circular-name {
   .timeline-meta-badge {
     font-size: 0.72rem;
     padding: 0.3rem 0.65rem;
+  }
+
+  .audio-prompt-card {
+    padding: 1.5rem 1.25rem 1.35rem;
   }
 
   /* Galleria Mobile: 1 singola immagine alla volta, centrata e chiara */
