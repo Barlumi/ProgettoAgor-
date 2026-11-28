@@ -606,7 +606,8 @@ html, body {
 .portal-text-body.has-ess-demo,
 .portal-text-body.has-phase-specs,
 .portal-text-body.has-sh-explorer,
-.portal-text-body.has-phase-map {
+.portal-text-body.has-phase-map,
+.portal-text-body.has-phase-media {
   min-height: auto;
   margin-bottom: 0.9rem;
 }

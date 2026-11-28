@@ -291,36 +291,264 @@
       tag: 'Fase 2',
       title: 'Fase 2: Risposta all\'Impulso e Metodo ESS',
       body: [
-        'Facciate, colonne e portici riflettono il suono definendo l\'acustica di ogni piazza. Le misure seguono lo standard ISO 3382, applicando allo spazio aperto i parametri utilizzati per teatri e sale da concerto.',
-        'Attraverso il metodo ESS (Exponential Sine Sweep), una sorgente a dodecaedro emette uno sweep a frequenza crescente che permette di calcolare la Risposta all\'Impulso (IR 3D). Con l\'approccio multicanale MIMO si ricavano il tempo di riverberazione (T30 di circa 1,6 s a Rimini) e la direzione delle prime riflessioni.'
+        'Facciate, colonne e portici riflettono il suono definendo l\'acustica di ogni piazza. Le misure seguono lo standard ISO 3382, applicando allo spazio aperto sweep esponenziali (ESS) da 15 s su catena digitale Dante (scheda RME Digiface Dante, amplificatore Classe D a 32 canali) e sorgenti omnidirezionali MIMO: dodecaedro DodecMIMO a 12 trasduttori, sorgente sferica Chiesi a 32 canali e Look Line SL203AC.',
+        'La deconvoluzione con filtro inverso separa le distorsioni armoniche e restituisce risposte all\'impulso 3D ad alto rapporto segnale/rumore (540.000 campioni dopo trimming). A Parma (Piazzale San Francesco, 2 sorgenti × 6 microfoni su 4,03–37,40 m), Rimini (T30 ≈ 1,6 s) e Comacchio Trepponti (9 posizioni, T30 = 1,4–1,9 s), i parametri EDT, T30, C80 e G(r) rivelano un comportamento acustico assimilabile a sale da concerto.'
       ],
       image: 'assets/gallery/image12.jpg',
       imageCaption: 'Misura acustica in Piazza Cavour a Rimini: sorgente omnidirezionale a dodecaedro per il calcolo della risposta all\'impulso (ESS) e del tempo di riverberazione.',
-      hasEssDemo: true
+      hasEssDemo: true,
+      specs: [
+        { label: 'Metodo', value: 'ESS 15 s · Filtro inverso (−6 dB/ott)' },
+        { label: 'Catena Hardware', value: 'RME Digiface Dante · Amp 32 ch Classe D' },
+        { label: 'Sorgenti MIMO', value: 'DodecMIMO 12 ch · Chiesi 32 ch · SL203AC' },
+        { label: 'Parametri ISO 3382', value: 'EDT, T30 (≈1,6 s Rimini), C80, G(r)' }
+      ],
+      mediaStripTag: 'Misure ESS, MIMO & Grafici ISO 3382',
+      mediaActionLabel: 'Grafici & Schemi',
+      mediaLightboxTag: 'Misure ESS & ISO 3382 · Fase 2',
+      mediaGallery: [
+        {
+          title: 'Spettrogramma Exponential Sine Sweep (20 Hz – 20 kHz)',
+          shortLabel: 'Spettro ESS',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/spettrogramma_ess.jpg',
+          caption: 'Analisi tempo-frequenza dello sweep esponenziale e separazione delle distorsioni armoniche tramite deconvoluzione lineare di Farina.',
+          featured: true
+        },
+        {
+          title: 'Catena Hardware MIMO & Rete Dante',
+          shortLabel: 'Catena Dante',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/catena_dante_mimo.jpg',
+          caption: 'Architettura di misura AGORÀ: PC con switch PoE+, RME Digiface Dante, amplificatore a 32 canali Classe D, Eigenmike em64 e sorgente DodecMIMO.',
+          featured: true
+        },
+        {
+          title: 'Trimming Risposte all\'Impulso (540.000 campioni)',
+          shortLabel: 'Trimming IR',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase2/ir_trimming_deconv.jpg',
+          caption: 'Estrazione della risposta all\'impulso lineare dopo la convoluzione con il filtro inverso (eliminazione dei picchi armonici antecedenti t₀).',
+          featured: true
+        },
+        {
+          title: 'Tempo di Riverberazione T30 · Piazzale San Francesco',
+          shortLabel: 'Grafico T30',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase2/grafico_t30_parma.jpg',
+          caption: 'Andamento di T30 (125–4000 Hz) in Piazzale San Francesco per le posizioni di sorgente S1 e S2: valori compresi tra 1,2 s e 2,8 s.',
+          featured: true
+        },
+        {
+          title: 'Indice di Chiarezza C80 · Piazzale San Francesco',
+          shortLabel: 'Grafico C80',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase2/grafico_c80_parma.jpg',
+          caption: 'Chiarezza musicale C80 (dB) alle bande d\'ottava per le sorgenti S1 e S2 davanti alle facciate storiche di San Francesco.',
+          featured: true
+        },
+        {
+          title: 'Decadimento Forza Sonora G(d) con la Distanza',
+          shortLabel: 'Forza G(d)',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase2/grafico_g_distanza.jpg',
+          caption: 'Andamento sperimentale della Forza Sonora G (dB) rispetto alla distanza sorgente-ricevitore (da 4,03 m a 37,40 m) in ambito urbano.',
+          featured: true
+        },
+        {
+          title: 'Early Decay Time (EDT) · Piazzale San Francesco',
+          shortLabel: 'Grafico EDT',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase2/grafico_edt_parma.jpg',
+          caption: 'Confronto spettrale dell\'Early Decay Time (EDT) fra le posizioni S1 e S2 tra 125 Hz e 4000 Hz.',
+          featured: false
+        },
+        {
+          title: 'Sistema Precedente SIPARIO (Eigenmike em32)',
+          shortLabel: 'Catena SIPARIO',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase2/catena_em32_sipario.jpg',
+          caption: 'Architettura di misura multicanale utilizzata nel progetto capostipite SIPARIO con sonda em32 e sorgente sferica a 12 canali.',
+          featured: false
+        },
+        {
+          title: 'Mappa Punti Sorgente–Ricevitore (Parma)',
+          shortLabel: 'Mappa Punti',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/parma_san_francesco_mappa_punti.jpg',
+          caption: 'Geometria di misura ISO 3382 a Piazzale San Francesco: 2 sorgenti (SA, SB) × 6 postazioni di ricezione.',
+          featured: false
+        }
+      ]
     },
     {
       num: 3,
       tag: 'Fase 3',
       title: 'Fase 3: Armoniche Sferiche e Mappe 3D',
       body: [
-        'I segnali dei 64 microfoni vengono codificati in formato Ambisonics (HOA di 3° ordine su 16 canali, standard AmbiX). Il suono viene descritto come una sfera acustica tridimensionale indipendente dal sistema di altoparlanti finale.',
-        'Da questi dati si ricavano mappe di intensità acustica (Loudness) sovrapposte alle immagini a 360°, individuando la direzione di provenienza dei suoni e l\'energia delle riflessioni su facciate e portici.'
+        'I 64 segnali dell\'Eigenmike em64 consentono una codifica fino al 6° ordine HOA e vengono standardizzati in tracce master AmbiX di 3° ordine (16 canali, convenzione ACN/SN3D), formando un campo sonoro 3D indipendente dal sistema di riproduzione.',
+        'Tramite Plogue Bidule, O3A Flare e il convolutore a matrice X-MCFX (N × 16 canali), l\'energia spaziale viene proiettata come mappa di intensità a colori su immagini equirettangolari 360° e analizzata con profili di Loudness psicoacustico (confronto tra Piazza Garibaldi, Duomo e Pilotta) e mappe di prime riflessioni 0–80 ms.'
       ],
       image: 'assets/gallery/image28.jpg',
       imageCaption: 'Mappa acustica in formato AmbiX: scomposizione in armoniche sferiche e intensità del suono nello spazio 3D.',
       imagePosition: IMAGE_POSITION.SPHERICAL_HARMONICS,
-      hasShExplorer: true
+      hasShExplorer: true,
+      specs: [
+        { label: 'Formato Master', value: 'AmbiX 3° ordine · 16 canali ACN/SN3D' },
+        { label: 'Risoluzione Array', value: '64 capsule em64 · fino al 6° ordine HOA' },
+        { label: 'Catena DSP', value: 'Plogue Bidule · O3A Flare · X-MCFX (N×16)' },
+        { label: 'Mappe & Metriche', value: 'Loudness (sone) · Riflessioni 0–80 ms' }
+      ],
+      mediaStripTag: 'Mappe 3D, Loudness & Beamforming',
+      mediaActionLabel: 'Mappe & Video',
+      mediaLightboxTag: 'Armoniche Sferiche & Mappe 3D · Fase 3',
+      mediaGallery: [
+        {
+          title: 'Mappa Acustica 3D a Colori su Immagine 360° (Parma)',
+          shortLabel: 'Mappa 3D Parma',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image29.jpg',
+          caption: 'Provenienza direzionale e intensità del soundscape sovrapposte all\'immagine equirettangolare 360° (Farina et al., Urban Science 2025).',
+          featured: true
+        },
+        {
+          title: 'Mappa delle Prime Riflessioni (0–80 ms · Trepponti)',
+          shortLabel: 'Riflessioni 80ms',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image33.jpg',
+          caption: 'Individuazione delle riflessioni precoci dalle murature storiche di Piazza Trepponti a Comacchio tramite beamforming HOA.',
+          featured: true
+        },
+        {
+          title: 'Profili di Loudness Psicoacustico nel Tempo (sone)',
+          shortLabel: 'Loudness (sone)',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image30.jpg',
+          caption: 'Confronto dinamico su 300 s tra Piazza Garibaldi (traffico e voci), Piazzale della Pilotta e Piazza Duomo (oasi quieta).',
+          featured: true
+        },
+        {
+          title: 'Beamforming Spaziale su Mappa Sonoro-Visiva (Video)',
+          shortLabel: 'Beamforming 3D',
+          badge: MEDIA_BADGE.VIDEO,
+          mediaType: MEDIA_TYPE.VIDEO,
+          image: 'assets/videos/beamforming_pompei_poster.jpg',
+          videoSrc: 'assets/videos/beamforming_pompei.mp4',
+          videoWebmSrc: 'assets/videos/beamforming_pompei.webm',
+          caption: 'Visualizzazione animata della localizzazione direzionale tramite array sferico e filtri a fascio in ambiente aperto storico.',
+          featured: true
+        },
+        {
+          title: 'Schema delle 16 Armoniche Sferiche AmbiX (ACN 0–15)',
+          shortLabel: 'Piramide AmbiX',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image28.jpg',
+          caption: 'Lobi di direttività positivi/negativi dall\'ordine 0 (W) all\'ordine 3 (Q, O, M, K, L, N, P) nello standard AmbiX SN3D.',
+          featured: true
+        },
+        {
+          title: 'Picco Principale della Risposta all\'Impulso Elaborata',
+          shortLabel: 'Dettaglio IR',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase2/ir_processed_zoom.jpg',
+          caption: 'Ingrandimento temporale della risposta all\'impulso allineata pronta per la codifica in armoniche sferiche e convoluzione a matrice.',
+          featured: true
+        }
+      ]
     },
     {
       num: 4,
       tag: 'Fase 4',
       title: 'Fase 4: Realtà Virtuale 6DOF e Auralizzazione',
       body: [
-        'I rilievi fotografici da terra e con drone sono stati utilizzati per ricostruire le piazze in 3D all\'interno del motore Unreal Engine, collegando la geometria dello spazio al modello acustico calcolato.',
-        'Il sistema esegue l\'auralizzazione in tempo reale con 6 gradi di libertà (6DOF): l\'utente naviga nella piazza e l\'acustica cambia in base alla posizione e ai movimenti della testa, simulando la propagazione del suono all\'aperto o sotto i portici.'
+        'Il modello digitale fotorealista di Piazzale San Francesco a Parma (28 × 50 m) è stato generato integrando un drone DJI Mini 4 Pro (250 g) e una fotocamera Sony Alpha 7 IV: 2.910 fotografie ad alta sovrapposizione (80%) ricomposte in RealityCapture con mesh e texture ad alta fedeltà.',
+        'All\'interno di Unreal Engine la geometria si fonde con le risposte all\'impulso HOA di 6 zone acustiche interpolate in tempo reale con 6 gradi di libertà (6DOF), auralizzando l\'aria "Ti tradì quell\'alma ingrata" da Il Trovatore di Verdi tra spazio aperto e facciate storiche (Bevilacqua, Farina, Tronchin · ASME J. Vib. Acoust., 2026).'
       ],
       image: 'assets/gallery/image35.jpg',
-      imageCaption: 'Ricostruzione in Realtà Virtuale 6DOF di Piazzale San Francesco a Parma: navigazione libera con audio interattivo.'
+      imageCaption: 'Ricostruzione in Realtà Virtuale 6DOF di Piazzale San Francesco a Parma: navigazione libera con audio interattivo.',
+      specs: [
+        { label: 'Caso Studio', value: 'Piazzale San Francesco, Parma (28 × 50 m)' },
+        { label: 'Fotogrammetria', value: 'DJI Mini 4 Pro + Sony α7 IV · 2.910 foto (80%)' },
+        { label: 'Motore & Zone', value: 'RealityCapture → Unreal Engine · 6 zone 6DOF' },
+        { label: 'Brano & Articolo', value: 'Verdi, Il Trovatore · ASME JVA 2026 (148)' }
+      ],
+      mediaStripTag: 'Fotogrammetria, Zone 6DOF & Demo VR',
+      mediaActionLabel: 'Demo VR & Foto',
+      mediaLightboxTag: 'Realtà Virtuale 6DOF · Fase 4',
+      mediaGallery: [
+        {
+          title: 'Navigazione & Auralizzazione 6DOF in Unreal Engine (Video)',
+          shortLabel: 'Demo VR 6DOF',
+          badge: MEDIA_BADGE.VIDEO,
+          mediaType: MEDIA_TYPE.VIDEO,
+          image: 'assets/videos/vr_auralizzazione_6dof_poster.jpg',
+          videoSrc: 'assets/videos/vr_auralizzazione_6dof.mp4',
+          videoWebmSrc: 'assets/videos/vr_auralizzazione_6dof.webm',
+          caption: 'Demo dal vivo in Unreal Engine: l\'ascoltatore cammina virtualmente in Piazzale San Francesco con l\'auralizzazione di Verdi adattiva in 6DOF.',
+          featured: true
+        },
+        {
+          title: 'Sorvolo Fotogrammetrico · Piazzale San Francesco (Video)',
+          shortLabel: 'Modello 3D Drone',
+          badge: MEDIA_BADGE.VIDEO,
+          mediaType: MEDIA_TYPE.VIDEO,
+          image: 'assets/videos/fotogrammetria_drone_parma_poster.jpg',
+          videoSrc: 'assets/videos/fotogrammetria_drone_parma.mp4',
+          videoWebmSrc: 'assets/videos/fotogrammetria_drone_parma.webm',
+          caption: 'Mesh 3D testurizzata ricostruita in RealityCapture dalle 2.910 fotografie acquisite con DJI Mini 4 Pro e Sony Alpha 7 IV.',
+          featured: true
+        },
+        {
+          title: 'Suddivisione nelle 6 Zone Acustiche 6DOF (Parma)',
+          shortLabel: '6 Zone 6DOF',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase4/parma_zone_6dof_mappa.jpg',
+          caption: 'Partizione spaziale di Piazzale San Francesco in 6 zone omogenee associate alle rispettive risposte all\'impulso HOA per l\'interpolazione continua.',
+          featured: true
+        },
+        {
+          title: 'Validazione Soggettiva con Visore VR & Cuffie',
+          shortLabel: 'Test Visore VR',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase4/vr_headset_test.jpg',
+          caption: 'Sessione di test con visore VR e tracciamento a 6 gradi di libertà presso i laboratori dell\'Università di Parma.',
+          featured: true
+        },
+        {
+          title: 'Veduta di Piazzale San Francesco in Unreal Engine',
+          shortLabel: 'Render Unreal',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/fase4/parma_unreal_veduta.jpg',
+          caption: 'Scorcio dell\'ambiente virtuale calibrato tra la Chiesa di San Francesco, la Casa della Musica e le facciate laterali.',
+          featured: true
+        },
+        {
+          title: 'Pipeline Visivo-Acustica 6DOF Completa',
+          shortLabel: 'Flusso 6DOF',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image34.jpg',
+          caption: 'Schema metodologico integrato: Rilievo Visivo (fotogrammetria) + Rilievo Acustico (IR HOA) → Ambiente Immersivo 6DOF.',
+          featured: true
+        }
+      ]
     },
     {
       num: 5,
@@ -455,6 +683,51 @@
           mediaType: MEDIA_TYPE.IMAGE,
           image: 'assets/tresigallo/ascolto_collettivo.jpg',
           caption: 'Fruizione condivisa inclusiva dentro il cerchio immersivo della Città del \'900 senza barriere motorie.',
+          featured: false
+        },
+        {
+          title: 'Soundbar WFS & Amplificatori ZOTech',
+          shortLabel: 'Soundbar ZOTech',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/tresigallo_soundbar_zotech.jpg',
+          caption: 'Dettaglio delle soundbar modulari di derivazione SIPARIO e dei box di amplificazione dedicati ZOTech collegati via RME MADIface.',
+          featured: false
+        },
+        {
+          title: 'Interconnessione ZOTech ↔ RME MADIface',
+          shortLabel: 'Bus MADI',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/tresigallo_allrad_layout.jpg',
+          caption: 'Interfaccia multicanale ad alta densità (fibra ottica MADI / cavo) tra Mac Studio e unità di amplificazione ZOTech in sala.',
+          featured: false
+        },
+        {
+          title: 'Calibrazione Omografica OpenCV Multi-Proiettore',
+          shortLabel: 'Warp OpenCV 2D',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/tresigallo_warp_opencv.jpg',
+          caption: 'Uscita deformata e miscelazione dei bordi per mappare con precisione le superfici inclinate dei teli ottagonali dai quattro Optoma 4K.',
+          featured: false
+        },
+        {
+          title: 'Web UI di Regia AGORÀ Master Controller',
+          shortLabel: 'Master Web UI',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/tresigallo_master_ui.jpg',
+          caption: 'Interfaccia web Python per la gestione di playlist delle scene e sincronizzazione OSC/UDP delle quattro istanze mpv e del motore audio.',
+          featured: false
+        },
+        {
+          title: 'Questionario Soggettivo di Qualità Percepita',
+          shortLabel: 'Test Qualità',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/tresigallo/tresigallo_questionario.jpg',
+          caption: 'Interfaccia di valutazione percettiva per confrontare la resa immersiva tra decodifica Ambisonics 3D e Wave Field Synthesis.',
           featured: false
         }
       ]
@@ -894,6 +1167,55 @@
           caption: 'Cattura di sorgenti sonore anecoiche asciutte da convolvere con le risposte all\'impulso delle piazze.',
           image: 'assets/campagna/ferrara_camera_anecoica.jpg',
           category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Beamforming Spaziale su Mappa Sonoro-Visiva (Video)',
+          caption: 'Visualizzazione animata della localizzazione direzionale tramite array sferico e filtri a fascio in ambiente storico.',
+          image: 'assets/videos/beamforming_pompei_poster.jpg',
+          videoSrc: 'assets/videos/beamforming_pompei.mp4',
+          videoWebmSrc: 'assets/videos/beamforming_pompei.webm',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.VIDEO
+        },
+        {
+          title: 'Sorvolo Fotogrammetrico Piazzale San Francesco (Video)',
+          caption: 'Ricostruzione fotogrammetrica RealityCapture da 2.910 fotografie (DJI Mini 4 Pro + Sony α7 IV) a Parma.',
+          image: 'assets/videos/fotogrammetria_drone_parma_poster.jpg',
+          videoSrc: 'assets/videos/fotogrammetria_drone_parma.mp4',
+          videoWebmSrc: 'assets/videos/fotogrammetria_drone_parma.webm',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.VIDEO
+        },
+        {
+          title: 'Demo VR 6DOF · Il Trovatore in Piazza (Video)',
+          caption: 'Navigazione libera con auralizzazione adattiva 6DOF dell\'aria "Ti tradì quell\'alma ingrata" in Piazzale San Francesco.',
+          image: 'assets/videos/vr_auralizzazione_6dof_poster.jpg',
+          videoSrc: 'assets/videos/vr_auralizzazione_6dof.mp4',
+          videoWebmSrc: 'assets/videos/vr_auralizzazione_6dof.webm',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.VIDEO
+        },
+        {
+          title: 'Parma · Mappa delle 6 Zone Acustiche 6DOF',
+          caption: 'Partizione spaziale di Piazzale San Francesco nelle 6 zone di interpolazione delle risposte all\'impulso HOA.',
+          image: 'assets/fase4/parma_zone_6dof_mappa.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Parametri ISO 3382 · Grafico T30 (Parma)',
+          caption: 'Andamento frequenziale (125–4000 Hz) del tempo di riverberazione T30 in Piazzale San Francesco per le sorgenti S1 e S2.',
+          image: 'assets/fase2/grafico_t30_parma.jpg',
+          imageFit: 'contain',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'AGORÀ Master Controller · Web UI (Tresigallo)',
+          caption: 'Regia web Python per il controllo sincronizzato dei flussi video a 360° e della decodifica Ambisonics/WFS nella sala immersiva.',
+          image: 'assets/tresigallo/tresigallo_master_ui.jpg',
+          category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
         }
       ]
@@ -4099,10 +4421,17 @@
     const grid = document.getElementById('phaseMediaStripGrid');
     const tagEl = document.getElementById('phaseMediaStripTag');
     const countEl = document.getElementById('phaseMediaStripCount');
-    if (!strip || !grid) return;
+    const bodyElem = document.getElementById('portalBodyText');
 
     const allItems = phaseData && Array.isArray(phaseData.mediaGallery) ? phaseData.mediaGallery : [];
     const hasMedia = allItems.length > 0;
+
+    if (bodyElem) {
+      bodyElem.classList.toggle('has-phase-media', hasMedia);
+    }
+
+    if (!strip || !grid) return;
+
     grid.innerHTML = '';
     strip.style.display = hasMedia ? 'flex' : 'none';
 
