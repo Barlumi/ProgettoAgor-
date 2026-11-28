@@ -790,33 +790,134 @@
     }
   ];
 
+  const TIMELINE_TONE = Object.freeze({
+    HERITAGE: 'heritage',
+    GRANT: 'grant',
+    RESEARCH: 'research',
+    MILESTONE: 'milestone',
+    FUTURE: 'future'
+  });
+
+  const TIMELINE_CLASS = Object.freeze({
+    META_STRIP: 'timeline-meta-strip',
+    META_BADGE: 'timeline-meta-badge',
+    TRACK: 'timeline-track',
+    ITEM: 'timeline-item',
+    NODE: 'timeline-node',
+    CARD: 'timeline-card',
+    HEADER: 'timeline-item-header',
+    PERIOD: 'timeline-period',
+    TAG: 'timeline-tag',
+    TITLE: 'timeline-title',
+    SUMMARY: 'timeline-summary',
+    HIGHLIGHTS: 'timeline-highlights',
+    NOTE: 'timeline-note'
+  });
+
   const DRAWER_DATA = {
     timeline: {
-      category: 'Evoluzione & Tempistiche',
+      category: 'Cronoprogramma & Traguardi · 2019–2026',
       title: 'Timeline di Progetto',
-      sections: [
+      metaBadges: [
+        'PR FESR Emilia-Romagna 2021–2027 · Azione 1.1.2',
+        'D.G.R. 2097/2022 · PG/2023/312779',
+        'CUP E97G22000580007',
+        'Budget 763.535 € · Contributo 499.379,50 €',
+        '30 mesi · 30/01/2024 – 29/07/2026 · TRL 4 → TRL 7'
+      ],
+      timelineItems: [
         {
-          heading: '2019 – 2021: Progetto SIPARIO (I Teatri Storici)',
-          text: [
-            'Programma: POR FESR 2014–2020 / FSC della Regione Emilia-Romagna (durata 24 mesi).',
-            'Focus scientifico: documentazione e rilievo dell\'acustica tridimensionale di 7 teatri d\'opera storici regionali (tra cui il Teatro Pavarotti di Modena, il Teatro Masini di Faenza, il Teatro Municipale di Piacenza e il Teatro Comunale di Bologna). Misure MIMO con sorgente sferica a 32 altoparlanti, Eigenmike-32 e fotogrammetria con drone per le prime sale d\'ascolto a Parma e Bologna.'
+          period: '2019 – 2021',
+          tag: 'Progetto Propedeutico',
+          tone: TIMELINE_TONE.HERITAGE,
+          heading: 'Progetto SIPARIO: Il Suono dei Teatri d\'Opera',
+          summary: 'Programma POR FESR 2014–2020 / FSC della Regione Emilia-Romagna (24 mesi, contributo regionale 501.500 €): documentazione dell\'acustica tridimensionale di 7 teatri d\'opera storici regionali.',
+          highlights: [
+            'Misure MIMO 3D con sorgente sferica a 32 altoparlanti, Eigenmike em32 e fotogrammetria con drone su Teatro Pavarotti (Modena), Teatro Masini (Faenza), Teatro Municipale (Piacenza), Teatro Comunale (Bologna) e altri teatri storici.',
+            'Realizzazione delle prime sale d\'ascolto a Parma e Bologna e costruzione delle 20 barre WFS a 8 canali con amplificatori Zotech a 32 canali, poi riutilizzate in AGORÀ.'
           ]
         },
         {
-          heading: '2024 – 2026: Progetto AGORÀ (Dalle Sale alle Piazze)',
-          text: [
-            'Programma: PR FESR Emilia-Romagna 2021–2027 (durata 30 mesi: 30/01/2024 – 29/07/2026).',
-            'Focus scientifico: trasposizione ed evoluzione metodologica dallo spazio chiuso teatrale allo spazio pubblico urbano delle piazze monumentali intese come beni culturali immateriali. Rilievi su 11 piazze in 5 città, campionamento 3D con sonda em64 a 64 capsule e video 8K, modellazione VR a 6 gradi di libertà (6DoF) e restituzione accessibile per persone con disabilità.'
+          period: '28 Nov 2022 – 2023',
+          tag: 'Bando & Approvazione',
+          tone: TIMELINE_TONE.GRANT,
+          heading: 'Bando PR FESR & Approvazione del Progetto AGORÀ',
+          summary: 'Approvazione nell\'ambito della Delibera di Giunta Regionale (D.G.R.) Emilia-Romagna n. 2097 del 28/11/2022 (PR FESR 2021–2027, Priorità 1 – Azione 1.1.2, Ricerca industriale strategica).',
+          highlights: [
+            'Riferimenti amministrativi ufficiali: protocollo pratica PG/2023/312779 e Codice Unico di Progetto (CUP) E97G22000580007.',
+            'Costo totale approvato 763.535,00 € con contributo regionale di 499.379,50 €; obiettivo di avanzamento tecnologico da TRL 4 (convalida in laboratorio) a TRL 7 (prototipo dimostrato in ambiente operativo).'
           ]
         },
         {
-          heading: '2026 (Novembre): Sala Immersiva di Tresigallo & Sintesi',
-          text: [
-            'Allestimento della sala immersiva modulare permanente presso l\'edificio razionalista "Sogni" a Tresigallo (Città d\'Arte del \'900).',
-            'Integrazione avanzata tra Ambisonics di 3° ordine, Wave Field Synthesis (WFS) con amplificazione a 32 canali e proiezione ottagonale a 360°, presentata pubblicamente a Parma (Centro Elisabetta, 27 Novembre 2026).'
+          period: '30 Gennaio 2024',
+          tag: 'Avvio Ufficiale',
+          tone: TIMELINE_TONE.GRANT,
+          heading: 'Kick-off dei 30 Mesi & Protocollo di Acquisizione 3D',
+          summary: 'Avvio formale del programma di ricerca industriale di 30 mesi (30/01/2024 – 29/07/2026) con capofila Gruppo C.S.A. S.p.A., CIRI-EC (Università di Bologna), CIDEA (Università di Parma) e Consorzio Futuro in Ricerca (CFR).',
+          highlights: [
+            'Trasposizione metodologica dal teatro chiuso allo spazio pubblico aperto delle piazze monumentali intese come patrimonio culturale immateriale.',
+            'Definizione del protocollo di misura all\'aperto: sonda sferica Eigenmike em64 su rete Dante a 48 kHz, videocamera 360° 8K, testa binaurale Neumann KU 100 e sorgente omnidirezionale a dodecaedro con segnale ESS.'
+          ]
+        },
+        {
+          period: '2024 – 2025',
+          tag: 'Campagna sul Campo',
+          tone: TIMELINE_TONE.RESEARCH,
+          heading: 'Rilievi Acustici e Video 360° in 5 Città e 11 Piazze',
+          summary: 'Campagna sistematica di misure delle risposte all\'impulso spaziali (SRIR / MIMO) e riprese panoramiche sul territorio dell\'Emilia-Romagna, affiancate da rilievi comparativi internazionali.',
+          highlights: [
+            'Parma (6 scene: Piazza Duomo, Piazza Garibaldi, Piazzale San Francesco 28×50 m, Parco Ducale, Lungo Parma–Piazza Ghiaia), Rimini (Piazza Cavour e Tre Martiri) e Faenza (Piazza del Popolo e Teatro Masini).',
+            'Comacchio (Piazza Trepponti e Abbazia di Pomposa) e Tresigallo (Piazza della Repubblica e Teatro del \'900), oltre al confronto acustico con 4 piazze storiche di Londra.'
+          ]
+        },
+        {
+          period: 'Lug – Set 2025',
+          tag: 'Ricerca & I3DA 2025',
+          tone: TIMELINE_TONE.RESEARCH,
+          heading: 'Prime Pubblicazioni su Rivista & Congresso I3DA 2025 (Bologna)',
+          summary: 'Consolidamento scientifico dei metodi di analisi in armoniche sferiche (HOA), mappe di direttività O3A e valutazione percettiva dello spazio sonoro urbano.',
+          highlights: [
+            'Articoli peer-reviewed su Urban Science (Vol. 9, n. 7, Luglio 2025) e Applied Acoustics (Vol. 233, 2025) sulle caratteristiche acustiche e percettive degli spazi storici.',
+            'Presentazione di 13 contributi scientifici al congresso internazionale I3DA 2025 (Bologna, 10–12 Settembre 2025) e contributi a IEEE IS2 2025.'
+          ]
+        },
+        {
+          period: '2025 – 29 Lug 2026',
+          tag: 'VR 6DoF & Prototipo TRL 7',
+          tone: TIMELINE_TONE.MILESTONE,
+          heading: 'Auralizzazione 6DoF, Sala Modulare & Patrocinio ONU ECOSOC',
+          summary: 'Sviluppo dell\'ambiente virtuale a 6 gradi di libertà (6DoF), prototipazione della sala immersiva trasportabile e completamento del ciclo ufficiale di 30 mesi.',
+          highlights: [
+            'Ricostruzione VR 6DoF in Unreal Engine di Piazzale San Francesco (pubblicata su ASME Journal of Vibration and Acoustics, Vol. 148) e studio su Applied Acoustics (Vol. 258, 2026).',
+            'Progettazione della sala ottagonale modulare (diametro 6 m, 160 kg, 24 diffusori Ambisonics + 20 barre WFS + 8 schermi 360°), ricollocata da Faenza all\'edificio razionalista "Sogni" di Tresigallo.',
+            'Conferimento del patrocinio ECOSOC – Nazioni Unite (Luglio 2026) per l\'accessibilità culturale e chiusura formale del periodo progettuale il 29 Luglio 2026.'
+          ]
+        },
+        {
+          period: '19 – 20 Set 2026',
+          tag: 'Inaugurazione Pubblica',
+          tone: TIMELINE_TONE.MILESTONE,
+          heading: 'Apertura della Sala Immersiva "Sogni" a Tresigallo',
+          summary: 'Inaugurazione aperta al pubblico della sala immersiva permanente durante la X edizione de "Le Giornate Metafisiche" e il festival Art\'30, in collaborazione con il Comune di Tresignana e l\'Associazione Torri di Marmo.',
+          highlights: [
+            'Fruizione delle 11 scene 3D delle piazze emiliano-romagnole e della scena musicale "Chitarra" in Ambisonics di 3° ordine (con plugin WFSMixer e amplificazione multicanale dedicata).',
+            'Attivazione del modello 3D interattivo e della fruizione in realtà aumentata sul portale e-muse.it/tresigallo.'
+          ]
+        },
+        {
+          period: 'Nov 2026 & Oltre',
+          tag: 'I3DA 2026 & Prospettive',
+          tone: TIMELINE_TONE.FUTURE,
+          heading: 'I3DA 2026 (Venezia), Workshop Conclusivo (Parma) & Sviluppi Futuri',
+          summary: 'Disseminazione finale dei risultati sperimentali e avvio della roadmap post-progetto per la valorizzazione del patrimonio sonoro e la didattica immersiva.',
+          highlights: [
+            '7 nuovi contributi presentati a I3DA 2026 (Venezia, 19–22 Novembre 2026) su rilievi MIMO di Rimini e Comacchio, sala ottagonale smontabile e questionario percettivo Ambisonics vs. WFS.',
+            'Workshop conclusivo di sintesi a Parma (Centro Sant\'Elisabetta, 27 Novembre 2026).',
+            'Prossimi sviluppi: estrazione automatica delle coordinate WFS da scansione 3D, convoluzione IR 3D a bassa latenza, test d\'ascolto inclusivi e apertura della sala a conservatori e istituzioni culturali.'
           ]
         }
-      ]
+      ],
+      timelineNote: 'Nota sui Work Package: la ripartizione numerata interna degli Obiettivi Realizzativi (OR / WP) depositata nel formulario approvato (PG/2023/312779) non è pubblicata negli atti pubblici della Regione Emilia-Romagna; questa timeline riporta i traguardi ufficiali verificati, le campagne sperimentali e le pubblicazioni del progetto.'
     },
     pubblicazioni: {
       category: 'Letteratura Scientifica · 25 Contributi',
@@ -1017,7 +1118,7 @@
         {
           heading: 'Inquadramento Programmatico & Finanziamento (Fondi Europei e Regionali)',
           text: [
-            '• Progetto AGORÀ ("Atelier sonoro per il GiocO, la RicercA, l\'AcusticA"): Cofinanziato dai Fondi Europei della Regione Emilia-Romagna nell\'ambito del Programma PR FESR 2021–2027 (Azione 1.1.2 - Sostegno alla ricerca industriale delle filiere produttive e dell\'innovazione). Costo e budget totale del progetto: 763.535,00 € (durata 30 mesi: 30/01/2024 – 29/07/2026).',
+            '• Progetto AGORÀ ("Atelier sonoro per il GiocO, la RicercA, l\'AcusticA"): Cofinanziato dai Fondi Europei della Regione Emilia-Romagna nell\'ambito del Programma PR FESR 2021–2027 (Azione 1.1.2 - Sostegno alla ricerca industriale delle filiere produttive e dell\'innovazione; D.G.R. n. 2097 del 28/11/2022, protocollo PG/2023/312779, CUP E97G22000580007). Costo totale approvato: 763.535,00 € · contributo regionale: 499.379,50 € (durata 30 mesi: 30/01/2024 – 29/07/2026).',
             '• Progetto SIPARIO ("Il Suono dei Teatri d\'Opera"): Progetto capostipite propedeutico, cofinanziato dal Programma POR FESR 2014–2020 / FSC della Regione Emilia-Romagna. Contributo pubblico regionale erogato: 501.500,00 € (durata 24 mesi: 2019–2021).',
             'Tutte le risorse economiche, gli stanziamenti e i contributi dei programmi comunitari sono accentrati sotto la supervisione e la rendicontazione amministrativa del soggetto capofila Gruppo C.S.A. S.p.A. e della Regione Emilia-Romagna.'
           ]
@@ -5465,6 +5566,110 @@
         }
 
         container.appendChild(p);
+      }
+
+      function createTimelineBadgeStrip(badges) {
+        if (!Array.isArray(badges) || badges.length === 0) return null;
+
+        const strip = document.createElement('div');
+        strip.className = TIMELINE_CLASS.META_STRIP;
+
+        badges.forEach(function (label) {
+          const badge = document.createElement('span');
+          badge.className = TIMELINE_CLASS.META_BADGE;
+          badge.textContent = label;
+          strip.appendChild(badge);
+        });
+
+        return strip;
+      }
+
+      function createTimelineItemElement(item) {
+        const li = document.createElement('li');
+        li.className = TIMELINE_CLASS.ITEM;
+        if (item.tone) {
+          li.dataset.tone = item.tone;
+        }
+
+        // Indicatore circolare ancorato all'asse verticale della timeline
+        const node = document.createElement('span');
+        node.className = TIMELINE_CLASS.NODE;
+        node.setAttribute('aria-hidden', 'true');
+        li.appendChild(node);
+
+        const card = document.createElement('article');
+        card.className = TIMELINE_CLASS.CARD;
+
+        const headerRow = document.createElement('div');
+        headerRow.className = TIMELINE_CLASS.HEADER;
+
+        const periodSpan = document.createElement('span');
+        periodSpan.className = TIMELINE_CLASS.PERIOD;
+        periodSpan.textContent = item.period;
+        headerRow.appendChild(periodSpan);
+
+        if (item.tag) {
+          const tagSpan = document.createElement('span');
+          tagSpan.className = TIMELINE_CLASS.TAG;
+          tagSpan.textContent = item.tag;
+          headerRow.appendChild(tagSpan);
+        }
+
+        const heading = document.createElement('h3');
+        heading.className = TIMELINE_CLASS.TITLE;
+        heading.textContent = item.heading;
+
+        const summary = document.createElement('p');
+        summary.className = TIMELINE_CLASS.SUMMARY;
+        summary.textContent = item.summary;
+
+        card.appendChild(headerRow);
+        card.appendChild(heading);
+        card.appendChild(summary);
+
+        if (Array.isArray(item.highlights) && item.highlights.length > 0) {
+          const list = document.createElement('ul');
+          list.className = TIMELINE_CLASS.HIGHLIGHTS;
+
+          item.highlights.forEach(function (highlightText) {
+            const bullet = document.createElement('li');
+            bullet.textContent = highlightText;
+            list.appendChild(bullet);
+          });
+
+          card.appendChild(list);
+        }
+
+        li.appendChild(card);
+        return li;
+      }
+
+      // Renderizza i metadati ufficiali del bando e la sequenza cronologica verticale
+      function renderTimelineView(container, timelineData) {
+        const badgeStrip = createTimelineBadgeStrip(timelineData.metaBadges);
+        if (badgeStrip) {
+          container.appendChild(badgeStrip);
+        }
+
+        const track = document.createElement('ol');
+        track.className = TIMELINE_CLASS.TRACK;
+
+        timelineData.timelineItems.forEach(function (item) {
+          track.appendChild(createTimelineItemElement(item));
+        });
+
+        container.appendChild(track);
+
+        if (!timelineData.timelineNote) return;
+
+        const note = document.createElement('p');
+        note.className = TIMELINE_CLASS.NOTE;
+        note.textContent = timelineData.timelineNote;
+        container.appendChild(note);
+      }
+
+      if (Array.isArray(data.timelineItems)) {
+        renderTimelineView(bodyElem, data);
       }
 
       if (Array.isArray(data.sections)) {
