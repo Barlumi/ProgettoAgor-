@@ -26,6 +26,11 @@
     VIDEO: 'video'
   });
 
+  const VIDEO_MIME = Object.freeze({
+    WEBM: 'video/webm',
+    MP4: 'video/mp4'
+  });
+
   const GALLERY_CATEGORY = Object.freeze({
     ALL: 'all',
     SQUARES: 'squares',
@@ -151,6 +156,7 @@
           mediaType: MEDIA_TYPE.VIDEO,
           image: 'assets/videos/montaggio_wfs_poster.jpg',
           videoSrc: 'assets/videos/montaggio_wfs.mp4',
+          videoWebmSrc: 'assets/videos/montaggio_wfs.webm',
           caption: 'Installazione in quota della cornice modulare e delle soundbar per la Wave Field Synthesis a 128 canali.',
           featured: true
         },
@@ -184,6 +190,7 @@
           mediaType: MEDIA_TYPE.VIDEO,
           image: 'assets/videos/proiezione_360_poster.jpg',
           videoSrc: 'assets/videos/proiezione_360.mp4',
+          videoWebmSrc: 'assets/videos/proiezione_360.webm',
           caption: 'Prova dinamica della proiezione immersiva a 360° lungo i teli ottagonali della sala con audio spazializzato.',
           featured: true
         },
@@ -209,6 +216,7 @@
           mediaType: MEDIA_TYPE.VIDEO,
           image: 'assets/videos/inaugurazione_sala_poster.jpg',
           videoSrc: 'assets/videos/inaugurazione_sala.mp4',
+          videoWebmSrc: 'assets/videos/inaugurazione_sala.webm',
           caption: 'Visitatori immersi nella ricostruzione audiovisiva della piazza storica durante la prima dimostrazione pubblica.',
           featured: true
         },
@@ -521,6 +529,7 @@
           caption: 'Esecuzione di una sorgente sonora reale (chitarra classica) davanti alla fontana di Tresigallo per validare la localizzazione 3D.',
           image: 'assets/videos/chitarra_tresigallo_poster.jpg',
           videoSrc: 'assets/videos/chitarra_tresigallo.mp4',
+          videoWebmSrc: 'assets/videos/chitarra_tresigallo.webm',
           category: GALLERY_CATEGORY.SQUARES,
           mediaType: MEDIA_TYPE.VIDEO
         },
@@ -558,6 +567,7 @@
           caption: 'Installazione della cornice superiore e delle barre per l\'array Wave Field Synthesis a 128 canali nella sala di Tresigallo.',
           image: 'assets/videos/montaggio_wfs_poster.jpg',
           videoSrc: 'assets/videos/montaggio_wfs.mp4',
+          videoWebmSrc: 'assets/videos/montaggio_wfs.webm',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.VIDEO
         },
@@ -587,6 +597,7 @@
           caption: 'Test completo di proiezione avvolgente a 360° e restituzione spaziale del paesaggio sonoro dentro l\'ottagono di Tresigallo.',
           image: 'assets/videos/proiezione_360_poster.jpg',
           videoSrc: 'assets/videos/proiezione_360.mp4',
+          videoWebmSrc: 'assets/videos/proiezione_360.webm',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.VIDEO
         },
@@ -609,6 +620,7 @@
           caption: 'Esperienza dal vivo durante l\'inaugurazione: i cittadini esplorano la piazza storica immersi tra suono 3D e video panoramico.',
           image: 'assets/videos/inaugurazione_sala_poster.jpg',
           videoSrc: 'assets/videos/inaugurazione_sala.mp4',
+          videoWebmSrc: 'assets/videos/inaugurazione_sala.webm',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.VIDEO
         },
@@ -4324,8 +4336,6 @@
   // GESTIONE LIGHTBOX (GALLERY & IMMAGINI FASI DEL LABORATORIO)
   // -------------------------------------------------------------------------
   function showLightboxModal() {
-    renderGalleryLightbox();
-
     const modal = document.getElementById('galleryLightboxModal');
     if (modal) {
       modal.style.display = 'flex';
@@ -4334,21 +4344,38 @@
       modal.setAttribute('aria-hidden', 'false');
     }
 
-    const closeBtn = document.getElementById('btnLightboxClose');
-    if (closeBtn) closeBtn.focus();
+    renderGalleryLightbox();
+
+    const videoElem = document.getElementById('galleryLightboxVideo');
+    const isVideoVisible = Boolean(videoElem && videoElem.style.display !== 'none');
+    if (isVideoVisible) {
+      videoElem.focus();
+    } else {
+      const closeBtn = document.getElementById('btnLightboxClose');
+      if (closeBtn) closeBtn.focus();
+    }
 
     playPhaseStepSound();
+  }
+
+  // Svuota le sorgenti <source> e l'attributo src del player video
+  function clearLightboxVideoSources(videoElem) {
+    if (!videoElem) return;
+    if (!videoElem.paused) {
+      videoElem.pause();
+    }
+    const hadSource = Boolean(videoElem.getAttribute('src') || videoElem.children.length > 0);
+    videoElem.removeAttribute('src');
+    videoElem.innerHTML = '';
+    return hadSource;
   }
 
   // Arresta e scarica l'eventuale video in riproduzione nel lightbox
   function stopLightboxVideo() {
     const videoElem = document.getElementById('galleryLightboxVideo');
     if (!videoElem) return;
-    if (!videoElem.paused) {
-      videoElem.pause();
-    }
-    if (videoElem.getAttribute('src')) {
-      videoElem.removeAttribute('src');
+    const hadSource = clearLightboxVideoSources(videoElem);
+    if (hadSource) {
       videoElem.load();
     }
     videoElem.style.display = 'none';
@@ -4469,8 +4496,6 @@
   let lightboxFadeTimer = null;
 
   function renderGalleryLightbox() {
-    stopLightboxVideo();
-
     let item = null;
     let counterText = '';
     let tagText = LIGHTBOX_TAG.GALLERY;
@@ -4515,19 +4540,40 @@
       lightboxFadeTimer = null;
     }
 
-    if (item.mediaType === MEDIA_TYPE.VIDEO && item.videoSrc && videoElem) {
+    if (item.mediaType === MEDIA_TYPE.VIDEO && (item.videoSrc || item.videoWebmSrc) && videoElem) {
       if (imgElem) {
         imgElem.style.display = 'none';
       }
-      videoElem.style.display = 'block';
+
+      clearLightboxVideoSources(videoElem);
+
+      if (item.videoWebmSrc) {
+        const webmSource = document.createElement('source');
+        webmSource.src = item.videoWebmSrc;
+        webmSource.type = VIDEO_MIME.WEBM;
+        videoElem.appendChild(webmSource);
+      }
+
+      if (item.videoSrc) {
+        const mp4Source = document.createElement('source');
+        mp4Source.src = item.videoSrc;
+        mp4Source.type = VIDEO_MIME.MP4;
+        videoElem.appendChild(mp4Source);
+      }
+
       videoElem.poster = item.image || '';
-      videoElem.src = item.videoSrc;
+      videoElem.style.display = 'block';
+      videoElem.load();
+      videoElem.currentTime = 0;
       videoElem.setAttribute('aria-label', item.title);
       silenceAllVoices(VOICE_ENVELOPE.SILENCE_FADE_SEC);
-    } else if (imgElem) {
-      if (videoElem) {
-        videoElem.style.display = 'none';
+
+      const playPromise = videoElem.play();
+      if (playPromise && typeof playPromise.catch === 'function') {
+        playPromise.catch(function () {});
       }
+    } else if (imgElem) {
+      stopLightboxVideo();
       imgElem.style.display = 'block';
       imgElem.style.opacity = '0.35';
       imgElem.style.transform = 'scale(0.97)';
