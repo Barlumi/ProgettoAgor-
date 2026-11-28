@@ -12,7 +12,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
   
-  <link rel="stylesheet" href="styles.css?v=6">
+  <link rel="stylesheet" href="styles.css?v=7">
 </head>
 <body class="site-body" data-theme="easy">
 
@@ -224,16 +224,35 @@
               </div>
             </section>
 
+            <!-- Mappa Interattiva delle 5 Città e 11 Piazze (visibile nella Fase 1) -->
+            <section class="phase-map-card" id="phaseMapCard" aria-label="Mappa della campagna sperimentale in Emilia-Romagna" style="display: none;">
+              <div class="phase-map-header">
+                <span class="phase-map-tag">Mappa Campagna · Emilia-Romagna</span>
+                <span class="phase-map-summary" id="phaseMapSummary">5 città · 11 scene 3D</span>
+              </div>
+              <div class="phase-map-svg-wrap">
+                <svg class="phase-campaign-svg" id="phaseCampaignSvg" viewBox="0 0 460 185" role="img" aria-label="Mappa dell'Emilia-Romagna con le 5 città rilevate: Parma, Tresigallo, Comacchio, Faenza e Rimini"></svg>
+              </div>
+              <div class="phase-map-detail" id="phaseMapDetail" aria-live="polite">
+                <div class="phase-map-detail-top">
+                  <strong class="phase-map-city" id="phaseMapCityTitle"></strong>
+                  <span class="phase-map-badge" id="phaseMapCityBadge"></span>
+                </div>
+                <p class="phase-map-scenes" id="phaseMapCityScenes"></p>
+                <button type="button" class="phase-map-open-btn" id="btnPhaseMapOpenMedia">Apri mappa / foto →</button>
+              </div>
+            </section>
+
             <!-- Scheda Tecnica Fase (visibile quando la fase definisce specifiche tecniche) -->
             <section class="phase-specs-card" id="phaseSpecsCard" aria-label="Specifiche tecniche della sala immersiva" style="display: none;">
               <div class="phase-specs-grid" id="phaseSpecsGrid"></div>
               <a class="phase-specs-link" id="phaseSpecsLink" href="#" target="_blank" rel="noopener noreferrer"></a>
             </section>
 
-            <!-- Dietro le Quinte: Assemblaggio & Video (visibile nella Fase 5) -->
-            <section class="phase-media-strip" id="phaseMediaStrip" aria-label="Dietro le quinte: assemblaggio e video della sala immersiva" style="display: none;">
+            <!-- Striscia Multimediale Fase (Fase 1 e Fase 5) -->
+            <section class="phase-media-strip" id="phaseMediaStrip" aria-label="Galleria multimediale della fase" style="display: none;">
               <div class="phase-media-strip-header">
-                <span class="phase-media-strip-tag">Dietro le quinte · Tresigallo</span>
+                <span class="phase-media-strip-tag" id="phaseMediaStripTag">Dietro le quinte · Tresigallo</span>
                 <span class="phase-media-strip-count" id="phaseMediaStripCount"></span>
               </div>
               <div class="phase-media-strip-grid" id="phaseMediaStripGrid"></div>
@@ -446,6 +465,6 @@
     </div>
   </div>
 
-  <script src="app.js?v=6"></script>
+  <script src="app.js?v=7"></script>
 </body>
 </html>

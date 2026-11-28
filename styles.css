@@ -605,7 +605,8 @@ html, body {
 
 .portal-text-body.has-ess-demo,
 .portal-text-body.has-phase-specs,
-.portal-text-body.has-sh-explorer {
+.portal-text-body.has-sh-explorer,
+.portal-text-body.has-phase-map {
   min-height: auto;
   margin-bottom: 0.9rem;
 }
@@ -776,6 +777,223 @@ html, body {
   letter-spacing: 0.04em;
   text-transform: uppercase;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+.media-map-badge {
+  position: absolute;
+  top: 0.35rem;
+  right: 0.35rem;
+  padding: 0.12rem 0.38rem;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.92);
+  color: #030712;
+  font-family: var(--font-body);
+  font-size: 0.58rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.6);
+}
+
+/* Mappa Interattiva delle 5 Città & 11 Piazze (Fase 1) */
+.phase-map-card {
+  width: 100%;
+  margin-bottom: 0.9rem;
+  padding: 0.78rem 0.95rem;
+  border-radius: 12px;
+  background: rgba(6, 12, 24, 0.78);
+  border: 1px solid rgba(56, 189, 248, 0.24);
+  box-shadow: 0 10px 28px rgba(0, 0, 0, 0.42);
+  display: flex;
+  flex-direction: column;
+  gap: 0.58rem;
+  box-sizing: border-box;
+}
+
+.phase-map-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.phase-map-tag {
+  font-family: var(--font-title);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--color-cyan);
+}
+
+.phase-map-summary {
+  font-family: var(--font-body);
+  font-size: 0.7rem;
+  color: #94a3b8;
+}
+
+.phase-map-svg-wrap {
+  border-radius: 10px;
+  background: radial-gradient(circle at 75% 45%, rgba(14, 116, 144, 0.18), rgba(3, 7, 18, 0.94));
+  border: 1px solid rgba(56, 189, 248, 0.16);
+  overflow: hidden;
+}
+
+.phase-campaign-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.map-region-shape {
+  fill: rgba(15, 23, 42, 0.9);
+  stroke: rgba(56, 189, 248, 0.42);
+  stroke-width: 1.5;
+  stroke-linejoin: round;
+}
+
+.map-via-emilia {
+  fill: none;
+  stroke: rgba(245, 158, 11, 0.34);
+  stroke-width: 1.3;
+  stroke-dasharray: 4 4;
+}
+
+.map-ref-dot {
+  fill: rgba(148, 163, 184, 0.55);
+}
+
+.map-ref-label {
+  fill: rgba(148, 163, 184, 0.72);
+  font-family: var(--font-body);
+  font-size: 9px;
+  font-weight: 500;
+}
+
+.map-city-pin {
+  cursor: pointer;
+}
+
+.map-city-pin:focus-visible {
+  outline: none;
+}
+
+.map-city-hit {
+  fill: transparent;
+}
+
+.map-city-ring {
+  fill: rgba(56, 189, 248, 0.14);
+  stroke: rgba(56, 189, 248, 0.55);
+  stroke-width: 1.2;
+  transition: transform 0.2s ease, fill 0.2s ease, stroke 0.2s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.map-city-dot {
+  fill: #38bdf8;
+  transition: fill 0.2s ease, transform 0.2s ease;
+  transform-box: fill-box;
+  transform-origin: center;
+}
+
+.map-city-pin:hover .map-city-ring,
+.map-city-pin:focus-visible .map-city-ring {
+  stroke: #fbbf24;
+  transform: scale(1.22);
+}
+
+.map-city-pin.active .map-city-ring {
+  fill: rgba(245, 158, 11, 0.26);
+  stroke: #fbbf24;
+  stroke-width: 1.8;
+  transform: scale(1.3);
+}
+
+.map-city-pin.active .map-city-dot {
+  fill: #fbbf24;
+}
+
+.map-city-label {
+  fill: #cbd5e1;
+  font-family: var(--font-title);
+  font-size: 11px;
+  font-weight: 600;
+  transition: fill 0.2s ease;
+}
+
+.map-city-pin:hover .map-city-label,
+.map-city-pin.active .map-city-label {
+  fill: #fef3c7;
+  font-weight: 700;
+}
+
+.phase-map-detail {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.55rem 0.72rem;
+  border-radius: 9px;
+  background: rgba(3, 7, 18, 0.78);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.phase-map-detail-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.5rem;
+}
+
+.phase-map-city {
+  font-family: var(--font-title);
+  font-size: 0.88rem;
+  font-weight: 700;
+  color: #f8fafc;
+}
+
+.phase-map-badge {
+  padding: 0.12rem 0.48rem;
+  border-radius: 999px;
+  background: rgba(245, 158, 11, 0.18);
+  border: 1px solid rgba(245, 158, 11, 0.45);
+  color: #fde68a;
+  font-family: var(--font-body);
+  font-size: 0.65rem;
+  font-weight: 700;
+}
+
+.phase-map-scenes {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: 0.76rem;
+  line-height: 1.45;
+  color: #cbd5e1;
+}
+
+.phase-map-open-btn {
+  align-self: flex-start;
+  min-height: 28px;
+  margin-top: 0.1rem;
+  padding: 0.22rem 0.68rem;
+  border-radius: 999px;
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid rgba(56, 189, 248, 0.38);
+  color: #38bdf8;
+  font-family: var(--font-body);
+  font-size: 0.71rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, border-color 0.18s ease, color 0.18s ease;
+}
+
+.phase-map-open-btn:hover,
+.phase-map-open-btn:focus-visible {
+  background: rgba(56, 189, 248, 0.25);
+  border-color: #38bdf8;
+  color: #f8fafc;
+  outline: none;
 }
 
 /* Laboratorio Interattivo ESS (Fase 2) */
@@ -3356,6 +3574,15 @@ html, body {
 
   .gallery-filter-btn {
     min-height: 36px;
+  }
+
+  .phase-map-card {
+    padding: 0.7rem 0.78rem;
+  }
+
+  .phase-map-open-btn {
+    min-height: 36px;
+    padding: 0.3rem 0.78rem;
   }
 
   .btn-lightbox-arrow {

@@ -26,10 +26,93 @@
     VIDEO: 'video'
   });
 
+  const MEDIA_BADGE = Object.freeze({
+    NONE: 'none',
+    VIDEO: 'video',
+    MAP: 'map'
+  });
+
   const VIDEO_MIME = Object.freeze({
     WEBM: 'video/webm',
     MP4: 'video/mp4'
   });
+
+  const EMILIA_ROMAGNA_MAP_GEOM = Object.freeze({
+    SVG_NS: 'http://www.w3.org/2000/svg',
+    REGION_PATH: 'M 24 24 L 78 20 L 145 28 L 218 32 L 292 26 L 368 30 L 386 46 L 378 72 L 362 94 L 384 118 L 418 148 L 404 160 L 360 162 L 326 144 L 278 140 L 236 124 L 186 118 L 138 104 L 84 90 L 44 68 Z',
+    VIA_EMILIA_PATH: 'M 64 34 L 122 56 L 194 74 L 258 92 L 318 112 L 404 142',
+    REF_CITY_X: 258,
+    REF_CITY_Y: 92,
+    REF_CITY_LABEL: 'Bologna'
+  });
+
+  const CAMPAIGN_CITIES = Object.freeze([
+    Object.freeze({
+      id: 'parma',
+      name: 'Parma',
+      scenesCount: '6 scene 3D',
+      scenes: 'Piazza Duomo (2 scene), Piazza Garibaldi, Piazzale San Francesco (28 × 50 m, 2 sorgenti × 6 microfoni), Parco Ducale e Lungo Parma – Piazza Ghiaia.',
+      openLabel: 'Apri mappa punti San Francesco →',
+      x: 122,
+      y: 56,
+      dx: 11,
+      dy: -6,
+      anchor: 'start',
+      lightboxIndex: 0
+    }),
+    Object.freeze({
+      id: 'tresigallo',
+      name: 'Tresigallo',
+      scenesCount: '1 piazza + Sala WFS',
+      scenes: 'Piazza della Repubblica (registrazione "Chitarra" HOA di 3° ordine davanti alla fontana), Teatro del \'900 e Sala Immersiva AGORÀ.',
+      openLabel: 'Apri video Chitarra Live →',
+      x: 326,
+      y: 46,
+      dx: -11,
+      dy: -4,
+      anchor: 'end',
+      lightboxIndex: 5
+    }),
+    Object.freeze({
+      id: 'comacchio',
+      name: 'Comacchio',
+      scenesCount: '1 piazza',
+      scenes: 'Piazza Trepponti: rilievo ESS su 9 posizioni (T30 tra 1,4 e 1,9 s), mappa prime riflessioni 0–80 ms, acqua, avifauna e dialetto locale.',
+      openLabel: 'Apri mappa Trepponti →',
+      x: 368,
+      y: 66,
+      dx: 11,
+      dy: -2,
+      anchor: 'start',
+      lightboxIndex: 4
+    }),
+    Object.freeze({
+      id: 'faenza',
+      name: 'Faenza',
+      scenesCount: '1 piazza + Teatro',
+      scenes: 'Piazza del Popolo (rilievi sotto i portici storici con sorgente a dodecaedro ed em64) e Teatro Masini (campagne 2020 e 2025).',
+      openLabel: 'Apri rilievo Faenza →',
+      x: 318,
+      y: 112,
+      dx: -10,
+      dy: 14,
+      anchor: 'end',
+      lightboxIndex: 9
+    }),
+    Object.freeze({
+      id: 'rimini',
+      name: 'Rimini',
+      scenesCount: '2 scene 3D',
+      scenes: 'Piazza Cavour (kit completo em64 + KU 100 + Insta360, misure MIMO con decadimento ≈ 1,6 s) e Piazza Tre Martiri.',
+      openLabel: 'Apri kit Piazza Cavour →',
+      x: 404,
+      y: 142,
+      dx: -11,
+      dy: 4,
+      anchor: 'end',
+      lightboxIndex: 2
+    })
+  ]);
 
   const GALLERY_CATEGORY = Object.freeze({
     ALL: 'all',
@@ -54,11 +137,154 @@
       tag: 'Fase 1',
       title: 'Fase 1: Acquisizione 3D e Soundscape',
       body: [
-        'I ricercatori hanno condotto una campagna sperimentale in 5 città dell\'Emilia-Romagna (Parma, Rimini, Faenza, Comacchio e Tresigallo), registrando il soundscape di 11 piazze storiche.',
-        'Al centro di ogni piazza è stato posizionato un microfono sferico a 64 capsule (Eigenmike em64) abbinato a una telecamera 360° in 8K. Su rete digitale Dante a 48 kHz, audio e video vengono acquisiti in sincronia per documentare il campo acustico e le immagini dello spazio urbano.'
+        'I ricercatori hanno condotto una campagna sperimentale in 5 città dell\'Emilia-Romagna (Parma, Rimini, Faenza, Comacchio e Tresigallo), registrando il soundscape di 11 piazze storiche insieme a rilievi comparativi in teatri storici e in camera anecoica.',
+        'Al centro di ogni piazza il kit di acquisizione integra microfono sferico Eigenmike em64 (64 capsule), camera 360° in 8K, testa binaurale Neumann KU 100, microfono B-format Sennheiser Ambeo e microfono ECM-8000 su rete Dante a 48 kHz.'
       ],
       image: 'assets/gallery/image31.jpg',
-      imageCaption: 'Rilievo in Piazza Cavour a Rimini: microfono sferico Eigenmike em64 (con antivento), telecamera 360° e testa binaurale per la registrazione del soundscape.'
+      imageCaption: 'Rilievo in Piazza Cavour a Rimini: microfono sferico Eigenmike em64 (con antivento), telecamera 360° e testa binaurale per la registrazione del soundscape.',
+      hasCampaignMap: true,
+      mediaStripTag: 'Mappe & Foto sul Campo · 5 Città',
+      mediaActionLabel: 'Mappe & Foto',
+      mediaLightboxTag: 'Campagna Sperimentale · Fase 1',
+      mediaGallery: [
+        {
+          title: 'Parma, Piazzale San Francesco · Mappa Punti IR',
+          shortLabel: 'Mappa Parma',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/parma_san_francesco_mappa_punti.jpg',
+          caption: 'Planimetria delle posizioni di misura in Piazzale San Francesco (Parma): 2 sorgenti (SA, SB) × 6 microfoni su distanze da 4,03 m a 37,40 m.',
+          featured: true
+        },
+        {
+          title: 'Parma, Piazzale San Francesco · Vista Aerea',
+          shortLabel: 'Aerea Parma',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/parma_san_francesco_aerea.jpg',
+          caption: 'Inquadramento urbanistico dell\'area di misura (28 × 50 m) tra la Chiesa di San Francesco, la Casa della Musica e Borgo degli Studi.',
+          featured: true
+        },
+        {
+          title: 'Rimini · Kit Completo di Ripresa in Piazza',
+          shortLabel: 'Kit Ripresa',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/kit_acquisizione_rimini.jpg',
+          caption: 'Postazione multi-sensore co-localizzata in Piazza Cavour: Eigenmike em64, Insta360, testa artificiale KU 100, Sennheiser Ambeo, ECM-8000 e Zoom F8.',
+          featured: true
+        },
+        {
+          title: 'Parma · Mappa Acustica 3D su Immagine 360°',
+          shortLabel: 'Mappa 3D',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image29.jpg',
+          caption: 'Distribuzione spaziale a colori della pressione e provenienza sonora sovrapposta alla ripresa 360° (Farina et al., Urban Science 2025).',
+          featured: true
+        },
+        {
+          title: 'Comacchio, Trepponti · Mappa Prime Riflessioni',
+          shortLabel: 'Trepponti 80ms',
+          badge: MEDIA_BADGE.MAP,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image33.jpg',
+          caption: 'Mappa panoramica delle prime riflessioni (0–80 ms) estratta dalla sonda sferica a 64 capsule a Piazza Trepponti.',
+          featured: true
+        },
+        {
+          title: 'Tresigallo · Chitarra Live HOA 3° Ordine (Video)',
+          shortLabel: 'Chitarra Live',
+          badge: MEDIA_BADGE.VIDEO,
+          mediaType: MEDIA_TYPE.VIDEO,
+          image: 'assets/videos/chitarra_tresigallo_poster.jpg',
+          videoSrc: 'assets/videos/chitarra_tresigallo.mp4',
+          videoWebmSrc: 'assets/videos/chitarra_tresigallo.webm',
+          caption: 'Registrazione dal vivo con sorgente reale in Piazza della Repubblica (Tresigallo) davanti alla fontana monumentale.',
+          featured: true
+        },
+        {
+          title: 'Parma · Campagna in Piazzale San Francesco',
+          shortLabel: 'Rilievo Parma',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/parma_san_francesco_rilievo.jpg',
+          caption: 'Sorgente omnidirezionale e microfoni posizionati davanti alla facciata della Chiesa di San Francesco durante il rilievo ESS.',
+          featured: false
+        },
+        {
+          title: 'Rimini · Setup in Piazza Cavour',
+          shortLabel: 'Piazza Cavour',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/rimini_kit_piazza_cavour.jpg',
+          caption: 'Allestimento del cavalletto con sonda sferica e testa artificiale al centro di Piazza Cavour (Rimini, 2024).',
+          featured: false
+        },
+        {
+          title: 'Rimini · Ripresa Equirettangolare 360° 8K',
+          shortLabel: 'Panorama 360°',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image16.jpg',
+          caption: 'Fotogramma equirettangolare a 360° acquisito in sincronia temporale con i 64 canali dell\'Eigenmike em64.',
+          featured: false
+        },
+        {
+          title: 'Faenza, Piazza del Popolo · Misure sotto i Portici',
+          shortLabel: 'Faenza Piazza',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/gallery/image13.jpg',
+          caption: 'Il gruppo di ricerca CIRI-EC dell\'Università di Bologna durante i rilievi acustici affacciati su Piazza del Popolo.',
+          featured: false
+        },
+        {
+          title: 'Tresigallo · Sessione Chitarra in 3° Ordine HOA',
+          shortLabel: 'Tresigallo HOA',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/tresigallo_chitarra_live.jpg',
+          caption: 'Ripresa Ambisonics a 64 capsule per lo scenario musicale in Piazza della Repubblica a Tresigallo.',
+          featured: false
+        },
+        {
+          title: 'Bologna · Teatro Comunale senza Poltrone',
+          shortLabel: 'Teatro Bologna',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/bologna_teatro_comunale.jpg',
+          caption: 'Indagine acustica nella cavea storica del Teatro Comunale di Bologna per il confronto metodologico teatri-piazze.',
+          featured: false
+        },
+        {
+          title: 'Bologna · Chiesa del SS. Salvatore',
+          shortLabel: 'SS. Salvatore',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/bologna_chiesa_ss_salvatore.jpg',
+          caption: 'Rilievo della risposta all\'impulso 3D in architettura monumentale ecclesiastica con em64 e testa binaurale.',
+          featured: false
+        },
+        {
+          title: 'Zagabria · Teatro Nazionale Croato',
+          shortLabel: 'Zagabria TNC',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/zagabria_teatro_nazionale.jpg',
+          caption: 'Campagna internazionale comparativa in sala d\'opera storica con catena di acquisizione multicanale.',
+          featured: false
+        },
+        {
+          title: 'Ferrara · Camera Anecoica Universitaria',
+          shortLabel: 'Cam. Anecoica',
+          badge: MEDIA_BADGE.NONE,
+          mediaType: MEDIA_TYPE.IMAGE,
+          image: 'assets/campagna/ferrara_camera_anecoica.jpg',
+          caption: 'Registrazioni anecoiche di riferimento utilizzate come sorgenti asciutte per l\'auralizzazione nelle piazze.',
+          featured: false
+        }
+      ]
     },
     {
       num: 2,
@@ -117,6 +343,9 @@
       ],
       specsLinkUrl: 'https://adrianofarina.it/projects/2026/09/tresigallo/',
       specsLinkLabel: 'Documentazione tecnica completa (adrianofarina.it) ↗',
+      mediaStripTag: 'Dietro le quinte · Tresigallo',
+      mediaActionLabel: 'Foto & Video',
+      mediaLightboxTag: 'Sala Immersiva · Tresigallo',
       mediaGallery: [
         {
           title: 'Progetto CAD 3D Ottagono',
@@ -630,6 +859,42 @@
           image: 'assets/tresigallo/ascolto_collettivo.jpg',
           category: GALLERY_CATEGORY.TRESIGALLO,
           mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Parma · Mappa Punti IR in Piazzale San Francesco',
+          caption: 'Planimetria acustica della campagna in Piazzale San Francesco: 2 sorgenti omnidirezionali (SA, SB) × 6 ricevitori da 4,03 m a 37,40 m.',
+          image: 'assets/campagna/parma_san_francesco_mappa_punti.jpg',
+          imageFit: 'contain',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Parma · Vista Aerea Piazzale San Francesco',
+          caption: 'Rilievo dall\'alto della geometria urbanistica (28 × 50 m) collegata al modello acustico tridimensionale.',
+          image: 'assets/campagna/parma_san_francesco_aerea.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Parma · Acquisizione davanti alla Chiesa',
+          caption: 'Rilievo sul campo in Piazzale San Francesco con sorgente omnidirezionale e microfoni su cavalletto.',
+          image: 'assets/campagna/parma_san_francesco_rilievo.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Bologna · Teatro Comunale senza Poltrone',
+          caption: 'Sessione sperimentale nella cavea del Teatro Comunale di Bologna per lo studio comparato di spazi monumentali.',
+          image: 'assets/campagna/bologna_teatro_comunale.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
+        },
+        {
+          title: 'Ferrara · Camera Anecoica Universitaria',
+          caption: 'Cattura di sorgenti sonore anecoiche asciutte da convolvere con le risposte all\'impulso delle piazze.',
+          image: 'assets/campagna/ferrara_camera_anecoica.jpg',
+          category: GALLERY_CATEGORY.SQUARES,
+          mediaType: MEDIA_TYPE.IMAGE
         }
       ]
     }
@@ -906,6 +1171,7 @@
     lightboxPhaseIndex: 0,
     lightboxPhaseMediaIndex: 0,
     currentLightboxIndex: 0,
+    activeMapCityId: CAMPAIGN_CITIES[0].id,
     room3dOpen: false,
     portalOpen: false,
     audioMuted: false,
@@ -3651,6 +3917,7 @@
 
       syncEssWidgetVisibility(phaseData);
       syncShExplorerVisibility(phaseData);
+      syncPhaseCampaignMap(phaseData);
       syncPhaseSpecsCard(phaseData);
       syncPhaseMediaStrip(phaseData);
 
@@ -3662,11 +3929,12 @@
       const btnMakingOf = document.getElementById('btnPhaseMakingOf');
       const btnMakingOfLbl = document.getElementById('btnPhaseMakingOfLabel');
       const phaseMediaCount = Array.isArray(phaseData.mediaGallery) ? phaseData.mediaGallery.length : 0;
+      const actionLabel = phaseData.mediaActionLabel || 'Foto & Video';
       if (btnMakingOf) {
         btnMakingOf.style.display = phaseMediaCount > 0 ? 'inline-flex' : 'none';
       }
       if (btnMakingOfLbl && phaseMediaCount > 0) {
-        btnMakingOfLbl.textContent = `Foto & Video (${phaseMediaCount})`;
+        btnMakingOfLbl.textContent = `${actionLabel} (${phaseMediaCount})`;
       }
     }
 
@@ -3695,10 +3963,141 @@
     });
   }
 
-  // Aggiorna la striscia multimediale (assemblaggio e video) nella Fase 5
+  // Costruisce la mappa vettoriale Emilia-Romagna con le 5 città rilevate
+  function buildCampaignMapSvg() {
+    const svg = document.getElementById('phaseCampaignSvg');
+    if (!svg || svg.children.length > 0) return;
+
+    const svgNs = EMILIA_ROMAGNA_MAP_GEOM.SVG_NS;
+
+    const regionPath = document.createElementNS(svgNs, 'path');
+    regionPath.setAttribute('class', 'map-region-shape');
+    regionPath.setAttribute('d', EMILIA_ROMAGNA_MAP_GEOM.REGION_PATH);
+    svg.appendChild(regionPath);
+
+    const viaEmilia = document.createElementNS(svgNs, 'path');
+    viaEmilia.setAttribute('class', 'map-via-emilia');
+    viaEmilia.setAttribute('d', EMILIA_ROMAGNA_MAP_GEOM.VIA_EMILIA_PATH);
+    svg.appendChild(viaEmilia);
+
+    const refDot = document.createElementNS(svgNs, 'circle');
+    refDot.setAttribute('class', 'map-ref-dot');
+    refDot.setAttribute('cx', String(EMILIA_ROMAGNA_MAP_GEOM.REF_CITY_X));
+    refDot.setAttribute('cy', String(EMILIA_ROMAGNA_MAP_GEOM.REF_CITY_Y));
+    refDot.setAttribute('r', '2.4');
+    svg.appendChild(refDot);
+
+    const refLbl = document.createElementNS(svgNs, 'text');
+    refLbl.setAttribute('class', 'map-ref-label');
+    refLbl.setAttribute('x', String(EMILIA_ROMAGNA_MAP_GEOM.REF_CITY_X));
+    refLbl.setAttribute('y', String(EMILIA_ROMAGNA_MAP_GEOM.REF_CITY_Y - 8));
+    refLbl.setAttribute('text-anchor', 'middle');
+    refLbl.textContent = EMILIA_ROMAGNA_MAP_GEOM.REF_CITY_LABEL;
+    svg.appendChild(refLbl);
+
+    CAMPAIGN_CITIES.forEach(function (city) {
+      const group = document.createElementNS(svgNs, 'g');
+      group.setAttribute('class', 'map-city-pin');
+      group.setAttribute('data-city-id', city.id);
+      group.setAttribute('role', 'button');
+      group.setAttribute('tabindex', '0');
+      group.setAttribute('aria-label', `${city.name}: ${city.scenesCount}`);
+
+      const hitCircle = document.createElementNS(svgNs, 'circle');
+      hitCircle.setAttribute('class', 'map-city-hit');
+      hitCircle.setAttribute('cx', String(city.x));
+      hitCircle.setAttribute('cy', String(city.y));
+      hitCircle.setAttribute('r', '16');
+
+      const ring = document.createElementNS(svgNs, 'circle');
+      ring.setAttribute('class', 'map-city-ring');
+      ring.setAttribute('cx', String(city.x));
+      ring.setAttribute('cy', String(city.y));
+      ring.setAttribute('r', '7.5');
+
+      const dot = document.createElementNS(svgNs, 'circle');
+      dot.setAttribute('class', 'map-city-dot');
+      dot.setAttribute('cx', String(city.x));
+      dot.setAttribute('cy', String(city.y));
+      dot.setAttribute('r', '3.8');
+
+      const label = document.createElementNS(svgNs, 'text');
+      label.setAttribute('class', 'map-city-label');
+      label.setAttribute('x', String(city.x + city.dx));
+      label.setAttribute('y', String(city.y + city.dy));
+      label.setAttribute('text-anchor', city.anchor);
+      label.textContent = city.name;
+
+      group.appendChild(hitCircle);
+      group.appendChild(ring);
+      group.appendChild(dot);
+      group.appendChild(label);
+
+      group.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        playPhaseStepSound();
+        selectCampaignCity(city.id);
+      });
+
+      bindButtonKeyActivation(group, function () {
+        ensureAudioUnlocked();
+        playPhaseStepSound();
+        selectCampaignCity(city.id);
+      });
+
+      svg.appendChild(group);
+    });
+  }
+
+  function selectCampaignCity(cityId) {
+    const city = CAMPAIGN_CITIES.find(function (c) {
+      return c.id === cityId;
+    }) || CAMPAIGN_CITIES[0];
+    if (!city) return;
+
+    state.activeMapCityId = city.id;
+
+    const pins = document.querySelectorAll('#phaseCampaignSvg .map-city-pin');
+    pins.forEach(function (pin) {
+      const isSelected = pin.getAttribute('data-city-id') === city.id;
+      pin.classList.toggle('active', isSelected);
+      pin.setAttribute('aria-pressed', isSelected ? 'true' : 'false');
+    });
+
+    const titleEl = document.getElementById('phaseMapCityTitle');
+    const badgeEl = document.getElementById('phaseMapCityBadge');
+    const scenesEl = document.getElementById('phaseMapCityScenes');
+    const openBtn = document.getElementById('btnPhaseMapOpenMedia');
+
+    if (titleEl) titleEl.textContent = city.name;
+    if (badgeEl) badgeEl.textContent = city.scenesCount;
+    if (scenesEl) scenesEl.textContent = city.scenes;
+    if (openBtn) openBtn.textContent = city.openLabel;
+  }
+
+  // Mostra o nasconde la mappa interattiva della campagna nella Fase 1
+  function syncPhaseCampaignMap(phaseData) {
+    const mapCard = document.getElementById('phaseMapCard');
+    const bodyElem = document.getElementById('portalBodyText');
+    const showMap = Boolean(phaseData && phaseData.hasCampaignMap);
+
+    if (bodyElem) {
+      bodyElem.classList.toggle('has-phase-map', showMap);
+    }
+
+    if (!mapCard) return;
+    mapCard.style.display = showMap ? 'flex' : 'none';
+    if (!showMap) return;
+
+    buildCampaignMapSvg();
+    selectCampaignCity(state.activeMapCityId);
+  }
+
+  // Aggiorna la striscia multimediale (mappe, foto e video) nella fase attiva
   function syncPhaseMediaStrip(phaseData) {
     const strip = document.getElementById('phaseMediaStrip');
     const grid = document.getElementById('phaseMediaStripGrid');
+    const tagEl = document.getElementById('phaseMediaStripTag');
     const countEl = document.getElementById('phaseMediaStripCount');
     if (!strip || !grid) return;
 
@@ -3709,11 +4108,24 @@
 
     if (!hasMedia) return;
 
+    if (tagEl) {
+      tagEl.textContent = phaseData.mediaStripTag || 'Galleria della Fase';
+    }
+
     const videoCount = allItems.filter(function (entry) {
       return entry.mediaType === MEDIA_TYPE.VIDEO;
     }).length;
+    const mapCount = allItems.filter(function (entry) {
+      return entry.badge === MEDIA_BADGE.MAP;
+    }).length;
+    const photoCount = Math.max(0, allItems.length - videoCount - mapCount);
+
     if (countEl) {
-      countEl.textContent = `${allItems.length - videoCount} foto · ${videoCount} video`;
+      const parts = [];
+      if (photoCount > 0) parts.push(`${photoCount} foto`);
+      if (mapCount > 0) parts.push(`${mapCount} mappe`);
+      if (videoCount > 0) parts.push(`${videoCount} video`);
+      countEl.textContent = parts.join(' · ');
     }
 
     const featuredItems = allItems.filter(function (entry) {
@@ -3741,6 +4153,11 @@
         playBadge.className = 'media-play-badge';
         playBadge.textContent = '▶ Video';
         tileBtn.appendChild(playBadge);
+      } else if (entry.badge === MEDIA_BADGE.MAP) {
+        const mapBadge = document.createElement('span');
+        mapBadge.className = 'media-map-badge';
+        mapBadge.textContent = 'Mappa';
+        tileBtn.appendChild(mapBadge);
       }
 
       const labelEl = document.createElement('span');
@@ -3837,6 +4254,9 @@
 
     const mediaStrip = document.getElementById('phaseMediaStrip');
     if (mediaStrip) mediaStrip.style.display = 'none';
+
+    const mapCard = document.getElementById('phaseMapCard');
+    if (mapCard) mapCard.style.display = 'none';
 
     if (audioCtx && audioNodes['portal-media']) {
       audioNodes['portal-media'].gain.gain.setTargetAtTime(0.0001, audioCtx.currentTime, 0.02);
@@ -4517,7 +4937,9 @@
       item = mediaItems[state.lightboxPhaseMediaIndex];
       if (!item) return;
       counterText = `Media ${state.lightboxPhaseMediaIndex + 1} di ${mediaItems.length}`;
-      tagText = item.mediaType === MEDIA_TYPE.VIDEO ? LIGHTBOX_TAG.VIDEO : LIGHTBOX_TAG.PHASE_MEDIA;
+      tagText = item.mediaType === MEDIA_TYPE.VIDEO
+        ? LIGHTBOX_TAG.VIDEO
+        : (activePhase.mediaLightboxTag || LIGHTBOX_TAG.PHASE_MEDIA);
     } else {
       const galleryData = DRAWER_DATA.gallery;
       const filteredItems = getFilteredGalleryItems(galleryData ? galleryData.items : [], state.galleryCategory);
@@ -5123,6 +5545,18 @@
       btnPhaseMakingOf.addEventListener('click', function () {
         ensureAudioUnlocked();
         openPhaseMediaLightbox(0);
+      });
+    }
+
+    const btnPhaseMapOpenMedia = document.getElementById('btnPhaseMapOpenMedia');
+    if (btnPhaseMapOpenMedia) {
+      btnPhaseMapOpenMedia.addEventListener('click', function () {
+        ensureAudioUnlocked();
+        const city = CAMPAIGN_CITIES.find(function (c) {
+          return c.id === state.activeMapCityId;
+        }) || CAMPAIGN_CITIES[0];
+        if (!city) return;
+        openPhaseMediaLightbox(city.lightboxIndex);
       });
     }
 
